@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace WebApp.DataAccess.Entities;
 
 public class Message : BaseEntity

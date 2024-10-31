@@ -3,7 +3,7 @@ using WebApp.DataAccess.Entities;
 using WebApp.DataAccess.Repositories;
 using WebApp.Tests.Comparers;
 
-namespace WebApp.Tests;
+namespace WebApp.Tests.Data;
 internal class ReportRepositoryTests
 {
     [TestCase(1, 1)]
