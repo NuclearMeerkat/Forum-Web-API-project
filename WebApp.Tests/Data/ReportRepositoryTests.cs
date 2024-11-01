@@ -39,7 +39,7 @@ internal class ReportRepositoryTests
         using var context = new ForumDbContext(UnitTestDataHelper.GetUnitTestDbOptions());
 
         var reportRepository = new ReportRepository(context);
-        var report = new Report { UserId = 1, MessageId = 1, Reason = "Off-topic", Status = "Pending", CreatedAt = DateTime.UtcNow };
+        var report = new Report { UserId = 1, MessageId = 1, Reason = "Off-topic", Status = ReportStatus.Pending, CreatedAt = DateTime.UtcNow };
 
         await reportRepository.AddAsync(report);
         await context.SaveChangesAsync();
@@ -71,7 +71,7 @@ internal class ReportRepositoryTests
             UserId = 2,
             MessageId = 1,
             Reason = "Updated Reason",
-            Status = "Resolved",
+            Status = ReportStatus.Resolved,
             CreatedAt = DateTime.UtcNow
         };
 
@@ -83,7 +83,7 @@ internal class ReportRepositoryTests
             UserId = 2,
             MessageId = 1,
             Reason = "Updated Reason",
-            Status = "Resolved",
+            Status = ReportStatus.Resolved,
             CreatedAt = DateTime.UtcNow
         }).Using(new ReportEqualityComparer()), message: "Update method works incorrect");
     }
@@ -91,7 +91,7 @@ internal class ReportRepositoryTests
     private static IEnumerable<Report> ExpectedReports =>
         new[]
         {
-            new Report { UserId = 3, MessageId = 2, Reason = "Spam content", Status = "Pending" },
-            new Report { UserId = 2, MessageId = 1, Reason = "Inappropriate language", Status = "Resolved" }
+            new Report { UserId = 3, MessageId = 2, Reason = "Spam content", Status = ReportStatus.Pending },
+            new Report { UserId = 2, MessageId = 1, Reason = "Inappropriate language", Status = ReportStatus.Resolved }
         };
 }

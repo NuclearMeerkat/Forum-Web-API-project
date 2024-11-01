@@ -21,9 +21,9 @@ internal class UnitTestDataHelper
     {
         // Seed Users
         context.Users.AddRange(
-            new User { Id = 1, Nickname = "JaneDoe", Email = "jane.doe@example.com", ProfilePictureUrl = "/images/jane.jpg", Role = "User" },
-            new User { Id = 2, Nickname = "JohnSmith", Email = "john.smith@example.com", ProfilePictureUrl = "/images/john.jpg", Role = "Moderator" },
-            new User { Id = 3, Nickname = "AliceBlue", Email = "alice.blue@example.com", ProfilePictureUrl = "/images/alice.jpg", Role = "Admin" }
+            new User { Id = 1, Nickname = "JaneDoe", Email = "jane.doe@example.com", ProfilePictureUrl = "/images/jane.jpg", Role = UserRole.User },
+            new User { Id = 2, Nickname = "JohnSmith", Email = "john.smith@example.com", ProfilePictureUrl = "/images/john.jpg", Role = UserRole.Moderator},
+            new User { Id = 3, Nickname = "AliceBlue", Email = "alice.blue@example.com", ProfilePictureUrl = "/images/alice.jpg", Role = UserRole.Admin }
         );
 
         // Seed Topics
@@ -56,8 +56,8 @@ internal class UnitTestDataHelper
 
         // Seed Reports
         context.Reports.AddRange(
-            new Report { UserId = 3, MessageId = 2, Reason = "Spam content", Status = "Pending", CreatedAt = DateTime.UtcNow.AddDays(-2) },
-            new Report { UserId = 2, MessageId = 1, Reason = "Inappropriate language", Status = "Resolved", CreatedAt = DateTime.UtcNow.AddDays(-1), ReviewedAt = DateTime.UtcNow }
+            new Report { UserId = 3, MessageId = 2, Reason = "Spam content", Status = ReportStatus.Pending, CreatedAt = DateTime.UtcNow.AddDays(-2) },
+            new Report { UserId = 2, MessageId = 1, Reason = "Inappropriate language", Status = ReportStatus.Resolved, CreatedAt = DateTime.UtcNow.AddDays(-1), ReviewedAt = DateTime.UtcNow }
         );
 
         context.SaveChanges();

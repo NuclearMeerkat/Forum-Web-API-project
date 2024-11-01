@@ -1,4 +1,4 @@
 namespace WebApp.DataAccess.Interfaces;
-internal interface ITopicStarsRepository
+public interface ITopicStarsRepository
 {
 }

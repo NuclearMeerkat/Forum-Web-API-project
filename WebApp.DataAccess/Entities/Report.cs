@@ -6,9 +6,9 @@ public class Report : BaseEntity
 
     public int UserId { get; set; }
 
-    public string Reason { get; set; } = string.Empty;
+    public string Reason { get; set; }
 
-    public string Status { get; set; } = "Pending";
+    public ReportStatus Status { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -17,4 +17,12 @@ public class Report : BaseEntity
     public Message Message { get; set; }
 
     public User User { get; set; }
+}
+
+public enum ReportStatus
+{
+    Pending,
+    UnderReview,
+    Resolved,
+    Rejected,
 }

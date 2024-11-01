@@ -14,6 +14,8 @@ public class UnitOFWork : IUnitOfWork
         this.ReportRepository = new ReportRepository(context);
         this.TopicRepository = new TopicRepository(context);
         this.UserRepository = new UserRepository(context);
+        this.MessageLikeRepository = new MessageLikeRepository(context);
+        this.TopicStarsRepository = new TopicStarsRepository(context);
     }
 
     public IMessageRepository MessageRepository { get; }
@@ -23,6 +25,11 @@ public class UnitOFWork : IUnitOfWork
     public ITopicRepository TopicRepository { get; }
 
     public IUserRepository UserRepository { get; }
+
+    public IMessageLikeRepository MessageLikeRepository { get; }
+
+    public ITopicStarsRepository TopicStarsRepository { get; }
+
 
     public async Task SaveAsync()
     {

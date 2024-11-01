@@ -1,6 +1,7 @@
 using Laraue.EfCoreTriggers.Common.Extensions;
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp.DataAccess.Entities;
 
 namespace WebApp.DataAccess.Data;
@@ -54,6 +55,9 @@ public class ForumDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasIndex(u => u.Email)
             .IsUnique();
+        modelBuilder.Entity<User>()
+            .Property(u => u.Role)
+            .HasConversion<string>();
 
         modelBuilder.Entity<Message>()
             .HasOne(m => m.Topic)
@@ -75,6 +79,13 @@ public class ForumDbContext : DbContext
             .WithOne(m => m.Message)
             .HasForeignKey(m => m.MessageId)
             .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Message>()
+            .Property(m => m.IsEdited)
+            .HasDefaultValue(false);
+        modelBuilder.Entity<Message>()
+            .Property(m => m.LikesCounter)
+            .HasDefaultValue(0);
+
 
         modelBuilder.Entity<MessageLike>()
             .HasKey(l => new { l.UserId, l.MessageId });
@@ -114,6 +125,9 @@ public class ForumDbContext : DbContext
             .WithMany(u => u.Reports)
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Restrict);
+        modelBuilder.Entity<Report>()
+            .Property(r => r.Status)
+            .HasConversion<string>();
 
         modelBuilder.Entity<Topic>()
             .HasMany(t => t.Messages)

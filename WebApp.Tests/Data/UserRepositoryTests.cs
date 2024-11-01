@@ -39,7 +39,7 @@ internal class UserRepositoryTests
         using var context = new ForumDbContext(UnitTestDataHelper.GetUnitTestDbOptions());
 
         var userRepository = new UserRepository(context);
-        var user = new User { Id = 4, Nickname = "NewUser", Email = "newuser@example.com", Role = "User", ProfilePictureUrl = "URL" };
+        var user = new User { Id = 4, Nickname = "NewUser", Email = "newuser@example.com", Role = UserRole.User, ProfilePictureUrl = "URL" };
 
         await userRepository.AddAsync(user);
         await context.SaveChangesAsync();
@@ -71,7 +71,7 @@ internal class UserRepositoryTests
             Id = 1,
             Nickname = "UpdatedName",
             Email = "updated@example.com",
-            Role = "User",
+            Role = UserRole.User,
             ProfilePictureUrl = "123",
         };
 
@@ -83,7 +83,7 @@ internal class UserRepositoryTests
             Id = 1,
             Nickname = "UpdatedName",
             Email = "updated@example.com",
-            Role = "User",
+            Role = UserRole.User,
             ProfilePictureUrl = "123",
         }).Using(new UserEqualityComparer()), message: "Update method works incorrect");
     }
@@ -91,8 +91,8 @@ internal class UserRepositoryTests
     private static IEnumerable<User> ExpectedUsers =>
         new[]
         {
-            new User { Id = 1, Nickname = "JaneDoe", Email = "jane.doe@example.com", ProfilePictureUrl = "/images/jane.jpg", Role = "User" },
-            new User { Id = 2, Nickname = "JohnSmith", Email = "john.smith@example.com", ProfilePictureUrl = "/images/john.jpg", Role = "Moderator" },
-            new User { Id = 3, Nickname = "AliceBlue", Email = "alice.blue@example.com", ProfilePictureUrl = "/images/alice.jpg", Role = "Admin" }
+            new User { Id = 1, Nickname = "JaneDoe", Email = "jane.doe@example.com", ProfilePictureUrl = "/images/jane.jpg", Role = UserRole.User },
+            new User { Id = 2, Nickname = "JohnSmith", Email = "john.smith@example.com", ProfilePictureUrl = "/images/john.jpg", Role = UserRole.Moderator },
+            new User { Id = 3, Nickname = "AliceBlue", Email = "alice.blue@example.com", ProfilePictureUrl = "/images/alice.jpg", Role = UserRole.Admin }
         };
 }

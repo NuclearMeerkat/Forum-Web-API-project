@@ -1,4 +1,4 @@
 namespace WebApp.DataAccess.Interfaces;
-internal interface IMessageLikeRepository
+public interface IMessageLikeRepository
 {
 }
