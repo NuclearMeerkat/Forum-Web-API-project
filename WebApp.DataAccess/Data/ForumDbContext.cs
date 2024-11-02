@@ -8,12 +8,10 @@ namespace WebApp.DataAccess.Data;
 
 public class ForumDbContext : DbContext
 {
-    //Todo: connection string and config at all
-    //Todo: There is no limits for the stars
-    //Todo: Need a triger for a likes counter
+    // Todo: connection string and config at all
 
     public ForumDbContext(DbContextOptions<ForumDbContext> options)
-            : base(options)
+        : base(options)
     {
     }
 
@@ -36,7 +34,7 @@ public class ForumDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         ArgumentNullException.ThrowIfNull(optionsBuilder);
-        //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;");
+        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;");
         optionsBuilder.UseSqlServerTriggers();
     }
 
@@ -149,10 +147,12 @@ public class ForumDbContext : DbContext
             .AfterInsert(trigger => trigger
                 .Action(action => action
                     .Update<Message>(
-                        (tableRefs, message) => message.Id == tableRefs.New.MessageId, // Condition for updating the Message with matching Id
+                        (tableRefs, message) =>
+                            message.Id ==
+                            tableRefs.New.MessageId, // Condition for updating the Message with matching Id
                         (tableRefs, message) => new Message
                         {
-                            LikesCounter = message.LikesCounter + 1 // Increment the LikesCounter field
+                            LikesCounter = message.LikesCounter + 1, // Increment the LikesCounter field
                         })));
     }
 }

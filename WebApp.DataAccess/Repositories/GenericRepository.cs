@@ -7,7 +7,7 @@ namespace WebApp.DataAccess.Repositories
 {
     public abstract class GenericRepository<T> : IRepository<T> where T : BaseEntity
     {
-        private ForumDbContext context { get; set; }
+        public ForumDbContext context { get; }
 
         protected GenericRepository(ForumDbContext context)
         {

@@ -1,5 +1,10 @@
-﻿namespace WebApp.DataAccess.Interfaces;
+﻿using WebApp.DataAccess.Entities;
 
-public interface ITopicRepository
+namespace WebApp.DataAccess.Interfaces;
+
+public interface ITopicRepository : IRepository<Topic>
 {
+    public Task<Topic> GetWithDetailsAsync(int id);
+
+    public Task<IEnumerable<Topic>> GetAllWithDetailsAsync();
 }

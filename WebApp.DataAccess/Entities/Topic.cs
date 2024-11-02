@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace WebApp.DataAccess.Entities;
 
 public class Topic : BaseEntity
@@ -7,6 +9,8 @@ public class Topic : BaseEntity
     public string Title { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;
+
+    public double AverageStars { get; set; }
 
     public int UserId { get; set; }
 

@@ -12,6 +12,8 @@ public class Message : BaseEntity
 
     public int LikesCounter { get; set; }
 
+    public DateTime CreatedAt { get; set; }
+
     public int TopicId { get; set; }
 
     public Topic Topic { get; set; }

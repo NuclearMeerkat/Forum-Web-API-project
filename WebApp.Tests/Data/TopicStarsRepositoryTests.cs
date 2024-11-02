@@ -39,7 +39,7 @@ internal class TopicStarsRepositoryTests
         using var context = new ForumDbContext(UnitTestDataHelper.GetUnitTestDbOptions());
 
         var topicStarsRepository = new TopicStarsRepository(context);
-        var topicStar = new TopicStars { UserId = 1, TopicId = 3, Stars = 4 };
+        var topicStar = new TopicStars { UserId = 1, TopicId = 3, StarCount = 4 };
 
         await topicStarsRepository.AddAsync(topicStar);
         await context.SaveChangesAsync();
@@ -63,8 +63,8 @@ internal class TopicStarsRepositoryTests
     private static IEnumerable<TopicStars> ExpectedTopicStars =>
         new[]
         {
-            new TopicStars { Stars = 4, UserId = 1, TopicId = 1 },
-            new TopicStars { Stars = 5, UserId = 2, TopicId = 2 },
-            new TopicStars { Stars = 3, UserId = 3, TopicId = 3 }
+            new TopicStars { StarCount = 4, UserId = 1, TopicId = 1 },
+            new TopicStars { StarCount = 5, UserId = 2, TopicId = 2 },
+            new TopicStars { StarCount = 3, UserId = 3, TopicId = 3 }
         };
 }

@@ -17,7 +17,7 @@ internal sealed class TopicStarsEqualityComparer : IEqualityComparer<TopicStars>
             return false;
         }
 
-        return x.Stars == y.Stars
+        return x.StarCount == y.StarCount
             && x.UserId == y.UserId
             && x.TopicId == y.TopicId;
     }

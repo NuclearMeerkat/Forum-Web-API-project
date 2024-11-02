@@ -49,9 +49,9 @@ internal class UnitTestDataHelper
 
         // Seed TopicStars
         context.TopicStars.AddRange(
-            new TopicStars { Stars = 4, UserId = 1, TopicId = 1 },
-            new TopicStars { Stars = 5, UserId = 2, TopicId = 2 },
-            new TopicStars { Stars = 3, UserId = 3, TopicId = 3 }
+            new TopicStars { StarCount = 4, UserId = 1, TopicId = 1 },
+            new TopicStars { StarCount = 5, UserId = 2, TopicId = 2 },
+            new TopicStars { StarCount = 3, UserId = 3, TopicId = 3 }
         );
 
         // Seed Reports
