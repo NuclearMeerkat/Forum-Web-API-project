@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace WebApp.DataAccess.Entities;
+namespace WebApp.Core.Entities;
 
 public class Topic : BaseEntity
 {

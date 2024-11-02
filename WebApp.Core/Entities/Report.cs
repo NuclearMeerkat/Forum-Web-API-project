@@ -1,4 +1,6 @@
-namespace WebApp.DataAccess.Entities;
+using WebApp.Core.Enums;
+
+namespace WebApp.Core.Entities;
 
 public class Report : BaseEntity
 {
@@ -17,12 +19,4 @@ public class Report : BaseEntity
     public Message Message { get; set; }
 
     public User User { get; set; }
-}
-
-public enum ReportStatus
-{
-    Pending,
-    UnderReview,
-    Resolved,
-    Rejected,
 }

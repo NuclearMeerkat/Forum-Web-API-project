@@ -1,6 +1,7 @@
+using WebApp.Core.Entities;
+using WebApp.Core.Interfaces;
+using WebApp.Core.Interfaces.IRepositories;
 using WebApp.DataAccess.Data;
-using WebApp.DataAccess.Entities;
-using WebApp.DataAccess.Interfaces;
 
 namespace WebApp.DataAccess.Repositories;
 

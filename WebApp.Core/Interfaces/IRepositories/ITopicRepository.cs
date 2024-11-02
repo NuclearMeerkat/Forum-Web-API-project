@@ -1,6 +1,6 @@
-﻿using WebApp.DataAccess.Entities;
+﻿using WebApp.Core.Entities;
 
-namespace WebApp.DataAccess.Interfaces;
+namespace WebApp.Core.Interfaces.IRepositories;
 
 public interface ITopicRepository : IRepository<Topic>
 {

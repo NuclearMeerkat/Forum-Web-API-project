@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace WebApp.DataAccess.Entities;
+namespace WebApp.Core.Entities;
 
 public class TopicStars : BaseEntity
 {

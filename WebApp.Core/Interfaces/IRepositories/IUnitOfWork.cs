@@ -1,4 +1,4 @@
-namespace WebApp.DataAccess.Interfaces;
+namespace WebApp.Core.Interfaces.IRepositories;
 
 public interface IUnitOfWork
 {

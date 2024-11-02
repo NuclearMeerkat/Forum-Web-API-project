@@ -1,4 +1,4 @@
-namespace WebApp.DataAccess.Entities
+namespace WebApp.Core.Entities
 {
     public abstract class BaseEntity
     {

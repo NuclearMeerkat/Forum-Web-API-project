@@ -1,5 +1,6 @@
+using WebApp.Core.Entities;
+using WebApp.Core.Enums;
 using WebApp.DataAccess.Data;
-using WebApp.DataAccess.Entities;
 using WebApp.DataAccess.Repositories;
 using WebApp.Tests.Comparers;
 

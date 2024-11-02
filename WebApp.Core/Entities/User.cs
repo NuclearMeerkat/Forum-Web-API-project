@@ -1,4 +1,6 @@
-namespace WebApp.DataAccess.Entities;
+using WebApp.Core.Enums;
+
+namespace WebApp.Core.Entities;
 
 public class User : BaseEntity
 {
@@ -21,11 +23,4 @@ public class User : BaseEntity
     public ICollection<TopicStars> Stars { get; set; } = new List<TopicStars>();
 
     public ICollection<Report> Reports { get; set; } = new List<Report>();
-}
-
-public enum UserRole
-{
-    User,
-    Admin,
-    Moderator,
 }

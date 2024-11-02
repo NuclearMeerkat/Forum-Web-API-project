@@ -1,4 +1,5 @@
-using WebApp.DataAccess.Interfaces;
+using WebApp.Core.Interfaces;
+using WebApp.Core.Interfaces.IRepositories;
 using WebApp.DataAccess.Repositories;
 
 namespace WebApp.DataAccess.Data;
@@ -33,6 +34,6 @@ public class UnitOFWork : IUnitOfWork
 
     public async Task SaveAsync()
     {
-        _ = await this.context.SaveChangesAsync();
+        await this.context.SaveChangesAsync();
     }
 }
