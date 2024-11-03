@@ -20,6 +20,10 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Interfaces\" />
+    <Folder Include="Validation\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\WebApp.DataAccess\WebApp.DataAccess.csproj" />
   </ItemGroup>
 </Project>
