@@ -13,7 +13,7 @@ public class MessageRepository : GenericRepository<Message>, IMessageRepository
     {
     }
 
-    public async Task<Message> GetWithDetailsAsync(int id)
+    public async Task<Message> GetByIdWithDetailsAsync(int id)
     {
         return await this.context.Messages
             .Include(m => m.Replies)

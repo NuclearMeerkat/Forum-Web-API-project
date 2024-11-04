@@ -1,6 +1,7 @@
-﻿using WebApp.Core.Models;
+﻿using WebApp.Core.Entities;
+using WebApp.Core.Models;
 
 namespace WebApp.Core.Interfaces.IServices;
-public interface IReportService : ICrud<ReportModel>
+public interface IReportService : ICrud<ReportModel, ReportCreateModel>
 {
 }

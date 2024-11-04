@@ -1,4 +1,6 @@
 using AutoMapper;
+using WebApp.BusinessLogic.Validation;
+using WebApp.Core.Entities;
 using WebApp.Core.Interfaces;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
@@ -17,34 +19,64 @@ public class TopicService : ITopicService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public Task<IEnumerable<TopicModel>> GetAllAsync()
+    public async Task<IEnumerable<TopicModel>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var topicEntities = await this.unitOfWork.TopicRepository.GetAllAsync();
+        var topicModels = topicEntities.Select(t => this.mapper.MapWithExceptionHandling<TopicModel>(t));
+
+        return topicModels;
     }
 
-    public Task<TopicModel> GetByIdAsync(int id)
+    public async Task<TopicModel> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var topicEntity = await this.unitOfWork.TopicRepository.GetByIdAsync(id);
+        var topicModel = this.mapper.MapWithExceptionHandling<TopicModel>(topicEntity);
+
+        return topicModel;
     }
 
-    public Task AddAsync(TopicModel model)
+    public async Task AddAsync(TopicCreateModel createModel)
     {
-        throw new NotImplementedException();
+        ForumException.ThrowIfTopicCreateModelIsNotCorrect(createModel);
+
+        var topic = this.mapper.MapWithExceptionHandling<Topic>(createModel);
+
+        await this.unitOfWork.TopicRepository.AddAsync(topic);
+        await this.unitOfWork.SaveAsync();
     }
 
-    public Task UpdateAsync(TopicModel model)
+    public async Task UpdateAsync(TopicModel model)
     {
-        throw new NotImplementedException();
+        ForumException.ThrowIfTopicModelIsNotCorrect(model);
+
+        var topic = this.mapper.MapWithExceptionHandling<Topic>(model);
+        this.unitOfWork.TopicRepository.Update(topic);
+
+        await this.unitOfWork.SaveAsync();
     }
 
-    public Task DeleteAsync(int modelId)
+    public async Task DeleteAsync(int modelId)
     {
-        throw new NotImplementedException();
+        await this.unitOfWork.TopicRepository.DeleteByIdAsync(modelId);
+        await this.unitOfWork.SaveAsync();
     }
 
-    public Task RateTopic(int userId, int topicId, int stars)
+    public async Task RateTopic(int userId, int topicId, int stars)
     {
-        throw new NotImplementedException();
+        await this.unitOfWork.TopicStarsRepository.AddAsync(new TopicStars
+        {
+            UserId = userId,
+            TopicId = topicId,
+            StarCount = stars,
+        });
+
+        await this.unitOfWork.SaveAsync();
+    }
+
+    public async Task RemoveRate(int userId, int topicId)
+    {
+        await this.unitOfWork.TopicStarsRepository.DeleteByIdAsync(userId, topicId);
+        await this.unitOfWork.SaveAsync();
     }
 
     public Task GetAverageRating(int topicId)

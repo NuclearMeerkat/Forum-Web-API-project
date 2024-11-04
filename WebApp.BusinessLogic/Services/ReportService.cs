@@ -1,4 +1,6 @@
 using AutoMapper;
+using WebApp.BusinessLogic.Validation;
+using WebApp.Core.Entities;
 using WebApp.Core.Interfaces;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
@@ -17,28 +19,45 @@ public class ReportService : IReportService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public Task<IEnumerable<ReportModel>> GetAllAsync()
+    public async Task<IEnumerable<ReportModel>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var reportEntities = await this.unitOfWork.ReportRepository.GetAllAsync();
+        var reportModels = reportEntities.Select(r => this.mapper.MapWithExceptionHandling<ReportModel>(r));
+
+        return reportModels;
     }
 
-    public Task<ReportModel> GetByIdAsync(int id)
+    public async Task<ReportModel> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var reportEntity = await this.unitOfWork.ReportRepository.GetByIdAsync(id);
+        var reportModel = this.mapper.MapWithExceptionHandling<ReportModel>(reportEntity);
+
+        return reportModel;
     }
 
-    public Task AddAsync(ReportModel model)
+    public async Task AddAsync(ReportCreateModel createModel)
     {
-        throw new NotImplementedException();
+        ForumException.ThrowIfReportCreateModelIsNotCorrect(createModel);
+
+        var report = this.mapper.MapWithExceptionHandling<Report>(createModel);
+
+        await this.unitOfWork.ReportRepository.AddAsync(report);
+        await this.unitOfWork.SaveAsync();
     }
 
-    public Task UpdateAsync(ReportModel model)
+    public async Task UpdateAsync(ReportModel model)
     {
-        throw new NotImplementedException();
+        ForumException.ThrowIfReportModelIsNotCorrect(model);
+
+        var report = this.mapper.MapWithExceptionHandling<Report>(model);
+        this.unitOfWork.ReportRepository.Update(report);
+
+        await this.unitOfWork.SaveAsync();
     }
 
-    public Task DeleteAsync(int modelId)
+    public async Task DeleteAsync(int modelId)
     {
-        throw new NotImplementedException();
+        await this.unitOfWork.ReportRepository.DeleteByIdAsync(modelId);
+        await this.unitOfWork.SaveAsync();
     }
 }

@@ -9,6 +9,4 @@ public class MessageBriefModel
     public string Content { get; set; }
 
     public DateTime CreatedAt { get; set; }
-
-    public int LikesCounter { get; set; }
 }

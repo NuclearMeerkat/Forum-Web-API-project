@@ -2,9 +2,9 @@
 
 namespace WebApp.Core.Interfaces.IRepositories;
 
-public interface IMessageRepository
+public interface IMessageRepository : IRepository<Message>
 {
-    public Task<Message> GetWithDetailsAsync(int id);
+    public Task<Message> GetByIdWithDetailsAsync(int id);
 
     public Task<IEnumerable<Message>> GetAllWithDetailsAsync();
 }

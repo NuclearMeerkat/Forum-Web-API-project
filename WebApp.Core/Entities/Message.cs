@@ -4,7 +4,7 @@ public class Message : BaseEntity
 {
     public int Id { get; set; }
 
-    public string Content { get; set; } = string.Empty;
+    public string Content { get; set; } //
 
     public bool IsEdited { get; set; }
 

@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using WebApp.BusinessLogic.Validation;
+using WebApp.Core.Entities;
 using WebApp.Core.Interfaces;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
@@ -21,28 +23,45 @@ public class UserService : IUserService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public Task<IEnumerable<UserModel>> GetAllAsync()
+    public async Task<IEnumerable<UserModel>> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var userEntities = await this.unitOfWork.UserRepository.GetAllAsync();
+        var userModels = userEntities.Select(u => this.mapper.MapWithExceptionHandling<UserModel>(u));
+
+        return userModels;
     }
 
-    public Task<UserModel> GetByIdAsync(int id)
+    public async Task<UserModel> GetByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var userEntity = await this.unitOfWork.UserRepository.GetByIdAsync(id);
+        var userModel = this.mapper.MapWithExceptionHandling<UserModel>(userEntity);
+
+        return userModel;
     }
 
-    public Task AddAsync(UserModel model)
+    public async Task AddAsync(UserCreateModel createModel)
     {
-        throw new NotImplementedException();
+        ForumException.ThrowIfUserCreateModelIsNotCorrect(createModel);
+
+        var user = this.mapper.MapWithExceptionHandling<User>(createModel);
+
+        await this.unitOfWork.UserRepository.AddAsync(user);
+        await this.unitOfWork.SaveAsync();
     }
 
-    public Task UpdateAsync(UserModel model)
+    public async Task UpdateAsync(UserModel model)
     {
-        throw new NotImplementedException();
+        ForumException.ThrowIfUserModelIsNotCorrect(model);
+
+        var user = this.mapper.MapWithExceptionHandling<User>(model);
+        this.unitOfWork.UserRepository.Update(user);
+
+        await this.unitOfWork.SaveAsync();
     }
 
-    public Task DeleteAsync(int modelId)
+    public async Task DeleteAsync(int modelId)
     {
-        throw new NotImplementedException();
+        await this.unitOfWork.UserRepository.DeleteByIdAsync(modelId);
+        await this.unitOfWork.SaveAsync();
     }
 }

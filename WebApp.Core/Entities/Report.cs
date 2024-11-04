@@ -16,8 +16,6 @@ public class Report : BaseEntity
 
     public DateTime? ReviewedAt { get; set; }
 
-    public DateTime? ResolvedAt { get; set; }
-
     public Message Message { get; set; }
 
     public User User { get; set; }

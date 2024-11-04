@@ -17,12 +17,18 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.Reports, opt => opt.MapFrom(src => src.Reports))
             .ReverseMap();
 
+        this.CreateMap<Message, MessageCreateModel>()
+            .ReverseMap();
+
         this.CreateMap<Report, ReportModel>()
             .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
             .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
             .ReverseMap();
 
         this.CreateMap<Report, ReportSummaryModel>()
+            .ReverseMap();
+
+        this.CreateMap<Report, ReportCreateModel>()
             .ReverseMap();
 
         this.CreateMap<Topic, TopicModel>()
@@ -36,6 +42,9 @@ public class AutomapperProfile : Profile
             .ForMember(t => t.CreatorNickname, tm => tm.MapFrom(x => x.User.Nickname))
             .ReverseMap();
 
+        this.CreateMap<Topic, TopicCreateModel>()
+            .ReverseMap();
+
         this.CreateMap<User, UserModel>()
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))
             .ForMember(dest => dest.Reports, opt => opt.MapFrom(src => src.Reports))
@@ -44,6 +53,9 @@ public class AutomapperProfile : Profile
             .ReverseMap();
 
         this.CreateMap<User, UserPublicProfileModel>()
+            .ReverseMap();
+
+        this.CreateMap<User, UserCreateModel>()
             .ReverseMap();
     }
 }

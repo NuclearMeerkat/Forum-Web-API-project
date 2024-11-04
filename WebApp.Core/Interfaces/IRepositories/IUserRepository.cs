@@ -2,7 +2,7 @@
 
 namespace WebApp.Core.Interfaces.IRepositories;
 
-public interface IUserRepository
+public interface IUserRepository : IRepository<User>
 {
     public Task<User> GetWithDetailsAsync(int id);
 

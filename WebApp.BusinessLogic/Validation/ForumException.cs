@@ -31,6 +31,24 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
+        public static void ThrowIfMessageCreateModelIsNotCorrect([NotNull] MessageCreateModel? argument,
+            [CallerArgumentExpression(nameof(argument))]
+            string? paramName = null)
+        {
+            if (argument is null)
+            {
+                Throw(paramName);
+            }
+
+            if (int.IsNegative(argument.UserId) ||
+                int.IsNegative(argument.TopicId) ||
+                string.IsNullOrEmpty(argument.Content) ||
+                argument.CreatedAt < new DateTime(2024, 3, 10))
+            {
+                Throw(paramName);
+            }
+        }
+
         public static void ThrowIfMessageBriefModelIsNotCorrect([NotNull] MessageBriefModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
@@ -59,6 +77,24 @@ namespace WebApp.BusinessLogic.Validation
             if (string.IsNullOrEmpty(argument.Content) ||
                 int.IsNegative(argument.LikesCounter) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
+            {
+                Throw(paramName);
+            }
+        }
+
+        public static void ThrowIfReportCreateModelIsNotCorrect([NotNull] ReportCreateModel? argument,
+            [CallerArgumentExpression(nameof(argument))]
+            string? paramName = null)
+        {
+            if (argument is null)
+            {
+                Throw(paramName);
+            }
+
+            if (string.IsNullOrEmpty(argument.Reason) ||
+                argument.CreatedAt < new DateTime(2024, 3, 10) ||
+                int.IsNegative(argument.UserId) ||
+                int.IsNegative(argument.MessageId))
             {
                 Throw(paramName);
             }
@@ -102,6 +138,24 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
+        public static void ThrowIfTopicCreateModelIsNotCorrect([NotNull] TopicCreateModel? argument,
+            [CallerArgumentExpression(nameof(argument))]
+            string? paramName = null)
+        {
+            if (argument is null)
+            {
+                Throw(paramName);
+            }
+
+            if (string.IsNullOrEmpty(argument.TitleId) ||
+                string.IsNullOrEmpty(argument.Description) ||
+                argument.CreatedAt < new DateTime(2024, 3, 10) ||
+                int.IsNegative(argument.UserId))
+            {
+                Throw(paramName);
+            }
+        }
+
         public static void ThrowIfTopicModelIsNotCorrect([NotNull] TopicModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
@@ -133,6 +187,25 @@ namespace WebApp.BusinessLogic.Validation
 
             if (string.IsNullOrEmpty(argument.Title) ||
                 string.IsNullOrEmpty(argument.CreatorNickname) ||
+                argument.CreatedAt < new DateTime(2024, 3, 10))
+            {
+                Throw(paramName);
+            }
+        }
+
+
+        public static void ThrowIfUserCreateModelIsNotCorrect([NotNull] UserCreateModel? argument,
+            [CallerArgumentExpression(nameof(argument))]
+            string? paramName = null)
+        {
+            if (argument is null)
+            {
+                Throw(paramName);
+            }
+
+            if (string.IsNullOrEmpty(argument.Nickname) ||
+                string.IsNullOrEmpty(argument.Email) ||
+                Enum.IsDefined(argument.Role) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
             {
                 Throw(paramName);

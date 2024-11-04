@@ -36,21 +36,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor": "Debug",
-    "68206211-03c9-41e2-983f-931701109353.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "fb58f394-6e49-4a99-832c-223da4a63250.executor": "Debug",
-    "git-widget-placeholder": "Dal",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor&quot;: &quot;Debug&quot;,
+    &quot;68206211-03c9-41e2-983f-931701109353.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;fb58f394-6e49-4a99-832c-223da4a63250.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;DEV&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.WebApp.WebApi: IIS Express">
     <configuration name="WebApp.WebApi: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/WebApp.WebApi/WebApp.WebApi.csproj" />
@@ -108,6 +108,8 @@
       <updated>1730058751959</updated>
       <workItem from="1730058753083" duration="7412000" />
       <workItem from="1730539496165" duration="31808000" />
+      <workItem from="1730708903390" duration="818000" />
+      <workItem from="1730723134662" duration="11820000" />
     </task>
     <servers />
   </component>

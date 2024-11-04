@@ -10,5 +10,9 @@ public interface IUnitOfWork
 
     IUserRepository UserRepository { get; }
 
+    IMessageLikeRepository MessageLikeRepository { get; }
+
+    ITopicStarsRepository TopicStarsRepository { get; }
+
     Task SaveAsync();
 }
