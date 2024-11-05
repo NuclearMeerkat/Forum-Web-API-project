@@ -4,7 +4,7 @@ public class TopicCreateModel
 {
     public int UserId { get; set; }
 
-    public string TitleId { get; set; }
+    public string Title { get; set; }
 
     public string Description { get; set; }
 

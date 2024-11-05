@@ -19,4 +19,11 @@ public class TopicStarsRepository : GenericRepository<TopicStars>, ITopicStarsRe
             .Where(ts => ts.TopicId == topicId)
             .AverageAsync(ts => ts.StarCount);
     }
+
+    public async Task<int> GetEvaluationsNumberForTopicAsync(int topicId)
+    {
+        return await this.context.TopicStars
+            .Where(ts => ts.TopicId == topicId)
+            .CountAsync();
+    }
 }

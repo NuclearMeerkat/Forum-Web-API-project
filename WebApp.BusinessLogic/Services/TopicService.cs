@@ -13,6 +13,17 @@ public class TopicService : ITopicService
     private readonly IUnitOfWork unitOfWork;
     private readonly IMapper mapper;
 
+    private double CalculateActivity(ICollection<MessageModel> messages)
+    {
+        double decayConstant = 0.1; // Adjust based on desired decay rate
+
+        return messages
+            .OrderByDescending(m => m.CreatedAt)
+            .Take(100) // Only the last 100 messages
+            .Select(m => Math.Exp(-decayConstant * (double)(DateTime.Now - m.CreatedAt).TotalDays))
+            .Sum();
+    }
+
     public TopicService(IUnitOfWork unitOfWork, IMapper mapper)
     {
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
@@ -23,14 +34,21 @@ public class TopicService : ITopicService
     {
         var topicEntities = await this.unitOfWork.TopicRepository.GetAllAsync();
         var topicModels = topicEntities.Select(t => this.mapper.MapWithExceptionHandling<TopicModel>(t));
+        var allAsync = topicModels.ToList();
+        foreach (var topicModel in allAsync)
+        {
+            topicModel.ActivityScore = this.CalculateActivity(topicModel.Messages);
+        }
 
-        return topicModels;
+        return allAsync;
     }
 
-    public async Task<TopicModel> GetByIdAsync(int id)
+    public async Task<TopicModel> GetByIdAsync(params object[] keys)
     {
-        var topicEntity = await this.unitOfWork.TopicRepository.GetByIdAsync(id);
+        var topicEntity = await this.unitOfWork.TopicRepository.GetByIdAsync(keys);
         var topicModel = this.mapper.MapWithExceptionHandling<TopicModel>(topicEntity);
+
+        topicModel.ActivityScore = this.CalculateActivity(topicModel.Messages);
 
         return topicModel;
     }
@@ -47,8 +65,7 @@ public class TopicService : ITopicService
 
     public async Task UpdateAsync(TopicModel model)
     {
-        ForumException.ThrowIfTopicModelIsNotCorrect(model);
-
+        ForumException.ThrowIfNull(model);
         var topic = this.mapper.MapWithExceptionHandling<Topic>(model);
         this.unitOfWork.TopicRepository.Update(topic);
 
@@ -65,9 +82,7 @@ public class TopicService : ITopicService
     {
         await this.unitOfWork.TopicStarsRepository.AddAsync(new TopicStars
         {
-            UserId = userId,
-            TopicId = topicId,
-            StarCount = stars,
+            UserId = userId, TopicId = topicId, StarCount = stars,
         });
 
         await this.unitOfWork.SaveAsync();
@@ -82,28 +97,5 @@ public class TopicService : ITopicService
     public Task GetAverageRating(int topicId)
     {
         throw new NotImplementedException();
-    }
-
-    public async Task<IEnumerable<TopicModel>> GetAllTopicsWithActivityScoresAsync()
-    {
-        throw new NotImplementedException();
-        /*var topics = await this.unitOfWork.TopicRepository.GetAllAsync();
-        const double lambda = 0.1; // Time decay rate for messages
-        var currentDate = DateTime.UtcNow; // Current date for decay calculation
-
-        foreach (var topic in topics)
-        {
-            // Apply time decay to messages
-            double messageScore = topic.Messages.Sum(m => Math.Exp(-lambda * (currentDate - m.CreatedAt).TotalDays));
-
-            // Count likes and unique users without decay
-            double likeScore = topic.Messages.SelectMany(m => m.Likes).Count();
-            double uniqueUserScore = topic.Messages.Select(m => m.UserId).Distinct().Count();
-
-            // Calculate final activity score with weights
-            topic.ActivityScore = (0.2 * messageScore) + (0.2 * likeScore) + (0.6 * uniqueUserScore);
-        }
-
-        return topics;*/
     }
 }

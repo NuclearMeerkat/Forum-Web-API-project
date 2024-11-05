@@ -5,7 +5,7 @@ namespace WebApp.Core.Interfaces.IServices
     {
         Task<IEnumerable<TModel>> GetAllAsync();
 
-        Task<TModel> GetByIdAsync(int id);
+        Task<TModel> GetByIdAsync(params object[] keys);
 
         Task AddAsync(TCreateModel createModel);
 

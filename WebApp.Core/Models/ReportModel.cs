@@ -4,8 +4,6 @@ namespace WebApp.Core.Models;
 
 public class ReportModel
 {
-    public int Id { get; set; }
-
     public int UserId { get; set; }
 
     public int MessageId { get; set; }

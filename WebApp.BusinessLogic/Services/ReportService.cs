@@ -27,9 +27,9 @@ public class ReportService : IReportService
         return reportModels;
     }
 
-    public async Task<ReportModel> GetByIdAsync(int id)
+    public async Task<ReportModel> GetByIdAsync(params object[] keys)
     {
-        var reportEntity = await this.unitOfWork.ReportRepository.GetByIdAsync(id);
+        var reportEntity = await this.unitOfWork.ReportRepository.GetByIdAsync(keys);
         var reportModel = this.mapper.MapWithExceptionHandling<ReportModel>(reportEntity);
 
         return reportModel;
@@ -47,7 +47,7 @@ public class ReportService : IReportService
 
     public async Task UpdateAsync(ReportModel model)
     {
-        ForumException.ThrowIfReportModelIsNotCorrect(model);
+        ForumException.ThrowIfNull(model);
 
         var report = this.mapper.MapWithExceptionHandling<Report>(model);
         this.unitOfWork.ReportRepository.Update(report);

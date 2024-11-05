@@ -26,9 +26,9 @@ public class MessageService : IMessageService
         return messageModels;
     }
 
-    public async Task<MessageModel> GetByIdAsync(int id)
+    public async Task<MessageModel> GetByIdAsync(params object[] keys)
     {
-        var messageEntity = await this.unitOfWork.MessageRepository.GetByIdWithDetailsAsync(id);
+        var messageEntity = await this.unitOfWork.MessageRepository.GetByIdAsync(keys);
         var messageModel = this.mapper.MapWithExceptionHandling<MessageModel>(messageEntity);
 
         return messageModel;
@@ -46,7 +46,7 @@ public class MessageService : IMessageService
 
     public async Task UpdateAsync(MessageModel model)
     {
-        ForumException.ThrowIfMessageModelIsNotCorrect(model);
+        ForumException.ThrowIfNull(model);
 
         var message = this.mapper.MapWithExceptionHandling<Message>(model);
         this.unitOfWork.MessageRepository.Update(message);

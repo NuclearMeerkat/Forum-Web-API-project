@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace WebApp.Core.Entities;
 
 public class Topic : BaseEntity
@@ -10,8 +12,14 @@ public class Topic : BaseEntity
 
     public DateTime CreatedAt { get; set; }
 
+    [NotMapped]
     public double AverageStars { get; set; }
 
+    [NotMapped]
+    public int EvaluationsNumber { get; set; }
+
+    [NotMapped]
+    public double ActivityScore { get; set; }
     public int UserId { get; set; }
 
     public User User { get; set; }

@@ -37,12 +37,12 @@ namespace WebApp.DataAccess.Repositories
             }
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync()
+        public virtual async Task<IEnumerable<T>> GetAllAsync()
         {
             return await this.context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetByIdAsync(params object[] keys)
+        public virtual async Task<T> GetByIdAsync(params object[] keys)
         {
             return await this.context.Set<T>().FindAsync(keys);
         }

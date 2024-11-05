@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+using WebApp.Core.Enums;
 using WebApp.Core.Models;
 
 namespace WebApp.BusinessLogic.Validation
@@ -40,8 +41,8 @@ namespace WebApp.BusinessLogic.Validation
                 Throw(paramName);
             }
 
-            if (int.IsNegative(argument.UserId) ||
-                int.IsNegative(argument.TopicId) ||
+            if (int.IsNegative(argument.UserId) || argument.UserId == 0 ||
+                int.IsNegative(argument.TopicId) || argument.TopicId == 0 ||
                 string.IsNullOrEmpty(argument.Content) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
             {
@@ -58,7 +59,9 @@ namespace WebApp.BusinessLogic.Validation
                 Throw(paramName);
             }
 
-            if (string.IsNullOrEmpty(argument.Content) ||
+            if (int.IsNegative(argument.UserId) || argument.UserId == 0 ||
+                int.IsNegative(argument.TopicId) || argument.TopicId == 0 ||
+                string.IsNullOrEmpty(argument.Content) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
             {
                 Throw(paramName);
@@ -74,7 +77,9 @@ namespace WebApp.BusinessLogic.Validation
                 Throw(paramName);
             }
 
-            if (string.IsNullOrEmpty(argument.Content) ||
+            if (int.IsNegative(argument.UserId) || argument.UserId == 0 ||
+                int.IsNegative(argument.TopicId) || argument.TopicId == 0 ||
+                string.IsNullOrEmpty(argument.Content) ||
                 int.IsNegative(argument.LikesCounter) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
             {
@@ -91,7 +96,9 @@ namespace WebApp.BusinessLogic.Validation
                 Throw(paramName);
             }
 
-            if (string.IsNullOrEmpty(argument.Reason) ||
+            if (int.IsNegative(argument.UserId) || argument.UserId == 0 ||
+                int.IsNegative(argument.MessageId) || argument.MessageId == 0 ||
+                string.IsNullOrEmpty(argument.Reason) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10) ||
                 int.IsNegative(argument.UserId) ||
                 int.IsNegative(argument.MessageId))
@@ -111,9 +118,9 @@ namespace WebApp.BusinessLogic.Validation
 
             if (string.IsNullOrEmpty(argument.Reason) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10) ||
-                int.IsNegative(argument.UserId) ||
-                int.IsNegative(argument.MessageId) ||
-                Enum.IsDefined(argument.Status))
+                int.IsNegative(argument.UserId) || argument.UserId == 0 ||
+                int.IsNegative(argument.MessageId) || argument.MessageId == 0 ||
+                !Enum.IsDefined(typeof(ReportStatus), argument.Status))
             {
                 Throw(paramName);
             }
@@ -130,9 +137,9 @@ namespace WebApp.BusinessLogic.Validation
 
             if (string.IsNullOrEmpty(argument.Reason) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10) ||
-                int.IsNegative(argument.UserId) ||
-                int.IsNegative(argument.MessageId) ||
-                Enum.IsDefined(argument.Status))
+                int.IsNegative(argument.UserId) || argument.UserId == 0 ||
+                int.IsNegative(argument.MessageId) || argument.MessageId == 0 ||
+                !Enum.IsDefined(typeof(ReportStatus), argument.Status))
             {
                 Throw(paramName);
             }
@@ -147,10 +154,10 @@ namespace WebApp.BusinessLogic.Validation
                 Throw(paramName);
             }
 
-            if (string.IsNullOrEmpty(argument.TitleId) ||
+            if (string.IsNullOrEmpty(argument.Title) ||
                 string.IsNullOrEmpty(argument.Description) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10) ||
-                int.IsNegative(argument.UserId))
+                int.IsNegative(argument.UserId) || argument.UserId == 0)
             {
                 Throw(paramName);
             }
@@ -170,7 +177,8 @@ namespace WebApp.BusinessLogic.Validation
                 string.IsNullOrEmpty(argument.CreatorNickname) ||
                 string.IsNullOrEmpty(argument.CreatorEmail) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10) ||
-                int.IsNegative(argument.UserId))
+                int.IsNegative(argument.UserId) || argument.UserId == 0 ||
+                double.IsNegative(argument.AverageStars))
             {
                 Throw(paramName);
             }
@@ -187,7 +195,9 @@ namespace WebApp.BusinessLogic.Validation
 
             if (string.IsNullOrEmpty(argument.Title) ||
                 string.IsNullOrEmpty(argument.CreatorNickname) ||
-                argument.CreatedAt < new DateTime(2024, 3, 10))
+                argument.CreatedAt < new DateTime(2024, 3, 10) ||
+                double.IsNegative(argument.AverageStars) ||
+                double.IsNegative(argument.ActivityScore))
             {
                 Throw(paramName);
             }
@@ -205,7 +215,7 @@ namespace WebApp.BusinessLogic.Validation
 
             if (string.IsNullOrEmpty(argument.Nickname) ||
                 string.IsNullOrEmpty(argument.Email) ||
-                Enum.IsDefined(argument.Role) ||
+                !Enum.IsDefined(typeof(UserRole), argument.Role) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
             {
                 Throw(paramName);
@@ -223,7 +233,7 @@ namespace WebApp.BusinessLogic.Validation
 
             if (string.IsNullOrEmpty(argument.Nickname) ||
                 string.IsNullOrEmpty(argument.Email) ||
-                Enum.IsDefined(argument.Role) ||
+                !Enum.IsDefined(typeof(UserRole), argument.Role) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
             {
                 Throw(paramName);

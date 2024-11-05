@@ -33,7 +33,7 @@ public class ForumDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         ArgumentNullException.ThrowIfNull(optionsBuilder);
-        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;");
+        //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;");
         optionsBuilder.UseSqlServerTriggers();
     }
 

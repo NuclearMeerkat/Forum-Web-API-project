@@ -31,9 +31,9 @@ public class UserService : IUserService
         return userModels;
     }
 
-    public async Task<UserModel> GetByIdAsync(int id)
+    public async Task<UserModel> GetByIdAsync(params object[] keys)
     {
-        var userEntity = await this.unitOfWork.UserRepository.GetByIdAsync(id);
+        var userEntity = await this.unitOfWork.UserRepository.GetByIdAsync(keys);
         var userModel = this.mapper.MapWithExceptionHandling<UserModel>(userEntity);
 
         return userModel;
@@ -51,7 +51,7 @@ public class UserService : IUserService
 
     public async Task UpdateAsync(UserModel model)
     {
-        ForumException.ThrowIfUserModelIsNotCorrect(model);
+        ForumException.ThrowIfNull(model);
 
         var user = this.mapper.MapWithExceptionHandling<User>(model);
         this.unitOfWork.UserRepository.Update(user);
