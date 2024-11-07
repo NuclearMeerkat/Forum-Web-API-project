@@ -27,4 +27,9 @@ public class User : BaseEntity
     public ICollection<TopicStars> Stars { get; set; } = new List<TopicStars>();
 
     public ICollection<Report> Reports { get; set; } = new List<Report>();
+
+    public override object GetIdentifier()
+    {
+        return this.Id;
+    }
 }

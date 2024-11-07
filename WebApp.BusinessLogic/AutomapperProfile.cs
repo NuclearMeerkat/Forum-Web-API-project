@@ -42,7 +42,7 @@ public class AutomapperProfile : Profile
             .ForMember(t => t.CreatorNickname, tm => tm.MapFrom(x => x.User.Nickname))
             .ReverseMap();
 
-        this.CreateMap<Topic, TopicDtoModel>()
+        this.CreateMap<Topic, TopicCreateModel>()
             .ReverseMap();
 
         this.CreateMap<User, UserModel>()

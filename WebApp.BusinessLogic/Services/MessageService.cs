@@ -1,4 +1,6 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Microsoft.Extensions.Primitives;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Entities;
 using WebApp.Core.Interfaces.IRepositories;
@@ -34,14 +36,15 @@ public class MessageService : IMessageService
         return messageModel;
     }
 
-    public async Task AddAsync(MessageCreateModel model)
+    public async Task<int> AddAsync(MessageCreateModel model)
     {
         ForumException.ThrowIfMessageCreateModelIsNotCorrect(model);
 
         var message = this.mapper.MapWithExceptionHandling<Message>(model);
 
-        await this.unitOfWork.MessageRepository.AddAsync(message);
+        int messageId = (int)await this.unitOfWork.MessageRepository.AddAsync(message);
         await this.unitOfWork.SaveAsync();
+        return messageId;
     }
 
     public async Task UpdateAsync(MessageCreateModel model)

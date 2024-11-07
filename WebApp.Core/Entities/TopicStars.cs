@@ -14,4 +14,9 @@ public class TopicStars : BaseEntity
     public User User { get; set; }
 
     public Topic Topic { get; set; }
+
+    public override object GetIdentifier()
+    {
+        return new CompositeKey() { KeyPart1 = this.UserId, KeyPart2 = this.TopicId };
+    }
 }

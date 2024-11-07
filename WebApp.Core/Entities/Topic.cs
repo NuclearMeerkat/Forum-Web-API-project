@@ -27,4 +27,9 @@ public class Topic : BaseEntity
     public ICollection<Message> Messages { get; set; } = new List<Message>();
 
     public ICollection<TopicStars> Stars { get; set; } = new List<TopicStars>();
+
+    public override object GetIdentifier()
+    {
+        return this.Id;
+    }
 }

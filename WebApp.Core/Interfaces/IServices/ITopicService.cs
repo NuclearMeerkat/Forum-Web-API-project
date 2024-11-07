@@ -1,7 +1,7 @@
-﻿using WebApp.Core.Models;
+using WebApp.Core.Models;
 
 namespace WebApp.Core.Interfaces.IServices;
-public interface ITopicService : ICrud<TopicModel, TopicDtoModel>
+public interface ITopicService : ICrud<TopicModel, TopicCreateModel, int>
 {
     public Task RateTopic(int userId, int topicId, int stars);
 

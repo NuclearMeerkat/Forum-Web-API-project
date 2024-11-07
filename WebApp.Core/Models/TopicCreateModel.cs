@@ -1,6 +1,8 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace WebApp.Core.Models;
 
-public class TopicDtoModel
+public class TopicCreateModel
 {
     public int UserId { get; set; }
 
@@ -8,5 +10,6 @@ public class TopicDtoModel
 
     public string Description { get; set; }
 
+    [NotMapped]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 }

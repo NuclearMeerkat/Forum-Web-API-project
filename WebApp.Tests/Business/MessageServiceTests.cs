@@ -1,11 +1,5 @@
-﻿using Moq;
-using NUnit.Framework;
+using Moq;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using WebApp.BusinessLogic;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Models;
 using WebApp.Core.Entities;
@@ -13,7 +7,7 @@ using AutoMapper;
 using WebApp.BusinessLogic.Services;
 using WebApp.BusinessLogic.Validation;
 
-namespace WebApp.Tests.BusinessTests
+namespace WebApp.Tests.Business
 {
     public class MessageServiceTests
     {
@@ -50,7 +44,7 @@ namespace WebApp.Tests.BusinessTests
         {
             // Arrange
             var expected = GetTestMessageModels().First();
-            int messageId = expected.Id;
+            var messageId = expected.Id;
             mockUnitOfWork
                 .Setup(u => u.MessageRepository.GetByIdAsync(It.IsAny<int>()))
                 .ReturnsAsync(GetTestMessageEntities().First());
@@ -66,7 +60,7 @@ namespace WebApp.Tests.BusinessTests
         public async Task AddAsyncAddsMessage()
         {
             // Arrange
-            var createModel = new MessageCreateModel {  Content = "New Message", UserId = 1, TopicId = 2};
+            var createModel = new MessageCreateModel { Content = "New Message", UserId = 1, TopicId = 2 };
             mockUnitOfWork.Setup(u => u.MessageRepository.AddAsync(It.IsAny<Message>()));
 
             // Act
@@ -95,7 +89,7 @@ namespace WebApp.Tests.BusinessTests
         public async Task DeleteAsyncDeletesMessage()
         {
             // Arrange
-            int messageId = 1;
+            var messageId = 1;
             mockUnitOfWork.Setup(u => u.MessageRepository.DeleteByIdAsync(It.IsAny<int>()));
 
             // Act
@@ -110,8 +104,8 @@ namespace WebApp.Tests.BusinessTests
         public async Task LikeMessageAddsLike()
         {
             // Arrange
-            int userId = 1;
-            int messageId = 2;
+            var userId = 1;
+            var messageId = 2;
             mockUnitOfWork.Setup(u => u.MessageLikeRepository.AddAsync(It.IsAny<MessageLike>()));
 
             // Act
@@ -127,8 +121,8 @@ namespace WebApp.Tests.BusinessTests
         public async Task RemoveLikeRemovesLike()
         {
             // Arrange
-            int userId = 1;
-            int messageId = 2;
+            var userId = 1;
+            var messageId = 2;
             mockUnitOfWork.Setup(u => u.MessageLikeRepository.DeleteByIdAsync(It.IsAny<int>(), It.IsAny<int>()));
 
             // Act
@@ -141,8 +135,8 @@ namespace WebApp.Tests.BusinessTests
 
         // Helper methods for test data
         private List<MessageModel> GetTestMessageModels()
-{
-    return new List<MessageModel>
+        {
+            return new List<MessageModel>
     {
         new MessageModel
         {
@@ -215,11 +209,11 @@ namespace WebApp.Tests.BusinessTests
             Reports = new List<ReportModel>()
         }
     };
-}
+        }
 
-private List<Message> GetTestMessageEntities()
-{
-    return new List<Message>
+        private List<Message> GetTestMessageEntities()
+        {
+            return new List<Message>
     {
         new Message
         {
@@ -292,6 +286,6 @@ private List<Message> GetTestMessageEntities()
             Reports = new List<Report>()
         }
     };
-}
+        }
     }
 }

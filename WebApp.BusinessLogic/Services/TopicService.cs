@@ -1,7 +1,6 @@
 using AutoMapper;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Entities;
-using WebApp.Core.Interfaces;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
 using WebApp.Core.Models;
@@ -53,17 +52,19 @@ public class TopicService : ITopicService
         return topicModel;
     }
 
-    public async Task AddAsync(TopicDtoModel model)
+    public async Task<int> AddAsync(TopicCreateModel model)
     {
         ForumException.ThrowIfTopicCreateModelIsNotCorrect(model);
 
         var topic = this.mapper.MapWithExceptionHandling<Topic>(model);
 
-        await this.unitOfWork.TopicRepository.AddAsync(topic);
+        int topicId = (int)await this.unitOfWork.TopicRepository.AddAsync(topic);
         await this.unitOfWork.SaveAsync();
+
+        return topicId;
     }
 
-    public async Task UpdateAsync(TopicDtoModel model)
+    public async Task UpdateAsync(TopicCreateModel model)
     {
         ForumException.ThrowIfNull(model);
         var topic = this.mapper.MapWithExceptionHandling<Topic>(model);

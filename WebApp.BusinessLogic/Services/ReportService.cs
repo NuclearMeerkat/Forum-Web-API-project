@@ -1,7 +1,6 @@
 using AutoMapper;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Entities;
-using WebApp.Core.Interfaces;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
 using WebApp.Core.Models;
@@ -35,14 +34,16 @@ public class ReportService : IReportService
         return reportModel;
     }
 
-    public async Task AddAsync(ReportCreateModel model)
+    public async Task<CompositeKey> AddAsync(ReportCreateModel model)
     {
         ForumException.ThrowIfReportCreateModelIsNotCorrect(model);
 
         var report = this.mapper.MapWithExceptionHandling<Report>(model);
 
-        await this.unitOfWork.ReportRepository.AddAsync(report);
+        CompositeKey key =  (CompositeKey)await this.unitOfWork.ReportRepository.AddAsync(report);
         await this.unitOfWork.SaveAsync();
+
+        return key;
     }
 
     public async Task UpdateAsync(ReportCreateModel model)

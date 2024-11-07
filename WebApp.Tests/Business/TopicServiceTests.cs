@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using FluentAssertions;
 using Moq;
 using WebApp.BusinessLogic.Services;
@@ -29,7 +29,7 @@ public class TopicServiceTests
         public async Task AddAsyncAddsTopic()
         {
             // Arrange
-            var createModel = new TopicDtoModel { UserId = 1, Title = "New Topic", Description = "New topic description" };
+            var createModel = new TopicCreateModel { UserId = 1, Title = "New Topic", Description = "New topic description" };
             mockUnitOfWork.Setup(u => u.TopicRepository.AddAsync(It.IsAny<Topic>()));
 
             // Act
@@ -45,7 +45,7 @@ public class TopicServiceTests
         public async Task AddAsyncThrowsExceptionWhenCreateModelIsInvalid()
         {
             // Arrange
-            var invalidCreateModel = new TopicDtoModel { UserId = 0, Title = string.Empty };
+            var invalidCreateModel = new TopicCreateModel { UserId = 0, Title = string.Empty };
 
             // Act
             Func<Task> act = async () => await topicService.AddAsync(invalidCreateModel);
@@ -58,7 +58,7 @@ public class TopicServiceTests
         public async Task UpdateAsyncUpdatesTopic()
         {
             // Arrange
-            var testTopicModel = new TopicDtoModel()
+            var testTopicModel = new TopicCreateModel()
             {
                 Id = 1,
                 UserId = 1,
@@ -69,7 +69,6 @@ public class TopicServiceTests
 
             var testTopicEntity = new Topic
             {
-                Id = testTopicModel.Id,
                 UserId = testTopicModel.UserId,
                 Title = testTopicModel.Title,
                 Description = testTopicModel.Description,
@@ -85,7 +84,6 @@ public class TopicServiceTests
 
             // Assert
             mockTopicRepository.Verify(r => r.Update(It.Is<Topic>(t =>
-                t.Id == testTopicModel.Id &&
                 t.UserId == testTopicModel.UserId &&
                 t.Title == testTopicModel.Title &&
                 t.Description == testTopicModel.Description)), Times.Once);

@@ -9,4 +9,9 @@ public class MessageLike : BaseEntity
     public User User { get; set; }
 
     public Message Message { get; set; }
+
+    public override object GetIdentifier()
+    {
+        return new CompositeKey() { KeyPart1 = this.UserId, KeyPart2 = this.MessageId };
+    }
 }

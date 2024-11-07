@@ -6,7 +6,8 @@ using WebApp.DataAccess.Data;
 
 namespace WebApp.DataAccess.Repositories
 {
-    public abstract class GenericRepository<T> : IRepository<T> where T : BaseEntity
+    public abstract class GenericRepository<T> : IRepository<T>
+        where T : BaseEntity
     {
         public ForumDbContext context { get; }
 
@@ -15,10 +16,12 @@ namespace WebApp.DataAccess.Repositories
             this.context = context;
         }
 
-        public async Task AddAsync(T entity)
+        public async Task<object> AddAsync(T entity)
         {
             await this.context.Set<T>().AddAsync(entity);
             await this.context.SaveChangesAsync();
+
+            return entity.GetIdentifier();
         }
 
         public void Delete(T entity)

@@ -9,7 +9,7 @@ public interface IRepository<TEntity>
 
     Task<TEntity> GetByIdAsync(params object[] keys);
 
-    Task AddAsync(TEntity entity);
+    Task<object> AddAsync(TEntity entity);
 
     void Delete(TEntity entity);
 

@@ -19,4 +19,9 @@ public class Report : BaseEntity
     public Message Message { get; set; }
 
     public User User { get; set; }
+
+    public override object GetIdentifier()
+    {
+        return new CompositeKey() { KeyPart1 = this.UserId, KeyPart2 = this.MessageId };
+    }
 }
