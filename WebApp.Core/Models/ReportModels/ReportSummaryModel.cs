@@ -1,8 +1,8 @@
 ﻿using WebApp.Core.Enums;
 
-namespace WebApp.Core.Models;
+namespace WebApp.Core.Models.ReportModels;
 
-public class ReportModel
+public class ReportSummaryModel
 {
     public int UserId { get; set; }
 
@@ -15,8 +15,4 @@ public class ReportModel
     public DateTime CreatedAt { get; set; }
 
     public DateTime? ResolvedAt { get; set; }
-
-    public MessageModel Message { get; set; }
-
-    public UserModel User { get; set; }
 }

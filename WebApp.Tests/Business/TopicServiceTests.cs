@@ -60,7 +60,6 @@ public class TopicServiceTests
             // Arrange
             var testTopicModel = new TopicCreateModel()
             {
-                Id = 1,
                 UserId = 1,
                 Title = "Updated Topic",
                 Description = "Updated description",

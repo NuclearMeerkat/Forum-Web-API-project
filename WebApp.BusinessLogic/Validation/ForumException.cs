@@ -2,6 +2,10 @@
 using System.Runtime.CompilerServices;
 using WebApp.Core.Enums;
 using WebApp.Core.Models;
+using WebApp.Core.Models.MessageModels;
+using WebApp.Core.Models.ReportModels;
+using WebApp.Core.Models.TopicModels;
+using WebApp.Core.Models.UserModels;
 
 namespace WebApp.BusinessLogic.Validation
 {

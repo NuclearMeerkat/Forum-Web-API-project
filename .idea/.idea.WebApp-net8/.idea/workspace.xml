@@ -22,6 +22,8 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/34e54cf52b4a4c2b82645ccc3a46837e5e000/23/a279aab8/AbstractInvocation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/34e54cf52b4a4c2b82645ccc3a46837e5e000/5e/25a86bb6/InterfaceMethodWithoutTargetInvocation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/13e79b2a7b78394ccf591d3454bff5bfb14e692da011a7e38b66c2312b365a/String.cs" root0="FORCE_HIGHLIGHTING" />
@@ -60,22 +62,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor&quot;: &quot;Run&quot;,
-    &quot;68206211-03c9-41e2-983f-931701109353.executor&quot;: &quot;Debug&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;fb58f394-6e49-4a99-832c-223da4a63250.executor&quot;: &quot;Debug&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;DEV&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor": "Run",
+    ".NET Launch Settings Profile.WebApp.WebApi: https.executor": "Debug",
+    "68206211-03c9-41e2-983f-931701109353.executor": "Debug",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "fb58f394-6e49-4a99-832c-223da4a63250.executor": "Debug",
+    "git-widget-placeholder": "DEV",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "HotReloadSettingsPage",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
-  <component name="RunManager" selected=".NET Launch Settings Profile.WebApp.WebApi: IIS Express">
+}]]></component>
+  <component name="RunManager" selected=".NET Launch Settings Profile.WebApp.WebApi: https">
     <configuration name="WebApp.WebApi: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/WebApp.WebApi/WebApp.WebApi.csproj" />
       <option name="LAUNCH_PROFILE_TFM" value="net8.0" />
@@ -139,6 +143,7 @@
       <workItem from="1730830442703" duration="10979000" />
       <workItem from="1730879777803" duration="4822000" />
       <workItem from="1730904658356" duration="9801000" />
+      <workItem from="1731003411031" duration="13566000" />
     </task>
     <servers />
   </component>
@@ -160,5 +165,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/WebApp.BusinessLogic/Services/TopicService.cs</url>
+          <line>112</line>
+          <properties documentPath="C:\EPAM Course\Accessment\Tasks\FORUM\WebApp.BusinessLogic\Services\TopicService.cs" containingFunctionPresentation="Method 'UpdateAsync'">
+            <startOffsets>
+              <option value="4194" />
+            </startOffsets>
+            <endOffsets>
+              <option value="4228" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="10" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

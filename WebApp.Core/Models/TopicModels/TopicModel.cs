@@ -1,4 +1,6 @@
-﻿namespace WebApp.Core.Models;
+﻿using WebApp.Core.Models.MessageModels;
+
+namespace WebApp.Core.Models.TopicModels;
 
 public class TopicModel
 {

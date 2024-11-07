@@ -3,7 +3,8 @@ using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Entities;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models;
+using WebApp.Core.Models.ReportModels;
+using WebApp.Core.Models.TopicModels;
 
 namespace WebApp.BusinessLogic.Services;
 
@@ -18,7 +19,7 @@ public class ReportService : IReportService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<IEnumerable<ReportModel>> GetAllAsync()
+    public async Task<IEnumerable<ReportModel>> GetAllAsync(TopicQueryParametersModel queryParameters)
     {
         var reportEntities = await this.unitOfWork.ReportRepository.GetAllAsync();
         var reportModels = reportEntities.Select(r => this.mapper.MapWithExceptionHandling<ReportModel>(r));
@@ -46,7 +47,7 @@ public class ReportService : IReportService
         return key;
     }
 
-    public async Task UpdateAsync(ReportCreateModel model)
+    public async Task UpdateAsync(ReportUpdateModel model)
     {
         ForumException.ThrowIfNull(model);
 

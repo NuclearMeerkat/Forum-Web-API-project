@@ -5,7 +5,8 @@ using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Entities;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models;
+using WebApp.Core.Models.MessageModels;
+using WebApp.Core.Models.TopicModels;
 
 namespace WebApp.BusinessLogic.Services;
 
@@ -20,7 +21,7 @@ public class MessageService : IMessageService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<IEnumerable<MessageModel>> GetAllAsync()
+    public async Task<IEnumerable<MessageModel>> GetAllAsync(TopicQueryParametersModel queryParameters)
     {
         var messageEntities = await this.unitOfWork.MessageRepository.GetAllWithDetailsAsync();
         var messageModels = messageEntities.Select(m => this.mapper.MapWithExceptionHandling<MessageModel>(m));
@@ -47,7 +48,7 @@ public class MessageService : IMessageService
         return messageId;
     }
 
-    public async Task UpdateAsync(MessageCreateModel model)
+    public async Task UpdateAsync(MessageUpdateModel model)
     {
         ForumException.ThrowIfNull(model);
 

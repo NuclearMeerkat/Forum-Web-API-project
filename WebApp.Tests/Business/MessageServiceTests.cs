@@ -1,11 +1,12 @@
 using Moq;
 using FluentAssertions;
 using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Models;
 using WebApp.Core.Entities;
 using AutoMapper;
 using WebApp.BusinessLogic.Services;
 using WebApp.BusinessLogic.Validation;
+using WebApp.Core.Models.MessageModels;
+using WebApp.Core.Models.ReportModels;
 
 namespace WebApp.Tests.Business
 {

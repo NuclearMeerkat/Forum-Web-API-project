@@ -1,3 +1,4 @@
+using FluentValidation;
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;
 using WebApp.BusinessLogic;
@@ -5,6 +6,7 @@ using WebApp.BusinessLogic.Services;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
 using WebApp.DataAccess.Data;
+using WebApp.WebApi.Validation;
 
 var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,8 @@ builder.Services.AddScoped<ITopicService, TopicService>();
 
 // Register UnitOfWork and Repositories (DAL)
 builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<MessageCreateModelValidator>();
 
 builder.Services.AddControllers();
 

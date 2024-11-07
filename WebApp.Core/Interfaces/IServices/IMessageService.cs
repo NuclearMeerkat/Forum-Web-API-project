@@ -1,7 +1,8 @@
-using WebApp.Core.Models;
+using WebApp.Core.Models.MessageModels;
+using WebApp.Core.Models.TopicModels;
 
 namespace WebApp.Core.Interfaces.IServices;
-public interface IMessageService : ICrud<MessageModel, MessageCreateModel, int>
+public interface IMessageService : ICrud<MessageModel, MessageCreateModel, MessageUpdateModel, TopicQueryParametersModel, int>
 {
     public Task LikeMessage(int userId, int messageId);
 

@@ -1,4 +1,4 @@
-﻿namespace WebApp.Core.Models;
+﻿namespace WebApp.Core.Models.TopicModels;
 
 public class TopicSummaryModel
 {

@@ -1,6 +1,10 @@
-﻿using AutoMapper;
+using AutoMapper;
 using WebApp.Core.Entities;
 using WebApp.Core.Models;
+using WebApp.Core.Models.MessageModels;
+using WebApp.Core.Models.ReportModels;
+using WebApp.Core.Models.TopicModels;
+using WebApp.Core.Models.UserModels;
 
 namespace WebApp.BusinessLogic;
 
@@ -20,6 +24,9 @@ public class AutomapperProfile : Profile
         this.CreateMap<Message, MessageCreateModel>()
             .ReverseMap();
 
+        this.CreateMap<Message, MessageUpdateModel>()
+            .ReverseMap();
+
         this.CreateMap<Report, ReportModel>()
             .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message))
             .ForMember(dest => dest.User, opt => opt.MapFrom(src => src.User))
@@ -29,6 +36,9 @@ public class AutomapperProfile : Profile
             .ReverseMap();
 
         this.CreateMap<Report, ReportCreateModel>()
+            .ReverseMap();
+
+        this.CreateMap<Report, ReportUpdateModel>()
             .ReverseMap();
 
         this.CreateMap<Topic, TopicModel>()
@@ -45,6 +55,9 @@ public class AutomapperProfile : Profile
         this.CreateMap<Topic, TopicCreateModel>()
             .ReverseMap();
 
+        this.CreateMap<TopicUpdateModel, Topic>()
+            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
         this.CreateMap<User, UserModel>()
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))
             .ForMember(dest => dest.Reports, opt => opt.MapFrom(src => src.Reports))
@@ -56,6 +69,9 @@ public class AutomapperProfile : Profile
             .ReverseMap();
 
         this.CreateMap<User, UserCreateModel>()
+            .ReverseMap();
+
+        this.CreateMap<User, UserUpdateModel>()
             .ReverseMap();
     }
 }

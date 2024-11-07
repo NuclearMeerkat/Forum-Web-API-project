@@ -1,6 +1,9 @@
 ﻿using WebApp.Core.Enums;
+using WebApp.Core.Models.MessageModels;
+using WebApp.Core.Models.ReportModels;
+using WebApp.Core.Models.TopicModels;
 
-namespace WebApp.Core.Models;
+namespace WebApp.Core.Models.UserModels;
 
 public class UserModel
 {

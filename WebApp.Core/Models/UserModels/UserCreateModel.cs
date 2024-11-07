@@ -1,6 +1,6 @@
 using WebApp.Core.Enums;
 
-namespace WebApp.Core.Models;
+namespace WebApp.Core.Models.UserModels;
 
 public class UserCreateModel
 {

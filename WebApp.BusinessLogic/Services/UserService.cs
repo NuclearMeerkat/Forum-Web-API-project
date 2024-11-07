@@ -9,7 +9,8 @@ using WebApp.Core.Entities;
 using WebApp.Core.Interfaces;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models;
+using WebApp.Core.Models.TopicModels;
+using WebApp.Core.Models.UserModels;
 
 namespace WebApp.BusinessLogic.Services;
 public class UserService : IUserService
@@ -23,7 +24,7 @@ public class UserService : IUserService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<IEnumerable<UserModel>> GetAllAsync()
+    public async Task<IEnumerable<UserModel>> GetAllAsync(TopicQueryParametersModel queryParameters)
     {
         var userEntities = await this.unitOfWork.UserRepository.GetAllAsync();
         var userModels = userEntities.Select(u => this.mapper.MapWithExceptionHandling<UserModel>(u));
@@ -41,7 +42,7 @@ public class UserService : IUserService
 
     public async Task<int> AddAsync(UserCreateModel model)
     {
-        ForumException.ThrowIfUserCreateModelIsNotCorrect(model);
+        ForumException.ThrowIfNull(model);
 
         var user = this.mapper.MapWithExceptionHandling<User>(model);
 
@@ -51,7 +52,7 @@ public class UserService : IUserService
         return userId;
     }
 
-    public async Task UpdateAsync(UserCreateModel model)
+    public async Task UpdateAsync(UserUpdateModel model)
     {
         ForumException.ThrowIfNull(model);
 

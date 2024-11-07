@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models;
+using WebApp.Core.Models.TopicModels;
+using WebApp.Core.Models.UserModels;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -21,10 +22,10 @@ public class UsersController : ControllerBase
     // Restricted to admins only
     [HttpGet]
     //[Authorize(Roles = "Admin")]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromQuery] TopicQueryParametersModel parameters)
     {
-        var users = await this.userService.GetAllAsync();
-        return Ok(users);
+        var users = await this.userService.GetAllAsync(parameters);
+        return this.Ok(users);
     }
 
     // GET: api/users/{id}
@@ -39,10 +40,10 @@ public class UsersController : ControllerBase
         }
         catch (ForumException)
         {
-            return NotFound();
+            return this.NotFound();
         }
 
-        return Ok(user);
+        return this.Ok(user);
     }
 
     // POST: api/users/register
@@ -53,11 +54,11 @@ public class UsersController : ControllerBase
         {
             ArgumentNullException.ThrowIfNull(registerDto);
             await this.userService.AddAsync(registerDto);
-            return CreatedAtAction(nameof(this.GetById), new { id = registerDto.Id }, registerDto);
+            return this.CreatedAtAction(nameof(this.GetById), new { id = registerDto.Id }, registerDto);
         }
         catch (ForumException e)
         {
-            return BadRequest(e.Message);
+            return this.BadRequest(e.Message);
         }
     }
 
@@ -83,17 +84,17 @@ public class UsersController : ControllerBase
     // PUT: api/users/{id}
     [HttpPut("{id:int}")]
     //[Authorize]
-    public async Task<IActionResult> Update(int id, [FromBody] UserCreateModel updateDto)
+    public async Task<IActionResult> Update(int id, [FromBody] UserUpdateModel updateDto)
     {
         try
         {
             updateDto.Id = id;
             await this.userService.UpdateAsync(updateDto);
-            return NoContent();
+            return this.NoContent();
         }
         catch (ForumException e)
         {
-            return BadRequest(e.Message);
+            return this.BadRequest(e.Message);
         }
     }
 
@@ -105,11 +106,11 @@ public class UsersController : ControllerBase
         try
         {
             await this.userService.DeleteAsync(id);
-            return NoContent();
+            return this.NoContent();
         }
         catch (ForumException e)
         {
-            return BadRequest(e.Message);
+            return this.BadRequest(e.Message);
         }
     }
 }

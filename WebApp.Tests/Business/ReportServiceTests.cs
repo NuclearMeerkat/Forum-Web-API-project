@@ -5,7 +5,7 @@ using WebApp.BusinessLogic.Services;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Entities;
 using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Models;
+using WebApp.Core.Models.ReportModels;
 
 namespace WebApp.Tests.Business;
 

@@ -1,6 +1,7 @@
-using WebApp.Core.Models;
+using WebApp.Core.Models.TopicModels;
+using WebApp.Core.Models.UserModels;
 
 namespace WebApp.Core.Interfaces.IServices;
-public interface IUserService : ICrud<UserModel, UserCreateModel, int>
+public interface IUserService : ICrud<UserModel, UserCreateModel, UserUpdateModel, TopicQueryParametersModel, int>
 {
 }

@@ -1,4 +1,6 @@
-﻿namespace WebApp.Core.Models;
+using WebApp.Core.Models.ReportModels;
+
+namespace WebApp.Core.Models.MessageModels;
 
 public class MessageModel
 {
@@ -20,7 +22,7 @@ public class MessageModel
 
     public MessageModel? ParentMessage { get; set; }
 
-    public ICollection<MessageModel> Replies { get; set; } = new List<MessageModel>();
+    public ICollection<MessageModel>? Replies { get; set; } = new List<MessageModel>();
 
-    public ICollection<ReportModel> Reports { get; set; } = new List<ReportModel>();
+    public ICollection<ReportModel>? Reports { get; set; } = new List<ReportModel>();
 }

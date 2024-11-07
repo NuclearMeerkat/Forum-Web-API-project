@@ -1,8 +1,12 @@
+using AutoMapper;
+using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models;
+using WebApp.Core.Models.TopicModels;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -11,17 +15,24 @@ namespace WebApp.WebApi.Controllers;
 public class TopicsController : ControllerBase
 {
     private readonly ITopicService topicService;
+    private readonly IValidator<TopicCreateModel> topicCreateValidator;
+    private readonly IValidator<TopicUpdateModel> topicUpdateValidator;
 
-    public TopicsController(ITopicService topicService)
+    public TopicsController(
+        ITopicService topicService,
+        IValidator<TopicCreateModel> topicCreateValidator,
+        IValidator<TopicUpdateModel> topicUpdateValidator)
     {
         this.topicService = topicService;
+        this.topicCreateValidator = topicCreateValidator;
+        this.topicUpdateValidator = topicUpdateValidator;
     }
 
     // GET: api/topics
     [HttpGet]
     public async Task<IActionResult> Get([FromQuery] TopicQueryParametersModel parameters)
     {
-        var topics = await this.topicService.GetTopicsAsync(parameters);
+        var topics = await this.topicService.GetAllAsync(parameters);
         return this.Ok(topics);
     }
 
@@ -29,7 +40,7 @@ public class TopicsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<IActionResult> GetById(int id)
     {
-        TopicModel topic;
+        TopicSummaryModel topic;
         try
         {
             topic = await this.topicService.GetByIdAsync(id);
@@ -45,13 +56,29 @@ public class TopicsController : ControllerBase
     // POST: api/topics
     // [Authorize]
     [HttpPost]
-    public async Task<IActionResult> Post([FromBody] TopicDtoModel topicDto)
+    public async Task<IActionResult> Post(
+        [FromBody] TopicCreateModel creationModel,
+        [FromServices] IValidator<TopicCreateModel> validator)
     {
+        ValidationResult result = await this.topicCreateValidator.ValidateAsync(creationModel);
+
+        if (!result.IsValid)
+        {
+            var modelStateDict = new ModelStateDictionary();
+
+            foreach (var error in result.Errors)
+            {
+                modelStateDict.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
+            return this.ValidationProblem(modelStateDict);
+        }
+
         try
         {
-            ArgumentNullException.ThrowIfNull(topicDto);
-            await this.topicService.AddAsync(topicDto);
-            return this.CreatedAtAction(nameof(this.GetById), new { id = topicDto.Id }, topicDto);
+            int id = await this.topicService.AddAsync(creationModel);
+
+            return this.CreatedAtAction(nameof(this.GetById), id, creationModel);
         }
         catch (ForumException e)
         {
@@ -67,12 +94,30 @@ public class TopicsController : ControllerBase
     // PUT: api/topics/{id}
     // [Authorize]
     [HttpPut("{id:int}")]
-    public async Task<IActionResult> Put(int id, [FromBody] TopicDtoModel topicDto)
+    public async Task<IActionResult> Put(
+        int id,
+        [FromBody] TopicUpdateModel updateModel,
+        [FromServices] IValidator<TopicUpdateModel> validator)
     {
+        updateModel.Id = id;
+
+        ValidationResult result = await this.topicUpdateValidator.ValidateAsync(updateModel);
+
+        if (!result.IsValid)
+        {
+            var modelStateDict = new ModelStateDictionary();
+
+            foreach (var error in result.Errors)
+            {
+                modelStateDict.AddModelError(error.PropertyName, error.ErrorMessage);
+            }
+
+            return this.ValidationProblem(modelStateDict);
+        }
+
         try
         {
-            topicDto.Id = id;
-            await this.topicService.UpdateAsync(topicDto);
+            await this.topicService.UpdateAsync(updateModel);
             return this.NoContent();
         }
         catch (ForumException)
