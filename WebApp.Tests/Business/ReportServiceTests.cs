@@ -90,7 +90,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
         public async Task UpdateAsyncUpdatesReport()
         {
             // Arrange
-            var reportModel = new ReportModel { UserId = 1, MessageId = 1, Reason = "Updated reason" };
+            var reportModel = new ReportCreateModel() { UserId = 1, MessageId = 1, Reason = "Updated reason" };
             mockUnitOfWork.Setup(u => u.ReportRepository.Update(It.IsAny<Report>()));
 
             // Act
@@ -106,7 +106,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
         public async Task UpdateAsyncThrowsForumExceptionWhenModelIsInvalid()
         {
             // Arrange
-            var invalidModel = new ReportModel { UserId = 0, MessageId = 0, Reason = string.Empty };
+            var invalidModel = new ReportCreateModel() { UserId = 0, MessageId = 0, Reason = string.Empty };
 
             // Act
             Func<Task> act = async () => await reportService.UpdateAsync(invalidModel);

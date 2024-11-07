@@ -39,17 +39,17 @@ public class UserService : IUserService
         return userModel;
     }
 
-    public async Task AddAsync(UserCreateModel createModel)
+    public async Task AddAsync(UserCreateModel model)
     {
-        ForumException.ThrowIfUserCreateModelIsNotCorrect(createModel);
+        ForumException.ThrowIfUserCreateModelIsNotCorrect(model);
 
-        var user = this.mapper.MapWithExceptionHandling<User>(createModel);
+        var user = this.mapper.MapWithExceptionHandling<User>(model);
 
         await this.unitOfWork.UserRepository.AddAsync(user);
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task UpdateAsync(UserModel model)
+    public async Task UpdateAsync(UserCreateModel model)
     {
         ForumException.ThrowIfNull(model);
 

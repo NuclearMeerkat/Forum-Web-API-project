@@ -53,17 +53,17 @@ public class TopicService : ITopicService
         return topicModel;
     }
 
-    public async Task AddAsync(TopicCreateModel createModel)
+    public async Task AddAsync(TopicDtoModel model)
     {
-        ForumException.ThrowIfTopicCreateModelIsNotCorrect(createModel);
+        ForumException.ThrowIfTopicCreateModelIsNotCorrect(model);
 
-        var topic = this.mapper.MapWithExceptionHandling<Topic>(createModel);
+        var topic = this.mapper.MapWithExceptionHandling<Topic>(model);
 
         await this.unitOfWork.TopicRepository.AddAsync(topic);
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task UpdateAsync(TopicModel model)
+    public async Task UpdateAsync(TopicDtoModel model)
     {
         ForumException.ThrowIfNull(model);
         var topic = this.mapper.MapWithExceptionHandling<Topic>(model);
@@ -94,8 +94,36 @@ public class TopicService : ITopicService
         await this.unitOfWork.SaveAsync();
     }
 
-    public Task GetAverageRating(int topicId)
+    public async Task<IEnumerable<TopicSummaryModel>> GetTopicsAsync(TopicQueryParametersModel parameters)
     {
-        throw new NotImplementedException();
+        IEnumerable<Topic> query = new List<Topic>();
+
+        // Start with the query for all topics
+        if (parameters.Size > 0)
+        {
+            query = await this.unitOfWork.TopicRepository.GetRangeAsync(parameters.Page, parameters.Size);
+        }
+
+        // Apply filtering if a search term is provided
+        if (!string.IsNullOrEmpty(parameters.Search))
+        {
+            query = query.Where(t => parameters.Search.Contains(t.Title, StringComparison.InvariantCulture) || t.Description.Contains(parameters.Search, StringComparison.InvariantCulture));
+        }
+
+        // Apply sorting
+        query = parameters.SortBy switch
+        {
+            "Title" => parameters.Ascending ? query.OrderBy(t => t.Title) : query.OrderByDescending(t => t.Title),
+            "DateCreated" => parameters.Ascending
+                ? query.OrderBy(t => t.CreatedAt)
+                : query.OrderByDescending(t => t.CreatedAt),
+            "Author" => parameters.Ascending ? query.OrderBy(t => t.User.Nickname) : query.OrderByDescending(t => t.User.Nickname),
+            _ => parameters.Ascending ? query.OrderBy(t => t.Title) : query.OrderByDescending(t => t.Title)
+        };
+
+        // Execute the query and project results to TopicDto
+        var topics = query.Select(t => this.mapper.MapWithExceptionHandling<TopicSummaryModel>(t));
+
+        return topics;
     }
 }

@@ -62,7 +62,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor&quot;: &quot;Debug&quot;,
+    &quot;.NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor&quot;: &quot;Run&quot;,
     &quot;68206211-03c9-41e2-983f-931701109353.executor&quot;: &quot;Debug&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;fb58f394-6e49-4a99-832c-223da4a63250.executor&quot;: &quot;Debug&quot;,
@@ -137,6 +137,8 @@
       <workItem from="1730745188632" duration="6296000" />
       <workItem from="1730793746420" duration="10611000" />
       <workItem from="1730830442703" duration="10979000" />
+      <workItem from="1730879777803" duration="4822000" />
+      <workItem from="1730904658356" duration="9801000" />
     </task>
     <servers />
   </component>

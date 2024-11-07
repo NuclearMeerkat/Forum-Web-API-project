@@ -35,17 +35,17 @@ public class ReportService : IReportService
         return reportModel;
     }
 
-    public async Task AddAsync(ReportCreateModel createModel)
+    public async Task AddAsync(ReportCreateModel model)
     {
-        ForumException.ThrowIfReportCreateModelIsNotCorrect(createModel);
+        ForumException.ThrowIfReportCreateModelIsNotCorrect(model);
 
-        var report = this.mapper.MapWithExceptionHandling<Report>(createModel);
+        var report = this.mapper.MapWithExceptionHandling<Report>(model);
 
         await this.unitOfWork.ReportRepository.AddAsync(report);
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task UpdateAsync(ReportModel model)
+    public async Task UpdateAsync(ReportCreateModel model)
     {
         ForumException.ThrowIfNull(model);
 

@@ -20,4 +20,8 @@
     </PackageReference>
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\WebApp.BusinessLogic\WebApp.BusinessLogic.csproj" />
+    <ProjectReference Include="..\WebApp.Core\WebApp.Core.csproj" />
+  </ItemGroup>
 </Project>

@@ -33,7 +33,8 @@ public class ForumDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         ArgumentNullException.ThrowIfNull(optionsBuilder);
-        //optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;");
+        optionsBuilder.UseSqlServer(
+            "Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;");
         optionsBuilder.UseSqlServerTriggers();
     }
 
@@ -125,6 +126,11 @@ public class ForumDbContext : DbContext
         modelBuilder.Entity<Report>()
             .Property(r => r.Status)
             .HasConversion<string>();
+        modelBuilder.Entity<Report>()
+            .HasOne(r => r.Message)
+            .WithMany(m => m.Reports)
+            .HasForeignKey(r => r.MessageId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<Topic>()
             .HasMany(t => t.Messages)
@@ -135,11 +141,6 @@ public class ForumDbContext : DbContext
             .HasMany(t => t.Stars)
             .WithOne(m => m.Topic)
             .HasForeignKey(m => m.TopicId)
-            .OnDelete(DeleteBehavior.Restrict);
-        modelBuilder.Entity<Report>()
-            .HasOne(r => r.Message)
-            .WithMany(m => m.Reports)
-            .HasForeignKey(r => r.MessageId)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<MessageLike>()

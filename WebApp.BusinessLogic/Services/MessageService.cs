@@ -34,17 +34,17 @@ public class MessageService : IMessageService
         return messageModel;
     }
 
-    public async Task AddAsync(MessageCreateModel createModel)
+    public async Task AddAsync(MessageCreateModel model)
     {
-        ForumException.ThrowIfMessageCreateModelIsNotCorrect(createModel);
+        ForumException.ThrowIfMessageCreateModelIsNotCorrect(model);
 
-        var message = this.mapper.MapWithExceptionHandling<Message>(createModel);
+        var message = this.mapper.MapWithExceptionHandling<Message>(model);
 
         await this.unitOfWork.MessageRepository.AddAsync(message);
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task UpdateAsync(MessageModel model)
+    public async Task UpdateAsync(MessageCreateModel model)
     {
         ForumException.ThrowIfNull(model);
 

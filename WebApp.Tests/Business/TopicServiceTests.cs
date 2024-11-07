@@ -29,7 +29,7 @@ public class TopicServiceTests
         public async Task AddAsyncAddsTopic()
         {
             // Arrange
-            var createModel = new TopicCreateModel { UserId = 1, Title = "New Topic", Description = "New topic description" };
+            var createModel = new TopicDtoModel { UserId = 1, Title = "New Topic", Description = "New topic description" };
             mockUnitOfWork.Setup(u => u.TopicRepository.AddAsync(It.IsAny<Topic>()));
 
             // Act
@@ -45,7 +45,7 @@ public class TopicServiceTests
         public async Task AddAsyncThrowsExceptionWhenCreateModelIsInvalid()
         {
             // Arrange
-            var invalidCreateModel = new TopicCreateModel { UserId = 0, Title = string.Empty };
+            var invalidCreateModel = new TopicDtoModel { UserId = 0, Title = string.Empty };
 
             // Act
             Func<Task> act = async () => await topicService.AddAsync(invalidCreateModel);
@@ -58,7 +58,7 @@ public class TopicServiceTests
         public async Task UpdateAsyncUpdatesTopic()
         {
             // Arrange
-            var testTopicModel = new TopicModel
+            var testTopicModel = new TopicDtoModel()
             {
                 Id = 1,
                 UserId = 1,

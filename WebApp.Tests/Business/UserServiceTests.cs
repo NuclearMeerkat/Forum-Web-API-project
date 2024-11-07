@@ -99,9 +99,8 @@ public class UserServiceTests
         public async Task UpdateAsyncUpdatesUser()
         {
             // Arrange
-            var userModel = new UserModel
+            var userModel = new UserCreateModel()
             {
-                Id = 1,
                 Nickname = "UpdatedUser",
                 Email = "updateduser@example.com",
             };
@@ -113,7 +112,7 @@ public class UserServiceTests
 
             // Assert
             mockUnitOfWork.Verify(u => u.UserRepository.Update(It.Is<User>(
-                user => user.Id == userModel.Id &&
+                user =>
                         user.Nickname == userModel.Nickname &&
                         user.Email == userModel.Email)), Times.Once);
             mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);

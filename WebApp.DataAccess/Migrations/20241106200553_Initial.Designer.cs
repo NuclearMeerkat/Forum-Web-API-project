@@ -12,7 +12,7 @@ using WebApp.DataAccess.Data;
 namespace WebApp.DataAccess.Migrations
 {
     [DbContext(typeof(ForumDbContext))]
-    [Migration("20241102171010_Initial")]
+    [Migration("20241106200553_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace WebApp.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Message", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Message", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -70,7 +70,7 @@ namespace WebApp.DataAccess.Migrations
                     b.ToTable("Messages");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.MessageLike", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.MessageLike", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -92,7 +92,7 @@ namespace WebApp.DataAccess.Migrations
                         .HasAnnotation("SqlServer:UseSqlOutputClause", false);
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Report", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Report", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -121,7 +121,7 @@ namespace WebApp.DataAccess.Migrations
                     b.ToTable("Reports");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Topic", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Topic", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -129,8 +129,8 @@ namespace WebApp.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<double>("AverageStars")
-                        .HasColumnType("float");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -150,7 +150,7 @@ namespace WebApp.DataAccess.Migrations
                     b.ToTable("Topics");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.TopicStars", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.TopicStars", b =>
                 {
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -168,7 +168,7 @@ namespace WebApp.DataAccess.Migrations
                     b.ToTable("TopicStars");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.User", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -176,9 +176,15 @@ namespace WebApp.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime?>("LastLogin")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Nickname")
                         .IsRequired()
@@ -202,20 +208,20 @@ namespace WebApp.DataAccess.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Message", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Message", b =>
                 {
-                    b.HasOne("WebApp.DataAccess.Entities.Message", "ParentMessage")
+                    b.HasOne("WebApp.Core.Entities.Message", "ParentMessage")
                         .WithMany("Replies")
                         .HasForeignKey("ParentMessageId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("WebApp.DataAccess.Entities.Topic", "Topic")
+                    b.HasOne("WebApp.Core.Entities.Topic", "Topic")
                         .WithMany("Messages")
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApp.DataAccess.Entities.User", "User")
+                    b.HasOne("WebApp.Core.Entities.User", "User")
                         .WithMany("Messages")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -228,15 +234,15 @@ namespace WebApp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.MessageLike", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.MessageLike", b =>
                 {
-                    b.HasOne("WebApp.DataAccess.Entities.Message", "Message")
+                    b.HasOne("WebApp.Core.Entities.Message", "Message")
                         .WithMany("Likes")
                         .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApp.DataAccess.Entities.User", "User")
+                    b.HasOne("WebApp.Core.Entities.User", "User")
                         .WithMany("Likes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -247,15 +253,15 @@ namespace WebApp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Report", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Report", b =>
                 {
-                    b.HasOne("WebApp.DataAccess.Entities.Message", "Message")
+                    b.HasOne("WebApp.Core.Entities.Message", "Message")
                         .WithMany("Reports")
                         .HasForeignKey("MessageId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApp.DataAccess.Entities.User", "User")
+                    b.HasOne("WebApp.Core.Entities.User", "User")
                         .WithMany("Reports")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -266,9 +272,9 @@ namespace WebApp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Topic", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Topic", b =>
                 {
-                    b.HasOne("WebApp.DataAccess.Entities.User", "User")
+                    b.HasOne("WebApp.Core.Entities.User", "User")
                         .WithMany("Topics")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -277,15 +283,15 @@ namespace WebApp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.TopicStars", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.TopicStars", b =>
                 {
-                    b.HasOne("WebApp.DataAccess.Entities.Topic", "Topic")
+                    b.HasOne("WebApp.Core.Entities.Topic", "Topic")
                         .WithMany("Stars")
                         .HasForeignKey("TopicId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("WebApp.DataAccess.Entities.User", "User")
+                    b.HasOne("WebApp.Core.Entities.User", "User")
                         .WithMany("Stars")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -296,7 +302,7 @@ namespace WebApp.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Message", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Message", b =>
                 {
                     b.Navigation("Likes");
 
@@ -305,14 +311,14 @@ namespace WebApp.DataAccess.Migrations
                     b.Navigation("Reports");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.Topic", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.Topic", b =>
                 {
                     b.Navigation("Messages");
 
                     b.Navigation("Stars");
                 });
 
-            modelBuilder.Entity("WebApp.DataAccess.Entities.User", b =>
+            modelBuilder.Entity("WebApp.Core.Entities.User", b =>
                 {
                     b.Navigation("Likes");
 

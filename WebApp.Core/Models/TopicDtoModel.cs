@@ -1,6 +1,6 @@
-﻿namespace WebApp.Core.Models;
+namespace WebApp.Core.Models;
 
-public class TopicCreateModel
+public class TopicDtoModel
 {
     public int UserId { get; set; }
 

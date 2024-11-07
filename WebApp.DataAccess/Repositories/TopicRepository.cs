@@ -105,4 +105,28 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
             })
             .ToListAsync();
     }
+
+    public async Task<IEnumerable<Topic>> GetRangeAsync(int skip, int take)
+    {
+        return await this.context.Topics
+            .Include(t => t.Stars)
+            .Include(t => t.Messages)
+            .AsQueryable()
+            .Select(t => new Topic
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Description = t.Description,
+                CreatedAt = t.CreatedAt,
+                UserId = t.UserId,
+                User = t.User,
+                Messages = t.Messages,
+                Stars = t.Stars,
+                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => s.StarCount) : 0,
+                EvaluationsNumber = t.Stars.Count,
+            })
+            .Skip(skip)
+            .Take(take)
+            .ToListAsync();
+    }
 }
