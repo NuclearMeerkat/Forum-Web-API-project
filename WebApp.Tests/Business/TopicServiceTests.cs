@@ -6,6 +6,8 @@ using WebApp.BusinessLogic.Validation;
 using WebApp.Core.Entities;
 using WebApp.Core.Interfaces.IRepositories;
 using WebApp.Core.Models;
+using WebApp.Core.Models.MessageModels;
+using WebApp.Core.Models.TopicModels;
 using WebApp.DataAccess.Repositories;
 
 namespace WebApp.Tests.Business;
@@ -58,20 +60,18 @@ public class TopicServiceTests
         public async Task UpdateAsyncUpdatesTopic()
         {
             // Arrange
-            var testTopicModel = new TopicCreateModel()
+            var testTopicModel = new TopicUpdateModel()
             {
-                UserId = 1,
                 Title = "Updated Topic",
                 Description = "Updated description",
-                CreatedAt = DateTime.Today
             };
 
             var testTopicEntity = new Topic
             {
-                UserId = testTopicModel.UserId,
+                UserId = 3,
                 Title = testTopicModel.Title,
                 Description = testTopicModel.Description,
-                CreatedAt = testTopicModel.CreatedAt
+                CreatedAt = DateTime.Today,
             };
 
             mockTopicRepository = new Mock<ITopicRepository>();
@@ -83,7 +83,6 @@ public class TopicServiceTests
 
             // Assert
             mockTopicRepository.Verify(r => r.Update(It.Is<Topic>(t =>
-                t.UserId == testTopicModel.UserId &&
                 t.Title == testTopicModel.Title &&
                 t.Description == testTopicModel.Description)), Times.Once);
 

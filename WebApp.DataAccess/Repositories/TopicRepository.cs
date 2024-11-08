@@ -30,7 +30,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .ToListAsync();
@@ -53,7 +53,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? t.Stars.AsQueryable().Average(s => s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .FirstAsync();
@@ -77,7 +77,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? t.Stars.AsQueryable().Average(s => s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .FirstAsync();
@@ -100,7 +100,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .ToListAsync();
@@ -122,7 +122,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .Skip(skip)

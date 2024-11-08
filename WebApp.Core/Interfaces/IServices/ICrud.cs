@@ -3,7 +3,7 @@ namespace WebApp.Core.Interfaces.IServices
     public interface ICrud<TModel, in TCreateModel, in TUpdateModel, in TQueryParametersModel, TKey>
         where TModel : class
     {
-        Task<IEnumerable<TModel>> GetAllAsync(TQueryParametersModel queryParameters);
+        Task<IEnumerable<TModel>> GetAllAsync(TQueryParametersModel? queryParameters = default);
 
         Task<TModel> GetByIdAsync(params object[] keys);
 
