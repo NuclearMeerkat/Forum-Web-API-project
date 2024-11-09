@@ -53,8 +53,8 @@ public class UsersController : BaseController
         try
         {
             ArgumentNullException.ThrowIfNull(registerDto);
-            await this.userService.AddAsync(registerDto);
-            return this.CreatedAtAction(nameof(this.GetById), new { id = registerDto.Id }, registerDto);
+            int id = await this.userService.AddAsync(registerDto);
+            return this.CreatedAtAction(nameof(this.GetById), new { id = id }, registerDto);
         }
         catch (ForumException e)
         {

@@ -154,5 +154,17 @@ public class ForumDbContext : DbContext
                         {
                             LikesCounter = message.LikesCounter + 1, // Increment the LikesCounter field
                         })));
+
+        modelBuilder.Entity<MessageLike>()
+            .AfterDelete(trigger => trigger
+                .Action(action => action
+                    .Update<Message>(
+                        (tableRefs, message) =>
+                            message.Id ==
+                            tableRefs.Old.MessageId, // Condition for updating the Message with matching Id
+                        (tableRefs, message) => new Message
+                        {
+                            LikesCounter = message.LikesCounter - 1, // Increment the LikesCounter field
+                        })));
     }
 }

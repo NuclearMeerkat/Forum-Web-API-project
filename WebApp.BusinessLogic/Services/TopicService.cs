@@ -161,9 +161,7 @@ public class TopicService : ITopicService
 
     public async Task RemoveRate(int userId, int topicId)
     {
-        var stars = await this.unitOfWork.TopicStarsRepository.GetByIdAsync(userId, topicId);
-
-        if (stars is null)
+        if (!this.unitOfWork.TopicStarsRepository.IsExist(userId, topicId))
         {
             throw new InvalidOperationException("Stars with such id for this topic does not exist");
         }

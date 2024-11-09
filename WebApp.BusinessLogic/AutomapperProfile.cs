@@ -13,6 +13,10 @@ public class AutomapperProfile : Profile
     public AutomapperProfile()
     {
         this.CreateMap<Message, MessageBriefModel>()
+            .ForMember(dest => dest.SenderNickname, opt => opt.MapFrom(src => src.User.Nickname))
+            .ForMember(dest => dest.RepliesCount, opt => opt.MapFrom(src => src.Replies.Count))
+            .ForMember(dest => dest.ParentMessageId, opt => opt.MapFrom(src => src.ParentMessageId))
+            .ForMember(dest => dest.ProfilePictureUrl, opt => opt.MapFrom(src => src.User.ProfilePictureUrl))
             .ReverseMap();
 
         this.CreateMap<Message, MessageModel>()
@@ -33,6 +37,9 @@ public class AutomapperProfile : Profile
             .ReverseMap();
 
         this.CreateMap<Report, ReportSummaryModel>()
+            .ForMember(dest => dest.Message, opt => opt.MapFrom(src => src.Message.Content))
+            .ForMember(dest => dest.ReportedUser, opt => opt.MapFrom(src => src.Message.User.Nickname))
+            .ForMember(dest => dest.Reporter, opt => opt.MapFrom(src => src.User.Nickname))
             .ReverseMap();
 
         this.CreateMap<Report, ReportCreateModel>()

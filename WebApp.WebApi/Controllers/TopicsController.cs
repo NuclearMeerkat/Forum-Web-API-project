@@ -65,7 +65,6 @@ public class TopicsController : BaseController
             try
             {
                 int id = await this.topicService.AddAsync(creationModel);
-
                 return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
             }
             catch (ForumException e)

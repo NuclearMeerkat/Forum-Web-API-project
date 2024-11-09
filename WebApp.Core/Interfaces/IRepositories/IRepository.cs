@@ -16,4 +16,6 @@ public interface IRepository<TEntity>
     Task DeleteByIdAsync(params object[] keys);
 
     void Update(TEntity entity);
+
+    bool IsExist(params object[] keys);
 }

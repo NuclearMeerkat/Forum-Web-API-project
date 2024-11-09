@@ -73,6 +73,7 @@
     ".NET Launch Settings Profile.WebApp.WebApi: https.executor": "Debug",
     "68206211-03c9-41e2-983f-931701109353.executor": "Debug",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "XThreadsFramesViewSplitterKey": "0.27668846",
     "fb58f394-6e49-4a99-832c-223da4a63250.executor": "Debug",
     "git-widget-placeholder": "DEV",
     "node.js.detected.package.eslint": "true",
@@ -148,7 +149,7 @@
       <workItem from="1730830442703" duration="10979000" />
       <workItem from="1730879777803" duration="4822000" />
       <workItem from="1730904658356" duration="9801000" />
-      <workItem from="1731003411031" duration="32510000" />
+      <workItem from="1731003411031" duration="49476000" />
     </task>
     <servers />
   </component>

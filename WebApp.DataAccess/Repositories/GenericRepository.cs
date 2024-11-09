@@ -55,5 +55,10 @@ namespace WebApp.DataAccess.Repositories
             this.context.Set<T>().Update(entity);
             this.context.SaveChanges();
         }
+
+        public bool IsExist(params object[] keys)
+        {
+            return this.context.Set<T>().Find(keys) != null;
+        }
     }
 }

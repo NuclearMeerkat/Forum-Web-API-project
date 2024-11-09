@@ -13,6 +13,16 @@ public class ReportRepository : GenericRepository<Report>, IReportRepository
     {
     }
 
+    public async Task<IEnumerable<Report>> GetReportsForTopicAsync(int topicId)
+    {
+        return await this.context.Reports
+            .Include(r => r.User)
+            .Include(r => r.Message)
+                .ThenInclude(m => m.User)
+            .Where(r => r.Message.TopicId == topicId)
+            .ToListAsync();
+    }
+
     public async Task<Report> GetWithDetailsAsync(int userId, int messageId)
     {
         return await this.context.Reports

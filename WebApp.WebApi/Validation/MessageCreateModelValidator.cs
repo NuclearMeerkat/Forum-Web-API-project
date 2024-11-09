@@ -18,5 +18,9 @@ public class MessageCreateModelValidator : AbstractValidator<MessageCreateModel>
         RuleFor(x => x.Content)
             .NotEmpty()
             .WithMessage("Content is required.");
+
+        RuleFor(x => x.ParentMessageId)
+            .GreaterThan(0)
+            .When(x => x.ParentMessageId != null);
     }
 }

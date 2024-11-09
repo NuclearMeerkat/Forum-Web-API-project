@@ -62,4 +62,12 @@ public class ReportService : IReportService
         await this.unitOfWork.ReportRepository.DeleteByIdAsync(modelId);
         await this.unitOfWork.SaveAsync();
     }
+
+    public async Task<IEnumerable<ReportSummaryModel>> GetReportsForTopicAsync(int topicId)
+    {
+        var reportEntities = await this.unitOfWork.ReportRepository.GetReportsForTopicAsync(topicId);
+        var reportModels = reportEntities.Select(r => this.mapper.MapWithExceptionHandling<ReportSummaryModel>(r));
+
+        return reportModels;
+    }
 }

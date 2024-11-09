@@ -21,21 +21,30 @@ public class MessageService : IMessageService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
-    public async Task<IEnumerable<MessageModel>> GetAllAsync(TopicQueryParametersModel queryParameters)
+    public async Task<IEnumerable<MessageBriefModel>> GetAllAsync(TopicQueryParametersModel queryParameters)
     {
         var messageEntities = await this.unitOfWork.MessageRepository.GetAllWithDetailsAsync();
-        var messageModels = messageEntities.Select(m => this.mapper.MapWithExceptionHandling<MessageModel>(m));
+        var messageModels = messageEntities.Select(m => this.mapper.MapWithExceptionHandling<MessageBriefModel>(m));
 
         return messageModels;
     }
 
-    public async Task<MessageModel> GetByIdAsync(params object[] keys)
+    public async Task<MessageBriefModel> GetByIdAsync(params object[] keys)
     {
         var messageEntity = await this.unitOfWork.MessageRepository.GetByIdAsync(keys);
+        var messageModel = this.mapper.MapWithExceptionHandling<MessageBriefModel>(messageEntity);
+
+        return messageModel;
+    }
+
+    public async Task<MessageModel> GetByIdWithDetailsAsync(int id)
+    {
+        var messageEntity = await this.unitOfWork.MessageRepository.GetByIdWithDetailsAsync(id);
         var messageModel = this.mapper.MapWithExceptionHandling<MessageModel>(messageEntity);
 
         return messageModel;
     }
+
 
     public async Task<int> AddAsync(MessageCreateModel model)
     {
@@ -52,8 +61,18 @@ public class MessageService : IMessageService
     {
         ForumException.ThrowIfNull(model);
 
-        var message = this.mapper.MapWithExceptionHandling<Message>(model);
-        this.unitOfWork.MessageRepository.Update(message);
+        Message existingMessage;
+        try
+        {
+            existingMessage = await this.unitOfWork.MessageRepository.GetByIdAsync(model.Id);
+        }
+        catch (Exception e)
+        {
+            throw new ForumException("Topic with this id is not found");
+        }
+
+        this.mapper.Map(model, existingMessage);
+        this.unitOfWork.MessageRepository.Update(existingMessage);
 
         await this.unitOfWork.SaveAsync();
     }
@@ -66,11 +85,8 @@ public class MessageService : IMessageService
 
     public async Task LikeMessage(int userId, int messageId)
     {
-        await this.unitOfWork.MessageLikeRepository.AddAsync(new MessageLike
-        {
-            UserId = userId,
-            MessageId = messageId,
-        });
+        await this.unitOfWork.MessageLikeRepository.AddAsync(
+            new MessageLike { UserId = userId, MessageId = messageId, });
 
         await this.unitOfWork.SaveAsync();
     }
@@ -80,5 +96,41 @@ public class MessageService : IMessageService
         await this.unitOfWork.MessageLikeRepository.DeleteByIdAsync(userId, messageId);
 
         await this.unitOfWork.SaveAsync();
+    }
+
+    public async Task ToggleLike(int userId, int messageId)
+    {
+        if (!this.unitOfWork.MessageRepository.IsExist(messageId))
+        {
+            throw new ForumException("Message with this id does not exist");
+        }
+
+        if (!this.unitOfWork.UserRepository.IsExist(userId))
+        {
+            throw new ForumException("User with this id does not exist");
+        }
+
+        if (this.unitOfWork.MessageLikeRepository.IsExist(userId, messageId))
+        {
+            // Remove the like if it already exists
+            await this.unitOfWork.MessageLikeRepository.DeleteByIdAsync(userId, messageId);
+        }
+        else
+        {
+            // Add like if none exists
+            await this.unitOfWork.MessageLikeRepository.AddAsync(
+                new MessageLike { UserId = userId, MessageId = messageId, });
+        }
+
+        await this.unitOfWork.SaveAsync();
+    }
+
+    public async Task<IEnumerable<MessageBriefModel>> GetMessagesByTopicIdAsync(int topicId)
+    {
+        var messages = await this.unitOfWork.MessageRepository.GetByTopicId(topicId);
+
+        var messageModels = messages.Select(m => this.mapper.MapWithExceptionHandling<MessageBriefModel>(m));
+
+        return messageModels;
     }
 }

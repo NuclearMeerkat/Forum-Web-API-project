@@ -211,12 +211,16 @@ namespace WebApp.DataAccess.Migrations
                 column: "Nickname",
                 unique: true);
 
+            migrationBuilder.Sql("CREATE TRIGGER LC_TRIGGER_AFTER_DELETE_MESSAGELIKE ON \"Likes\" AFTER Delete AS\r\nBEGIN\r\n  DECLARE @OldMessageId INT\r\n  DECLARE DeletedMessageLikeCursor CURSOR LOCAL FOR SELECT MessageId FROM Deleted\r\n  OPEN DeletedMessageLikeCursor\r\n  FETCH NEXT FROM DeletedMessageLikeCursor INTO @OldMessageId\r\n  WHILE @@FETCH_STATUS = 0\r\n  BEGIN\r\n    UPDATE \"Messages\"\r\n    SET \"LikesCounter\" = \"Messages\".\"LikesCounter\" - 1\r\n    WHERE \"Messages\".\"Id\" = @OldMessageId;\r\n  FETCH NEXT FROM DeletedMessageLikeCursor INTO @OldMessageId\r\n  END\r\n  CLOSE DeletedMessageLikeCursor DEALLOCATE DeletedMessageLikeCursor\r\nEND");
+
             migrationBuilder.Sql("CREATE TRIGGER LC_TRIGGER_AFTER_INSERT_MESSAGELIKE ON \"Likes\" AFTER Insert AS\r\nBEGIN\r\n  DECLARE @NewMessageId INT\r\n  DECLARE InsertedMessageLikeCursor CURSOR LOCAL FOR SELECT MessageId FROM Inserted\r\n  OPEN InsertedMessageLikeCursor\r\n  FETCH NEXT FROM InsertedMessageLikeCursor INTO @NewMessageId\r\n  WHILE @@FETCH_STATUS = 0\r\n  BEGIN\r\n    UPDATE \"Messages\"\r\n    SET \"LikesCounter\" = \"Messages\".\"LikesCounter\" + 1\r\n    WHERE \"Messages\".\"Id\" = @NewMessageId;\r\n  FETCH NEXT FROM InsertedMessageLikeCursor INTO @NewMessageId\r\n  END\r\n  CLOSE InsertedMessageLikeCursor DEALLOCATE InsertedMessageLikeCursor\r\nEND");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.Sql("DROP TRIGGER LC_TRIGGER_AFTER_DELETE_MESSAGELIKE;");
+
             migrationBuilder.Sql("DROP TRIGGER LC_TRIGGER_AFTER_INSERT_MESSAGELIKE;");
 
             migrationBuilder.DropTable(

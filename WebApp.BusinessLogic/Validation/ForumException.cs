@@ -63,8 +63,7 @@ namespace WebApp.BusinessLogic.Validation
                 Throw(paramName);
             }
 
-            if (int.IsNegative(argument.UserId) || argument.UserId == 0 ||
-                int.IsNegative(argument.TopicId) || argument.TopicId == 0 ||
+            if (int.IsNegative(argument.TopicId) || argument.TopicId == 0 ||
                 string.IsNullOrEmpty(argument.Content) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10))
             {
@@ -122,7 +121,6 @@ namespace WebApp.BusinessLogic.Validation
 
             if (string.IsNullOrEmpty(argument.Reason) ||
                 argument.CreatedAt < new DateTime(2024, 3, 10) ||
-                int.IsNegative(argument.UserId) || argument.UserId == 0 ||
                 int.IsNegative(argument.MessageId) || argument.MessageId == 0 ||
                 !Enum.IsDefined(typeof(ReportStatus), argument.Status))
             {
