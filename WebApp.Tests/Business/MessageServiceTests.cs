@@ -1,12 +1,12 @@
 using Moq;
 using FluentAssertions;
-using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Entities;
 using AutoMapper;
 using WebApp.BusinessLogic.Services;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Models.MessageModels;
-using WebApp.Core.Models.ReportModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IRepositories;
+using WebApp.Infrastructure.Models.MessageModels;
+using WebApp.Infrastructure.Models.ReportModels;
 
 namespace WebApp.Tests.Business
 {
@@ -34,7 +34,7 @@ namespace WebApp.Tests.Business
                 .ReturnsAsync(GetTestMessageEntities());
 
             // Act
-            var actual = await messageService.GetAllAsync();
+            var actual = await messageService.GetAllAsync(null);
 
             // Assert
             actual.Should().BeEquivalentTo(expected);
@@ -65,7 +65,7 @@ namespace WebApp.Tests.Business
             mockUnitOfWork.Setup(u => u.MessageRepository.AddAsync(It.IsAny<Message>()));
 
             // Act
-            await messageService.AddAsync(createModel);
+            await messageService.RegisterAsync(createModel);
 
             // Assert
             mockUnitOfWork.Verify(u => u.MessageRepository.AddAsync(It.Is<Message>(
@@ -80,7 +80,7 @@ namespace WebApp.Tests.Business
             var invalidCreateModel = new MessageCreateModel { Content = string.Empty, UserId = 1 };
 
             // Act
-            Func<Task> act = async () => await messageService.AddAsync(invalidCreateModel);
+            Func<Task> act = async () => await messageService.RegisterAsync(invalidCreateModel);
 
             // Assert
             await act.Should().ThrowAsync<ForumException>();

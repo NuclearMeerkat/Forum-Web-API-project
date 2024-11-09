@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
-using WebApp.Core.Enums;
-using WebApp.Core.Models.UserModels;
+using WebApp.Infrastructure.Enums;
+using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.WebApi.Validation;
 

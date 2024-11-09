@@ -1,6 +1,6 @@
-using WebApp.Core.Entities;
 using WebApp.DataAccess.Data;
 using WebApp.DataAccess.Repositories;
+using WebApp.Infrastructure.Entities;
 using WebApp.Tests.Comparers;
 
 namespace WebApp.Tests.Data;

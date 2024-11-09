@@ -1,11 +1,15 @@
 using FluentValidation;
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebApp.BusinessLogic;
 using WebApp.BusinessLogic.Services;
-using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Interfaces.IServices;
+using WebApp.Infrastructure.Interfaces.IRepositories;
+using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.DataAccess.Data;
+using WebApp.Infrastructure;
+using WebApp.Infrastructure.Auth;
+using WebApp.Infrastructure.Interfaces.Auth;
 using WebApp.WebApi.Validation;
 
 var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
@@ -22,6 +26,10 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
+
+// Register auth interfaces
+builder.Services.AddScoped<IJvtProvider, JvtProvider>();
+builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 
 // Register UnitOfWork and Repositories (DAL)
 builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();

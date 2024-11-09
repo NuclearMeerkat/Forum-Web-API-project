@@ -1,11 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using WebApp.Core.Enums;
-using WebApp.Core.Models;
-using WebApp.Core.Models.MessageModels;
-using WebApp.Core.Models.ReportModels;
-using WebApp.Core.Models.TopicModels;
-using WebApp.Core.Models.UserModels;
+using WebApp.Infrastructure.Enums;
+using WebApp.Infrastructure.Models.MessageModels;
+using WebApp.Infrastructure.Models.ReportModels;
+using WebApp.Infrastructure.Models.TopicModels;
+using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.BusinessLogic.Validation
 {
@@ -206,7 +205,7 @@ namespace WebApp.BusinessLogic.Validation
         }
 
 
-        public static void ThrowIfUserCreateModelIsNotCorrect([NotNull] UserCreateModel? argument,
+        public static void ThrowIfUserCreateModelIsNotCorrect([NotNull] UserRegisterModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {

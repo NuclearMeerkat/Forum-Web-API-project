@@ -1,10 +1,9 @@
 using AutoMapper;
-using WebApp.Core.Entities;
-using WebApp.Core.Models;
-using WebApp.Core.Models.MessageModels;
-using WebApp.Core.Models.ReportModels;
-using WebApp.Core.Models.TopicModels;
-using WebApp.Core.Models.UserModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Models.MessageModels;
+using WebApp.Infrastructure.Models.ReportModels;
+using WebApp.Infrastructure.Models.TopicModels;
+using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.BusinessLogic;
 
@@ -75,10 +74,13 @@ public class AutomapperProfile : Profile
         this.CreateMap<User, UserPublicProfileModel>()
             .ReverseMap();
 
-        this.CreateMap<User, UserCreateModel>()
+        this.CreateMap<User, UserRegisterModel>()
             .ReverseMap();
 
         this.CreateMap<User, UserUpdateModel>()
+            .ReverseMap();
+
+        this.CreateMap<User, UserLoginModel>()
             .ReverseMap();
     }
 }

@@ -1,7 +1,7 @@
 using Laraue.EfCoreTriggers.Common.Extensions;
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.EntityFrameworkCore;
-using WebApp.Core.Entities;
+using WebApp.Infrastructure.Entities;
 
 namespace WebApp.DataAccess.Data;
 

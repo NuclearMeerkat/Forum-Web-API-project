@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using WebApp.Core.Models.MessageModels;
+using WebApp.Infrastructure.Models.MessageModels;
 
 namespace WebApp.WebApi.Validation;
 

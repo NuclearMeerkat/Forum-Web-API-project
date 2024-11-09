@@ -1,5 +1,5 @@
-using WebApp.Core.Interfaces;
-using WebApp.Core.Interfaces.IRepositories;
+using WebApp.Infrastructure.Interfaces;
+using WebApp.Infrastructure.Interfaces.IRepositories;
 using WebApp.DataAccess.Repositories;
 
 namespace WebApp.DataAccess.Data;

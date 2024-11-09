@@ -3,9 +3,9 @@ using FluentAssertions;
 using Moq;
 using WebApp.BusinessLogic.Services;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Entities;
-using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Models.ReportModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IRepositories;
+using WebApp.Infrastructure.Models.ReportModels;
 
 namespace WebApp.Tests.Business;
 
@@ -65,7 +65,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
             mockUnitOfWork.Setup(u => u.ReportRepository.AddAsync(It.IsAny<Report>()));
 
             // Act
-            await reportService.AddAsync(createModel);
+            await reportService.RegisterAsync(createModel);
 
             // Assert
             mockUnitOfWork.Verify(u => u.ReportRepository.AddAsync(It.Is<Report>(
@@ -80,7 +80,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
             var invalidCreateModel = new ReportCreateModel { UserId = 0, MessageId = 0, Reason = string.Empty };
 
             // Act
-            Func<Task> act = async () => await reportService.AddAsync(invalidCreateModel);
+            Func<Task> act = async () => await reportService.RegisterAsync(invalidCreateModel);
 
             // Assert
             await act.Should().ThrowAsync<ForumException>();
@@ -90,7 +90,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
         public async Task UpdateAsyncUpdatesReport()
         {
             // Arrange
-            var reportModel = new ReportCreateModel() { UserId = 1, MessageId = 1, Reason = "Updated reason" };
+            var reportModel = new ReportUpdateModel() { UserId = 1, MessageId = 1, Reason = "Updated reason" };
             mockUnitOfWork.Setup(u => u.ReportRepository.Update(It.IsAny<Report>()));
 
             // Act
@@ -106,7 +106,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
         public async Task UpdateAsyncThrowsForumExceptionWhenModelIsInvalid()
         {
             // Arrange
-            var invalidModel = new ReportCreateModel() { UserId = 0, MessageId = 0, Reason = string.Empty };
+            var invalidModel = new ReportUpdateModel() { UserId = 0, MessageId = 0, Reason = string.Empty };
 
             // Act
             Func<Task> act = async () => await reportService.UpdateAsync(invalidModel);
@@ -119,14 +119,14 @@ private Mock<IUnitOfWork> mockUnitOfWork;
         public async Task DeleteAsyncDeletesReport()
         {
             // Arrange
-            int reportId = 1;
+            var key = new CompositeKey() { KeyPart1 = 1, KeyPart2 = 1 };
             mockUnitOfWork.Setup(u => u.ReportRepository.DeleteByIdAsync(It.IsAny<int>()));
 
             // Act
-            await reportService.DeleteAsync(reportId);
+            await reportService.DeleteAsync(key);
 
             // Assert
-            mockUnitOfWork.Verify(u => u.ReportRepository.DeleteByIdAsync(reportId), Times.Once);
+            mockUnitOfWork.Verify(u => u.ReportRepository.DeleteByIdAsync(key), Times.Once);
             mockUnitOfWork.Verify(u => u.SaveAsync(), Times.Once);
         }
 
@@ -140,7 +140,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
                     UserId = 1,
                     MessageId = 1,
                     Reason = "Reason 1",
-                    Status = Core.Enums.ReportStatus.Pending,
+                    Status = Infrastructure.Enums.ReportStatus.Pending,
                     CreatedAt = DateTime.UtcNow
                 },
                 new ReportModel
@@ -148,7 +148,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
                     UserId = 2,
                     MessageId = 2,
                     Reason = "Reason 2",
-                    Status = Core.Enums.ReportStatus.Pending,
+                    Status = Infrastructure.Enums.ReportStatus.Pending,
                     CreatedAt = DateTime.UtcNow
                 }
             };
@@ -163,7 +163,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
                     UserId = 1,
                     MessageId = 1,
                     Reason = "Reason 1",
-                    Status = Core.Enums.ReportStatus.Pending,
+                    Status = Infrastructure.Enums.ReportStatus.Pending,
                     CreatedAt = DateTime.UtcNow
                 },
                 new Report
@@ -171,7 +171,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
                     UserId = 2,
                     MessageId = 2,
                     Reason = "Reason 2",
-                    Status = Core.Enums.ReportStatus.Pending,
+                    Status = Infrastructure.Enums.ReportStatus.Pending,
                     CreatedAt = DateTime.UtcNow
                 }
             };

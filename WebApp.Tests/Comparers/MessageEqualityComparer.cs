@@ -1,5 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
-using WebApp.Core.Entities;
+using WebApp.Infrastructure.Entities;
 
 namespace WebApp.Tests.Comparers;
 

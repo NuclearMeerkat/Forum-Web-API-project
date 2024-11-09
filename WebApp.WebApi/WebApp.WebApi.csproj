@@ -25,6 +25,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WebApp.BusinessLogic\WebApp.BusinessLogic.csproj" />
-    <ProjectReference Include="..\WebApp.Core\WebApp.Core.csproj" />
+    <ProjectReference Include="..\WebApp.Infrastructure\WebApp.Infrastructure.csproj" />
   </ItemGroup>
 </Project>

@@ -2,11 +2,11 @@ using AutoMapper;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.Extensions.Primitives;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Entities;
-using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models.MessageModels;
-using WebApp.Core.Models.TopicModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IRepositories;
+using WebApp.Infrastructure.Interfaces.IServices;
+using WebApp.Infrastructure.Models.MessageModels;
+using WebApp.Infrastructure.Models.TopicModels;
 
 namespace WebApp.BusinessLogic.Services;
 
@@ -46,9 +46,19 @@ public class MessageService : IMessageService
     }
 
 
-    public async Task<int> AddAsync(MessageCreateModel model)
+    public async Task<int> RegisterAsync(MessageCreateModel model)
     {
         ForumException.ThrowIfMessageCreateModelIsNotCorrect(model);
+
+        if (!this.unitOfWork.UserRepository.IsExist(model.UserId))
+        {
+            throw new ForumException("User with this id does not exist");
+        }
+
+        if (!this.unitOfWork.TopicRepository.IsExist(model.TopicId))
+        {
+            throw new ForumException("Topic with this id does not exist");
+        }
 
         var message = this.mapper.MapWithExceptionHandling<Message>(model);
 

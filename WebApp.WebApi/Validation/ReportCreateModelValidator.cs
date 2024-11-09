@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using WebApp.Core.Models.ReportModels;
+using WebApp.Infrastructure.Models.ReportModels;
 
 namespace WebApp.WebApi.Validation;
 

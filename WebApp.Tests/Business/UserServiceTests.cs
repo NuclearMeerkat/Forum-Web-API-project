@@ -3,10 +3,11 @@ using FluentAssertions;
 using Moq;
 using WebApp.BusinessLogic.Services;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Entities;
-using WebApp.Core.Enums;
-using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Models.UserModels;
+using WebApp.Infrastructure;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Enums;
+using WebApp.Infrastructure.Interfaces.IRepositories;
+using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.Tests.Business;
 
@@ -21,7 +22,7 @@ public class UserServiceTests
         {
             mockUnitOfWork = new Mock<IUnitOfWork>();
             mapper = UnitTestBusinessHelper.CreateMapperProfile();
-            userService = new UserService(mockUnitOfWork.Object, mapper);
+            userService = new UserService(mockUnitOfWork.Object, mapper, new PasswordHasher());
         }
 
         [Test]
@@ -34,7 +35,7 @@ public class UserServiceTests
                 .ReturnsAsync(GetTestUserEntities());
 
             // Act
-            var actualUsers = await userService.GetAllAsync();
+            var actualUsers = await userService.GetAllAsync(null);
 
             // Assert
             actualUsers.Should().BeEquivalentTo(expectedUsers);
@@ -61,7 +62,7 @@ public class UserServiceTests
         public async Task AddAsyncAddsUser()
         {
             // Arrange
-            var createModel = new UserCreateModel
+            var createModel = new UserRegisterModel
             {
                 Nickname = "NewUser",
                 Email = "newuser@example.com",
@@ -71,7 +72,7 @@ public class UserServiceTests
 
             mockUnitOfWork.Setup(u => u.UserRepository.AddAsync(It.IsAny<User>()));
             // Act
-            await userService.AddAsync(createModel);
+            await userService.RegisterAsync(createModel);
 
             // Assert
             mockUnitOfWork.Verify(u => u.UserRepository.AddAsync(It.Is<User>(
@@ -86,10 +87,10 @@ public class UserServiceTests
         public async Task AddAsyncThrowsExceptionWhenCreateModelIsInvalid()
         {
             // Arrange
-            var invalidCreateModel = new UserCreateModel { Nickname = string.Empty, Email = "" };
+            var invalidCreateModel = new UserRegisterModel { Nickname = string.Empty, Email = "" };
 
             // Act
-            Func<Task> act = async () => await userService.AddAsync(invalidCreateModel);
+            Func<Task> act = async () => await userService.RegisterAsync(invalidCreateModel);
 
             // Assert
             await act.Should().ThrowAsync<ForumException>();
@@ -99,7 +100,7 @@ public class UserServiceTests
         public async Task UpdateAsyncUpdatesUser()
         {
             // Arrange
-            var userModel = new UserCreateModel()
+            var userModel = new UserUpdateModel()
             {
                 Nickname = "UpdatedUser",
                 Email = "updateduser@example.com",

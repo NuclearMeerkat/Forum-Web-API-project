@@ -1,10 +1,10 @@
 using AutoMapper;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Entities;
-using WebApp.Core.Interfaces.IRepositories;
-using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models.MessageModels;
-using WebApp.Core.Models.TopicModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IRepositories;
+using WebApp.Infrastructure.Interfaces.IServices;
+using WebApp.Infrastructure.Models.MessageModels;
+using WebApp.Infrastructure.Models.TopicModels;
 
 namespace WebApp.BusinessLogic.Services;
 
@@ -32,7 +32,7 @@ public class TopicService : ITopicService
 
     public async Task<IEnumerable<TopicSummaryModel>> GetAllAsync(TopicQueryParametersModel? queryParameters = null)
     {
-        if (queryParameters == null)
+        if (queryParameters == null || queryParameters.RetrieveAll == true)
         {
             var allTopics = await this.unitOfWork.TopicRepository.GetAllAsync();
             return allTopics.Select(m => this.mapper.Map<TopicSummaryModel>(m));
@@ -43,7 +43,8 @@ public class TopicService : ITopicService
         // Start with the query for all topics
         if (queryParameters.Size > 0)
         {
-            query = await this.unitOfWork.TopicRepository.GetRangeAsync(queryParameters.Page - 1, queryParameters.Size);
+            query = await this.unitOfWork.TopicRepository.GetRangeAsync(
+                (queryParameters.Page - 1) * queryParameters.Size, queryParameters.Size);
         }
 
         // Apply filtering if a search term is provided
@@ -58,7 +59,7 @@ public class TopicService : ITopicService
         query = queryParameters.SortBy switch
         {
             "Title" => queryParameters.Ascending ? query.OrderBy(t => t.Title) : query.OrderByDescending(t => t.Title),
-            "DateCreated" => queryParameters.Ascending
+            "Date" => queryParameters.Ascending
                 ? query.OrderBy(t => t.CreatedAt)
                 : query.OrderByDescending(t => t.CreatedAt),
             "Author" => queryParameters.Ascending
@@ -79,8 +80,9 @@ public class TopicService : ITopicService
             else
             {
                 var topicMessages = topic.Messages.Select(m => this.mapper.MapWithExceptionHandling<MessageModel>(m));
-                topics.First(t => t.Id == topic.Id).ActivityScore =
-                    CalculateActivity((ICollection<MessageModel>)topicMessages);
+
+                topic.ActivityScore =
+                    CalculateActivity(topicMessages.ToList());
             }
         }
 
@@ -105,9 +107,14 @@ public class TopicService : ITopicService
         return topicModel;
     }
 
-    public async Task<int> AddAsync(TopicCreateModel model)
+    public async Task<int> RegisterAsync(TopicCreateModel model)
     {
         ForumException.ThrowIfTopicCreateModelIsNotCorrect(model);
+
+        if (!this.unitOfWork.UserRepository.IsExist(model.UserId))
+        {
+            throw new ForumException("User with this id does not exist");
+        }
 
         var topic = this.mapper.MapWithExceptionHandling<Topic>(model);
 

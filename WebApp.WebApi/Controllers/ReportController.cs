@@ -1,10 +1,12 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Entities;
-using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models.ReportModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Enums;
+using WebApp.Infrastructure.Interfaces.IServices;
+using WebApp.Infrastructure.Models.ReportModels;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -25,36 +27,36 @@ public class ReportController : BaseController
 
     // GET: api/reports
     [HttpGet("reports")]
-    [Authorize(Roles = "Admin,Moderator")]
-    public async Task<IActionResult> GetAllReports([FromQuery] ReportQueryParameters parameters)
+    //[Authorize(Roles = "Admin,Moderator")]
+    public async Task<IActionResult> GetAllReports([FromQuery] ReportQueryParametersModel parametersModel)
     {
-        var validator = this.serviceProvider.GetService<IValidator<ReportQueryParameters>>();
+        var validator = this.serviceProvider.GetService<IValidator<ReportQueryParametersModel>>();
 
-        return await this.ValidateAndExecuteAsync(parameters, validator, async () =>
+        return await this.ValidateAndExecuteAsync(parametersModel, validator, async () =>
         {
-            var reports = await this.reportService.GetAllReportsAsync(parameters);
+            var reports = await this.reportService.GetAllAsync(parametersModel);
             return this.Ok(reports);
         });
     }
 
     // GET: api/reports/{id}
-    [HttpGet("reports/{id:int}")]
-    [Authorize(Roles = "Admin,Moderator")]
-    public async Task<IActionResult> GetReportById(int id)
+    [HttpGet("reports/{userId:int}/{messageId:int}")]
+    //[Authorize(Roles = "Admin,Moderator")]
+    public async Task<IActionResult> GetReportById(int userId, int messageId)
     {
-        if (id <= 0)
+        if (userId <= 0 || messageId <= 0)
         {
             return this.BadRequest("Invalid report ID.");
         }
 
-        ReportModel report;
+        ReportSummaryModel report;
         try
         {
-            report = await this.reportService.GetByIdAsync(id);
+            report = await this.reportService.GetByIdAsync(userId, messageId);
         }
-        catch (InvalidOperationException)
+        catch (ForumException ex)
         {
-            return this.NotFound($"Report with ID {id} not found.");
+            return this.NotFound(ex.Message);
         }
 
         return this.Ok(report);
@@ -62,7 +64,7 @@ public class ReportController : BaseController
 
     // POST: api/reports
     [HttpPost("reports")]
-    [Authorize]
+    //[Authorize]
     public async Task<IActionResult> SubmitReport([FromBody] ReportCreateModel model)
     {
         var validator = this.serviceProvider.GetService<IValidator<ReportCreateModel>>();
@@ -71,35 +73,50 @@ public class ReportController : BaseController
         {
             try
             {
-                CompositeKey key = await this.reportService.AddAsync(model);
+                CompositeKey key = await this.reportService.RegisterAsync(model);
                 return this.CreatedAtAction(nameof(this.GetReportById), model);
             }
             catch (ForumException e)
             {
                 return this.BadRequest(e.Message);
             }
+            catch (DbUpdateException)
+            {
+                return this.Conflict("Report with this userid and messageid already exists.");
+            }
         });
     }
 
     // PUT: api/reports/{id}/status
-    [HttpPut("reports/{id:int}/status")]
-    [Authorize(Roles = "Admin,Moderator")]
-    public async Task<IActionResult> UpdateReportStatus(int id, [FromBody] ReportStatusUpdateModel model)
+    [HttpPut("reports/{userId:int}/{messageId:int}/status/{status:int}")]
+    //[Authorize(Roles = "Admin,Moderator")]
+    public async Task<IActionResult> UpdateReportStatus(int userId, int messageId, int status)
     {
-        model.ReportId = id;
+        // Try to convert the int status parameter to the nullable enum type
+        ReportStatus? reportStatus = Enum.IsDefined(typeof(ReportStatus), status)
+            ? (ReportStatus?)status
+            : null;
 
-        var validator = this.serviceProvider.GetService<IValidator<ReportStatusUpdateModel>>();
+        if (reportStatus == null)
+        {
+            return this.BadRequest("Invalid status value provided.");
+        }
 
-        return await this.ValidateAndExecuteAsync(model, validator, async () =>
+        var reportUpdateModel = new ReportUpdateModel() { UserId = userId, MessageId = messageId, Status = reportStatus };
+
+        var validator = this.serviceProvider.GetService<IValidator<ReportUpdateModel>>();
+
+        return await this.ValidateAndExecuteAsync(reportUpdateModel, validator, async () =>
         {
             try
             {
-                await this.reportService.UpdateReportStatusAsync(id, model);
-                return this.NoContent();
+                await this.reportService.UpdateAsync(reportUpdateModel);
+                var updatedMessage = await this.reportService.GetByIdAsync(userId, messageId);
+                return this.Ok(updatedMessage);
             }
-            catch (KeyNotFoundException)
+            catch (ForumException)
             {
-                return this.NotFound($"Report with ID {id} not found.");
+                return this.NotFound($"Report with this Id was not found.");
             }
             catch (InvalidOperationException ex)
             {
@@ -109,29 +126,36 @@ public class ReportController : BaseController
     }
 
     // DELETE: api/reports/{id}
-    [HttpDelete("reports/{id:int}")]
-    [Authorize(Roles = "Admin,Moderator")]
-    public async Task<IActionResult> DeleteReport(int id)
+    [HttpDelete("reports/{userId:int}/{messageId:int}")]
+    //[Authorize(Roles = "Admin,Moderator")]
+    public async Task<IActionResult> DeleteReport(int userId, int messageId)
     {
-        if (id <= 0)
-        {
-            return this.BadRequest("Invalid report ID.");
-        }
+        var key = new CompositeKey() { KeyPart1 = userId, KeyPart2 = messageId };
 
-        try
+        var validator = this.serviceProvider.GetService<IValidator<CompositeKey>>();
+
+        return await this.ValidateAndExecuteAsync(key, validator, async () =>
         {
-            await this.reportService.DeleteAsync(id);
-            return this.NoContent();
-        }
-        catch (KeyNotFoundException)
-        {
-            return this.NotFound($"Report with ID {id} not found.");
-        }
+            if (key.KeyPart1 <= 0 || key.KeyPart2 <= 0)
+            {
+                return this.BadRequest("Invalid report ID.");
+            }
+
+            try
+            {
+                await this.reportService.DeleteAsync(key);
+                return this.NoContent();
+            }
+            catch (ForumException ex)
+            {
+                return this.NotFound(ex.Message);
+            }
+        });
     }
 
     // GET: api/topics/{topicId}/reports
     [HttpGet("topics/{topicId}/reports")]
-    [Authorize(Roles = "Admin,Moderator")]
+    //[Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> GetReportsForTopic(int topicId)
     {
         if (topicId <= 0)

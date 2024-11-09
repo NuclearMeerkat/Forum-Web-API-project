@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Entities;
-using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models.TopicModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IServices;
+using WebApp.Infrastructure.Models.TopicModels;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -31,8 +31,13 @@ public class TopicsController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetTopics([FromQuery] TopicQueryParametersModel parameters)
     {
-        var topics = await this.topicService.GetAllAsync(parameters);
-        return this.Ok(topics);
+        var validator = this.serviceProvider.GetService<IValidator<TopicQueryParametersModel>>();
+
+        return await this.ValidateAndExecuteAsync(parameters, validator, async () =>
+        {
+            var topics = await this.topicService.GetAllAsync(parameters);
+            return this.Ok(topics);
+        });
     }
 
     // GET: api/topics/{id}
@@ -64,7 +69,7 @@ public class TopicsController : BaseController
         {
             try
             {
-                int id = await this.topicService.AddAsync(creationModel);
+                int id = await this.topicService.RegisterAsync(creationModel);
                 return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
             }
             catch (ForumException e)

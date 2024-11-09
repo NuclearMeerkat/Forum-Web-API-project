@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using WebApp.Core.Entities;
-using WebApp.Core.Enums;
 using WebApp.DataAccess.Data;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Enums;
 
 namespace WebApp.Tests;
 internal class UnitTestDataHelper

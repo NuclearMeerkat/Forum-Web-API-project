@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Entities;
-using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models.MessageModels;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IServices;
+using WebApp.Infrastructure.Models.MessageModels;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -65,7 +65,7 @@ public class MessagesController : BaseController
         {
             try
             {
-                int messageId = await this.messageService.AddAsync(creationModel);
+                int messageId = await this.messageService.RegisterAsync(creationModel);
                 return this.CreatedAtAction(nameof(this.GetMessageById), new { id = messageId }, creationModel);
             }
             catch (ForumException e)

@@ -1,9 +1,10 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Core.Interfaces.IServices;
-using WebApp.Core.Models.TopicModels;
-using WebApp.Core.Models.UserModels;
+using WebApp.Infrastructure.Interfaces.IServices;
+using WebApp.Infrastructure.Models.TopicModels;
+using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -12,10 +13,12 @@ namespace WebApp.WebApi.Controllers;
 public class UsersController : BaseController
 {
     private readonly IUserService userService;
+    private readonly IServiceProvider serviceProvider;
 
-    public UsersController(IUserService userService)
+    public UsersController(IUserService userService, IServiceProvider serviceProvider)
     {
         this.userService = userService;
+        this.serviceProvider = serviceProvider;
     }
 
     // GET: api/users
@@ -48,38 +51,49 @@ public class UsersController : BaseController
 
     // POST: api/users/register
     [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] UserCreateModel registerDto)
+    public async Task<IActionResult> Register([FromBody] UserRegisterModel registerDto)
     {
-        try
+        var validator = this.serviceProvider.GetService<IValidator<UserRegisterModel>>();
+
+        return await this.ValidateAndExecuteAsync(registerDto, validator, async () =>
         {
-            ArgumentNullException.ThrowIfNull(registerDto);
-            int id = await this.userService.AddAsync(registerDto);
-            return this.CreatedAtAction(nameof(this.GetById), new { id = id }, registerDto);
-        }
-        catch (ForumException e)
-        {
-            return this.BadRequest(e.Message);
-        }
+            try
+            {
+                ArgumentNullException.ThrowIfNull(registerDto);
+                int id = await this.userService.RegisterAsync(registerDto);
+                return this.CreatedAtAction(nameof(this.GetById), new { id = id }, registerDto);
+            }
+            catch (ForumException e)
+            {
+                return this.BadRequest(e.Message);
+            }
+        });
     }
 
-    //// POST: api/users/login
-    //[HttpPost("login")]
-    //public async Task<IActionResult> Login([FromBody] UserLoginDtoModel loginDto)
-    //{
-    //    try
-    //    {
-    //        var token = await this.userService.AuthenticateAsync(loginDto);
-    //        if (string.IsNullOrEmpty(token))
-    //        {
-    //            return Unauthorized("Invalid username or password.");
-    //        }
-    //        return Ok(new { Token = token });
-    //    }
-    //    catch (ForumException e)
-    //    {
-    //        return Unauthorized(e.Message);
-    //    }
-    //}
+    // POST: api/users/login
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] UserLoginModel loginDto)
+    {
+        var validator = this.serviceProvider.GetService<IValidator<UserLoginModel>>();
+
+        return await this.ValidateAndExecuteAsync(loginDto, validator, async () =>
+        {
+            try
+            {
+                var token = await this.userService.LoginAsync(loginDto);
+                if (string.IsNullOrEmpty(token))
+                {
+                    return Unauthorized("Invalid username or password.");
+                }
+
+                return Ok(token);
+            }
+            catch (ForumException e)
+            {
+                return Unauthorized(e.Message);
+            }
+        });
+    }
 
     // PUT: api/users/{id}
     [HttpPut("{id:int}")]
