@@ -8,11 +8,11 @@ using WebApp.Infrastructure.Interfaces.Auth;
 
 namespace WebApp.Infrastructure.Auth;
 
-public class JvtProvider : IJvtProvider
+public class JwtProvider : IJwtProvider
 {
-    private readonly JvtOptions options;
+    private readonly JwtOptions options;
 
-    public JvtProvider(IOptions<JvtOptions> options)
+    public JwtProvider(IOptions<JwtOptions> options)
     {
         this.options = options.Value;
     }

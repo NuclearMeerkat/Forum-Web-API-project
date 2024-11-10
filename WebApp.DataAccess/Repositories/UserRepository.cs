@@ -13,6 +13,11 @@ public class UserRepository : GenericRepository<User>, IUserRepository
     {
     }
 
+    public async Task<IEnumerable<User>> GetRange(int skip, int take)
+    {
+        return await this.context.Users.Skip(skip).Take(take).ToListAsync();
+    }
+
     public async Task<User> GetByEmailAsync(string email)
     {
         return await this.context.Users.Where(u => u.Email == email).FirstAsync();

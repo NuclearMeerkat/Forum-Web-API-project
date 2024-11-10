@@ -154,7 +154,7 @@
       <workItem from="1730830442703" duration="10979000" />
       <workItem from="1730879777803" duration="4822000" />
       <workItem from="1730904658356" duration="9801000" />
-      <workItem from="1731003411031" duration="78246000" />
+      <workItem from="1731003411031" duration="109180000" />
     </task>
     <servers />
   </component>
@@ -176,5 +176,42 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/WebApp.Tests/Business/MessageServiceTests.cs</url>
+          <line>63</line>
+          <properties documentPath="C:\EPAM Course\Accessment\Tasks\FORUM\WebApp.Tests\Business\MessageServiceTests.cs" containingFunctionPresentation="Method 'AddAsyncAddsMessage'">
+            <startOffsets>
+              <option value="1955" />
+            </startOffsets>
+            <endOffsets>
+              <option value="2049" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="46" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/WebApp.Tests/Data/MessageLikeRepositoryTests.cs</url>
+          <line>38</line>
+          <properties documentPath="C:\EPAM Course\Accessment\Tasks\FORUM\WebApp.Tests\Data\MessageLikeRepositoryTests.cs" containingFunctionPresentation="Method 'MessageLikeRepositoryAddAsyncAddsValueToDatabase'">
+            <startOffsets>
+              <option value="1470" />
+            </startOffsets>
+            <endOffsets>
+              <option value="1552" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="47" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="Type#System.Security.Claims.ClaimsPrincipal" memberName="CustomSerializationData" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

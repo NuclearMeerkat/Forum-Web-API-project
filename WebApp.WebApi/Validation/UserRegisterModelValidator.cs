@@ -8,12 +8,13 @@ public class UserRegisterModelValidator : AbstractValidator<UserRegisterModel>
     public UserRegisterModelValidator()
     {
         RuleFor(x => x.Nickname)
-            .NotEmpty()
-            .WithMessage("Nickname is required.");
+            .MinimumLength(3)
+            .WithMessage("Nickname should contain at least 3 characters.");
 
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .WithMessage("Email is required.");
+            .EmailAddress()
+            .MinimumLength(6)
+            .WithMessage("Email should contain at least 6 characters.");
 
         RuleFor(x => x.Role)
             .IsInEnum()

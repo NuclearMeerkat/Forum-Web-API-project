@@ -73,7 +73,7 @@ public class ReportController : BaseController
         {
             try
             {
-                CompositeKey key = await this.reportService.RegisterAsync(model);
+                CompositeKey key = await this.reportService.AddAsync(model);
                 return this.CreatedAtAction(nameof(this.GetReportById), model);
             }
             catch (ForumException e)

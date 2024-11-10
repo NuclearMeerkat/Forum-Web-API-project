@@ -1,6 +1,6 @@
 ﻿namespace WebApp.Infrastructure;
 
-public class JvtOptions
+public class JwtOptions
 {
     public string SecretKey { get; set; }
 

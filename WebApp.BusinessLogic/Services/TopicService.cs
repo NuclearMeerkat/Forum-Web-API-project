@@ -107,7 +107,7 @@ public class TopicService : ITopicService
         return topicModel;
     }
 
-    public async Task<int> RegisterAsync(TopicCreateModel model)
+    public async Task<int> AddAsync(AdminTopicCreateModel model)
     {
         ForumException.ThrowIfTopicCreateModelIsNotCorrect(model);
 
@@ -138,6 +138,30 @@ public class TopicService : ITopicService
         this.unitOfWork.TopicRepository.Update(existingTopic);
 
         await this.unitOfWork.SaveAsync();
+    }
+
+    public async Task<bool> CheckTopicOwner(int topicId, int userId)
+    {
+        Topic topic;
+        try
+        {
+            topic = await this.unitOfWork.TopicRepository.GetByIdAsync(topicId);
+            if (topic is null)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+        catch (InvalidOperationException)
+        {
+            throw new ForumException("Topic with this id is not found");
+        }
+
+        if (userId == topic.UserId)
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public async Task DeleteAsync(int modelId)

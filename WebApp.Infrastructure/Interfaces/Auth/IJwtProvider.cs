@@ -2,7 +2,7 @@
 
 namespace WebApp.Infrastructure.Interfaces.Auth;
 
-public interface IJvtProvider
+public interface IJwtProvider
 {
     public string GenerateToken(User user);
 }

@@ -12,7 +12,7 @@ using WebApp.DataAccess.Data;
 namespace WebApp.DataAccess.Migrations
 {
     [DbContext(typeof(ForumDbContext))]
-    [Migration("20241108235839_Initial")]
+    [Migration("20241109232253_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -192,6 +192,10 @@ namespace WebApp.DataAccess.Migrations
                     b.Property<string>("Nickname")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfilePictureUrl")
                         .HasColumnType("nvarchar(max)");

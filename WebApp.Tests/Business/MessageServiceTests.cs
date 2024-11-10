@@ -65,7 +65,7 @@ namespace WebApp.Tests.Business
             mockUnitOfWork.Setup(u => u.MessageRepository.AddAsync(It.IsAny<Message>()));
 
             // Act
-            await messageService.RegisterAsync(createModel);
+            await messageService.AddAsync(createModel);
 
             // Assert
             mockUnitOfWork.Verify(u => u.MessageRepository.AddAsync(It.Is<Message>(
@@ -80,7 +80,7 @@ namespace WebApp.Tests.Business
             var invalidCreateModel = new MessageCreateModel { Content = string.Empty, UserId = 1 };
 
             // Act
-            Func<Task> act = async () => await messageService.RegisterAsync(invalidCreateModel);
+            Func<Task> act = async () => await messageService.AddAsync(invalidCreateModel);
 
             // Assert
             await act.Should().ThrowAsync<ForumException>();

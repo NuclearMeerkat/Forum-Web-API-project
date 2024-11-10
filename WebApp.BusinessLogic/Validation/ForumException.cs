@@ -146,7 +146,7 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfTopicCreateModelIsNotCorrect([NotNull] TopicCreateModel? argument,
+        public static void ThrowIfTopicCreateModelIsNotCorrect([NotNull] AdminTopicCreateModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {

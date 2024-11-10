@@ -4,8 +4,10 @@ using Moq;
 using WebApp.BusinessLogic.Services;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure;
+using WebApp.Infrastructure.Auth;
 using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Enums;
+using WebApp.Infrastructure.Interfaces.Auth;
 using WebApp.Infrastructure.Interfaces.IRepositories;
 using WebApp.Infrastructure.Models.UserModels;
 
@@ -16,13 +18,17 @@ public class UserServiceTests
     private Mock<IUnitOfWork> mockUnitOfWork;
         private IMapper mapper;
         private UserService userService;
+        private IPasswordHasher passwordHasher;
+        private Mock<IJwtProvider> jwtProvider;
 
         [SetUp]
         public void Setup()
         {
-            mockUnitOfWork = new Mock<IUnitOfWork>();
-            mapper = UnitTestBusinessHelper.CreateMapperProfile();
-            userService = new UserService(mockUnitOfWork.Object, mapper, new PasswordHasher());
+            this.mockUnitOfWork = new Mock<IUnitOfWork>();
+            this.mapper = UnitTestBusinessHelper.CreateMapperProfile();
+            this.passwordHasher = new PasswordHasher();
+            this.jwtProvider = new Mock<IJwtProvider>();
+            this.userService = new UserService(mockUnitOfWork.Object, mapper, passwordHasher, jwtProvider.Object);
         }
 
         [Test]

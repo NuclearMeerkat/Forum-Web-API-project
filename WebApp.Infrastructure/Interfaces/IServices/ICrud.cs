@@ -7,7 +7,7 @@ namespace WebApp.Infrastructure.Interfaces.IServices
 
         Task<TModel> GetByIdAsync(params object[] keys);
 
-        Task<TKey> RegisterAsync(TCreateModel model);
+        Task<TKey> AddAsync(TCreateModel model);
 
         Task UpdateAsync(TUpdateModel model);
 

@@ -81,7 +81,7 @@ public class ReportService : IReportService
         return reportModel;
     }
 
-    public async Task<CompositeKey> RegisterAsync(ReportCreateModel model)
+    public async Task<CompositeKey> AddAsync(ReportCreateModel model)
     {
         ForumException.ThrowIfReportCreateModelIsNotCorrect(model);
 

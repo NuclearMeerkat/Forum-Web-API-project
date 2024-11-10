@@ -30,11 +30,11 @@ public class TopicServiceTests
         public async Task AddAsyncAddsTopic()
         {
             // Arrange
-            var createModel = new TopicCreateModel { UserId = 1, Title = "New Topic", Description = "New topic description" };
+            var createModel = new AdminTopicCreateModel { UserId = 1, Title = "New Topic", Description = "New topic description" };
             mockUnitOfWork.Setup(u => u.TopicRepository.AddAsync(It.IsAny<Topic>()));
 
             // Act
-            await topicService.RegisterAsync(createModel);
+            await topicService.AddAsync(createModel);
 
             // Assert
             mockUnitOfWork.Verify(u => u.TopicRepository.AddAsync(It.Is<Topic>(
@@ -46,10 +46,10 @@ public class TopicServiceTests
         public async Task AddAsyncThrowsExceptionWhenCreateModelIsInvalid()
         {
             // Arrange
-            var invalidCreateModel = new TopicCreateModel { UserId = 0, Title = string.Empty };
+            var invalidCreateModel = new AdminTopicCreateModel { UserId = 0, Title = string.Empty };
 
             // Act
-            Func<Task> act = async () => await topicService.RegisterAsync(invalidCreateModel);
+            Func<Task> act = async () => await topicService.AddAsync(invalidCreateModel);
 
             // Assert
             await act.Should().ThrowAsync<ForumException>();

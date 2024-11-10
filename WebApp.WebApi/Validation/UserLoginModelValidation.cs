@@ -9,11 +9,12 @@ public class UserLoginModelValidation : AbstractValidator<UserLoginModel>
     public UserLoginModelValidation()
     {
         RuleFor(x => x.Email)
-            .MinimumLength(6)
-            .WithMessage("Email must be at least 6 characters long");
+            .EmailAddress()
+            .NotEmpty()
+            .WithMessage("Email cannot be empty string");
 
         RuleFor(x => x.Password)
-            .MinimumLength(8)
-            .WithMessage("Password must be at least 8 characters long");
+            .NotEmpty()
+            .WithMessage("Password cannot be empty string");
     }
 }

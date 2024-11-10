@@ -3,9 +3,9 @@ using WebApp.Infrastructure.Entities;
 
 namespace WebApp.WebApi.Validation;
 
-public class CompositeKeyValidation : AbstractValidator<CompositeKey>
+public class CompositeKeyValidator : AbstractValidator<CompositeKey>
 {
-    public CompositeKeyValidation()
+    public CompositeKeyValidator()
     {
         RuleFor(x => x.KeyPart1)
             .GreaterThan(0)

@@ -18,13 +18,19 @@ public class TopicsController : BaseController
 {
     private readonly ITopicService topicService;
     private readonly IServiceProvider serviceProvider;
+    private readonly IHttpContextAccessor httpContextAccessor;
 
-    public TopicsController(ITopicService topicService, IServiceProvider serviceProvider)
+    public TopicsController(
+        ITopicService topicService,
+        IServiceProvider serviceProvider,
+        IHttpContextAccessor httpContextAccessor)
     {
         ArgumentNullException.ThrowIfNull(topicService);
         ArgumentNullException.ThrowIfNull(serviceProvider);
+        ArgumentNullException.ThrowIfNull(httpContextAccessor);
         this.topicService = topicService;
         this.serviceProvider = serviceProvider;
+        this.httpContextAccessor = httpContextAccessor;
     }
 
     // GET: api/topics
@@ -58,18 +64,42 @@ public class TopicsController : BaseController
     }
 
     // POST: api/topics
-    // [Authorize]
+    [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateTopic(
         [FromBody] TopicCreateModel creationModel)
     {
         var validator = this.serviceProvider.GetService<IValidator<TopicCreateModel>>();
 
+        creationModel.UserId = this.GetCurrentUserId(httpContextAccessor);
+
         return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
         {
             try
             {
-                int id = await this.topicService.RegisterAsync(creationModel);
+                var topic = this.serviceProvider.GetService<IMapper>().Map<AdminTopicCreateModel>(creationModel);
+                int id = await this.topicService.AddAsync(topic);
+                return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
+            }
+            catch (ForumException e)
+            {
+                return this.BadRequest(e.Message);
+            }
+        });
+    }
+
+    // [Authorize(Roles = "Admin,Moderator")]
+    [HttpPost("Admin")]
+    public async Task<IActionResult> CreateTopicForUser(
+        [FromBody] AdminTopicCreateModel creationModel)
+    {
+        var validator = this.serviceProvider.GetService<IValidator<AdminTopicCreateModel>>();
+
+        return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
+        {
+            try
+            {
+                int id = await this.topicService.AddAsync(creationModel);
                 return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
             }
             catch (ForumException e)
@@ -80,9 +110,9 @@ public class TopicsController : BaseController
     }
 
     // PUT: api/topics/{id}
-    // [Authorize]
-    [HttpPut("{id:int}")]
-    public async Task<IActionResult> UpdateTopic(
+    // [Authorize(Roles = "Admin,Moderator")]
+    [HttpPatch("Admin/{id:int}")]
+    public async Task<IActionResult> AdminUpdateTopic(
         int id,
         [FromBody] TopicUpdateModel updateModel)
     {
@@ -98,9 +128,41 @@ public class TopicsController : BaseController
                 var updatedTopic = await this.topicService.GetByIdAsync(updateModel.Id);
                 return this.Ok(updatedTopic);
             }
-            catch (ForumException)
+            catch (ForumException e)
             {
-                return this.BadRequest();
+                return this.NotFound(e.Message);
+            }
+        });
+    }
+
+    [HttpPatch("{id:int}")]
+    [Authorize]
+    public async Task<IActionResult> UpdateTopic(
+        int id,
+        [FromBody] TopicUpdateModel updateModel)
+    {
+        updateModel.Id = id;
+
+        var validator = this.serviceProvider.GetService<IValidator<TopicUpdateModel>>();
+
+        int userId = this.GetCurrentUserId(this.httpContextAccessor);
+
+        return await this.ValidateAndExecuteAsync(updateModel, validator, async () =>
+        {
+            try
+            {
+                if (!await this.topicService.CheckTopicOwner(updateModel.Id, userId))
+                {
+                    return this.Forbid("You cannot update this topic");
+                }
+
+                await this.topicService.UpdateAsync(updateModel);
+                var updatedTopic = await this.topicService.GetByIdAsync(updateModel.Id);
+                return this.Ok(updatedTopic);
+            }
+            catch (ForumException e)
+            {
+                return this.NotFound(e.Message);
             }
         });
     }

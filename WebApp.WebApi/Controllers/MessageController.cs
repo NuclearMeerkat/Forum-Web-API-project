@@ -65,7 +65,7 @@ public class MessagesController : BaseController
         {
             try
             {
-                int messageId = await this.messageService.RegisterAsync(creationModel);
+                int messageId = await this.messageService.AddAsync(creationModel);
                 return this.CreatedAtAction(nameof(this.GetMessageById), new { id = messageId }, creationModel);
             }
             catch (ForumException e)

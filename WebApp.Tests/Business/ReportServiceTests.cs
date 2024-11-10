@@ -65,7 +65,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
             mockUnitOfWork.Setup(u => u.ReportRepository.AddAsync(It.IsAny<Report>()));
 
             // Act
-            await reportService.RegisterAsync(createModel);
+            await reportService.AddAsync(createModel);
 
             // Assert
             mockUnitOfWork.Verify(u => u.ReportRepository.AddAsync(It.Is<Report>(
@@ -80,7 +80,7 @@ private Mock<IUnitOfWork> mockUnitOfWork;
             var invalidCreateModel = new ReportCreateModel { UserId = 0, MessageId = 0, Reason = string.Empty };
 
             // Act
-            Func<Task> act = async () => await reportService.RegisterAsync(invalidCreateModel);
+            Func<Task> act = async () => await reportService.AddAsync(invalidCreateModel);
 
             // Assert
             await act.Should().ThrowAsync<ForumException>();

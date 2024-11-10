@@ -6,6 +6,8 @@ public class TopicSummaryModel
 
     public string Title { get; set; }
 
+    public string Description { get; set; }
+
     public double AverageStars { get; set; }
 
     public double ActivityScore { get; set; }

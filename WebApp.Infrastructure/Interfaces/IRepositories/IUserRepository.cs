@@ -9,4 +9,6 @@ public interface IUserRepository : IRepository<User>
     public Task<IEnumerable<User>> GetAllWithDetailsAsync();
 
     public Task<User> GetByEmailAsync(string email);
+
+    public Task<IEnumerable<User>> GetRange(int skip, int take);
 }

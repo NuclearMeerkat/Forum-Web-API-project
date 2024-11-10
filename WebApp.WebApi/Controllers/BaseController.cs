@@ -26,4 +26,10 @@ public class BaseController : ControllerBase
 
         return await action();
     }
+
+    protected int GetCurrentUserId(IHttpContextAccessor httpContextAccessor)
+    {
+        var userId = httpContextAccessor.HttpContext?.User.Claims.First().Value;
+        return int.TryParse(userId, out int id) ? id : 0;
+    }
 }

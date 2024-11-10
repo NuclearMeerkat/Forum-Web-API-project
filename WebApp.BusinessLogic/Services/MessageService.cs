@@ -46,7 +46,7 @@ public class MessageService : IMessageService
     }
 
 
-    public async Task<int> RegisterAsync(MessageCreateModel model)
+    public async Task<int> AddAsync(MessageCreateModel model)
     {
         ForumException.ThrowIfMessageCreateModelIsNotCorrect(model);
 

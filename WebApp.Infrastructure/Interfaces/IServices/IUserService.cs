@@ -1,11 +1,16 @@
+using WebApp.Infrastructure.Models;
 using WebApp.Infrastructure.Models.TopicModels;
 using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.Infrastructure.Interfaces.IServices;
-public interface IUserService : ICrud<UserModel, UserRegisterModel, UserUpdateModel, TopicQueryParametersModel, int>
+public interface IUserService : ICrud<UserPublicProfileModel, UserRegisterModel, UserUpdateModel, UserQueryParametersModel, int>
 {
     public Task<string> LoginAsync(UserLoginModel model);
 
     public Task<int> RegisterAsync(UserRegisterModel model);
+
+    public Task DeleteMyProfileAsync(string password, int modelId);
+
+    public Task<UserModel> GetByIdWithDetailsAsync(int id);
 
 }

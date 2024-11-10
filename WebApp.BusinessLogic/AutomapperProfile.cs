@@ -58,7 +58,17 @@ public class AutomapperProfile : Profile
             .ForMember(t => t.CreatorNickname, tm => tm.MapFrom(x => x.User.Nickname))
             .ReverseMap();
 
-        this.CreateMap<Topic, TopicCreateModel>()
+        this.CreateMap<AdminTopicCreateModel, Topic>()
+            .ForMember(dest => dest.Title, opt => opt.Condition(src => src.Title != null))
+            .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null))
+            .ReverseMap();
+
+        this.CreateMap<TopicCreateModel, Topic>()
+            .ForMember(dest => dest.Title, opt => opt.Condition(src => src.Title != null))
+            .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null))
+            .ReverseMap();
+
+        this.CreateMap<AdminTopicCreateModel, TopicCreateModel>()
             .ReverseMap();
 
         this.CreateMap<TopicUpdateModel, Topic>()
@@ -68,16 +78,20 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))
             .ForMember(dest => dest.Reports, opt => opt.MapFrom(src => src.Reports))
             .ForMember(dest => dest.OwnedTopics, opt => opt.MapFrom(src => src.Topics.Where(t => t.UserId == src.Id)))
-            .ForMember(dest => dest.ParticipatedTopics, opt => opt.MapFrom(src => src.Topics.Where(t => t.UserId != src.Id)))
+            .ForMember(dest => dest.ParticipatedTopics,
+                opt => opt.MapFrom(src => src.Topics.Where(t => t.UserId != src.Id)))
             .ReverseMap();
 
         this.CreateMap<User, UserPublicProfileModel>()
             .ReverseMap();
 
         this.CreateMap<User, UserRegisterModel>()
+            .ForMember(dest => dest.Password, src => src.MapFrom(src => src.PasswordHash))
             .ReverseMap();
 
-        this.CreateMap<User, UserUpdateModel>()
+        this.CreateMap<UserUpdateModel, User>()
+            .ForMember(dest => dest.Nickname, opt => opt.Condition(src => src.Nickname != null))
+            .ForMember(dest => dest.Email, opt => opt.Condition(src => src.Email != null))
             .ReverseMap();
 
         this.CreateMap<User, UserLoginModel>()

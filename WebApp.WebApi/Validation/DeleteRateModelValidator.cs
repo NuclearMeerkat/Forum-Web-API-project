@@ -3,9 +3,9 @@ using WebApp.Infrastructure.Models.TopicModels;
 
 namespace WebApp.WebApi.Validation;
 
-public class DeleteRateModelValidation : AbstractValidator<DeleteRateModel>
+public class DeleteRateModelValidator : AbstractValidator<DeleteRateModel>
 {
-    public DeleteRateModelValidation()
+    public DeleteRateModelValidator()
     {
         RuleFor(x => x.UserId)
             .GreaterThan(0)
