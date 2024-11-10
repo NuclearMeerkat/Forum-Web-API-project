@@ -58,6 +58,11 @@ public class AutomapperProfile : Profile
             .ForMember(t => t.CreatorNickname, tm => tm.MapFrom(x => x.User.Nickname))
             .ReverseMap();
 
+        this.CreateMap<Topic, TopicDialogModel>()
+            .ForMember(t => t.CreatorNickname, tm => tm.MapFrom(x => x.User.Nickname))
+            .ForMember(t => t.Messages, opt => opt.MapFrom(src => src.Messages))
+            .ReverseMap();
+
         this.CreateMap<AdminTopicCreateModel, Topic>()
             .ForMember(dest => dest.Title, opt => opt.Condition(src => src.Title != null))
             .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null))

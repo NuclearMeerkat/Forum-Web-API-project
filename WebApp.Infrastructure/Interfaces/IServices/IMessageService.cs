@@ -10,4 +10,5 @@ public interface IMessageService : ICrud<MessageBriefModel, MessageCreateModel, 
     Task ToggleLike(int userId, int messageId);
     Task<IEnumerable<MessageBriefModel>> GetMessagesByTopicIdAsync(int topicId);
     public Task<MessageModel> GetByIdWithDetailsAsync(int id);
+    public Task<bool> CheckMessageOwner(int messageId, int userId);
 }

@@ -16,16 +16,24 @@ public class ReportController : BaseController
 {
     private readonly IReportService reportService;
     private readonly IServiceProvider serviceProvider;
+    private readonly IHttpContextAccessor httpContextAccessor;
 
-    public ReportController(IReportService reportService, IServiceProvider serviceProvider)
+    public ReportController(IReportService reportService, IServiceProvider serviceProvider,
+        IHttpContextAccessor httpContextAccessor)
     {
         ArgumentNullException.ThrowIfNull(reportService);
         ArgumentNullException.ThrowIfNull(serviceProvider);
+        ArgumentNullException.ThrowIfNull(httpContextAccessor);
         this.reportService = reportService;
         this.serviceProvider = serviceProvider;
+        this.httpContextAccessor = httpContextAccessor;
     }
 
-    // GET: api/reports
+    /// <summary>
+    /// Retrieves all reports with optional query parameters for filtering, sordting and pagination.
+    /// </summary>
+    /// <param name="parametersModel">The query parameters for filtering and pagination of reports.</param>
+    /// <returns>A list of reports that match the query parameters.</returns>
     [HttpGet("reports")]
     //[Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> GetAllReports([FromQuery] ReportQueryParametersModel parametersModel)
@@ -39,7 +47,12 @@ public class ReportController : BaseController
         });
     }
 
-    // GET: api/reports/{id}
+    /// <summary>
+    /// Retrieves a specific report by user ID and message ID.
+    /// </summary>
+    /// <param name="userId">The ID of the user who created the report.</param>
+    /// <param name="messageId">The ID of the message associated with the report.</param>
+    /// <returns>The report if found, otherwise a NotFound or BadRequest result.</returns>
     [HttpGet("reports/{userId:int}/{messageId:int}")]
     //[Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> GetReportById(int userId, int messageId)
@@ -62,13 +75,18 @@ public class ReportController : BaseController
         return this.Ok(report);
     }
 
-    // POST: api/reports
+    /// <summary>
+    /// Submits a new report.
+    /// </summary>
+    /// <param name="model">The model containing report details to be submitted.</param>
+    /// <returns>A CreatedAtAction result with the created report's details, or a BadRequest/Conflict result if submission fails.</returns>
     [HttpPost("reports")]
-    //[Authorize]
+    [Authorize]
     public async Task<IActionResult> SubmitReport([FromBody] ReportCreateModel model)
     {
         var validator = this.serviceProvider.GetService<IValidator<ReportCreateModel>>();
 
+        model.UserId = GetCurrentUserId(httpContextAccessor);
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {
             try
@@ -78,7 +96,7 @@ public class ReportController : BaseController
             }
             catch (ForumException e)
             {
-                return this.BadRequest(e.Message);
+                return this.NotFound(e.Message);
             }
             catch (DbUpdateException)
             {
@@ -87,10 +105,15 @@ public class ReportController : BaseController
         });
     }
 
-    // PUT: api/reports/{id}/status
-    [HttpPut("reports/{userId:int}/{messageId:int}/status/{status:int}")]
+    /// <summary>
+    /// Updates the status of a specific report by message ID.
+    /// </summary>
+    /// <param name="messageId">The ID of the message associated with the report.</param>
+    /// <param name="status">The new status for the report.</param>
+    /// <returns>An Ok result with the updated report details, or a NotFound/BadRequest result if the update fails.</returns>
+    [HttpPut("reports/{messageId:int}/status/{status:int}")]
     //[Authorize(Roles = "Admin,Moderator")]
-    public async Task<IActionResult> UpdateReportStatus(int userId, int messageId, int status)
+    public async Task<IActionResult> UpdateReportStatus(int messageId, int status)
     {
         // Try to convert the int status parameter to the nullable enum type
         ReportStatus? reportStatus = Enum.IsDefined(typeof(ReportStatus), status)
@@ -102,7 +125,10 @@ public class ReportController : BaseController
             return this.BadRequest("Invalid status value provided.");
         }
 
-        var reportUpdateModel = new ReportUpdateModel() { UserId = userId, MessageId = messageId, Status = reportStatus };
+        int userId = GetCurrentUserId(httpContextAccessor);
+
+        var reportUpdateModel =
+            new ReportUpdateModel() { UserId = userId, MessageId = messageId, Status = reportStatus };
 
         var validator = this.serviceProvider.GetService<IValidator<ReportUpdateModel>>();
 
@@ -125,7 +151,12 @@ public class ReportController : BaseController
         });
     }
 
-    // DELETE: api/reports/{id}
+    /// <summary>
+    /// Deletes a specific report by user ID and message ID.
+    /// </summary>
+    /// <param name="userId">The ID of the user who created the report.</param>
+    /// <param name="messageId">The ID of the message associated with the report.</param>
+    /// <returns>NoContent if deletion is successful, or a NotFound/BadRequest result if deletion fails.</returns>
     [HttpDelete("reports/{userId:int}/{messageId:int}")]
     //[Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> DeleteReport(int userId, int messageId)
@@ -153,7 +184,11 @@ public class ReportController : BaseController
         });
     }
 
-    // GET: api/topics/{topicId}/reports
+    /// <summary>
+    /// Retrieves all reports for a specific topic by topic ID.
+    /// </summary>
+    /// <param name="topicId">The ID of the topic for which reports are requested.</param>
+    /// <returns>A list of reports associated with the specified topic, or a NotFound/BadRequest result if the topic is invalid.</returns>
     [HttpGet("topics/{topicId}/reports")]
     //[Authorize(Roles = "Admin,Moderator")]
     public async Task<IActionResult> GetReportsForTopic(int topicId)
@@ -163,7 +198,14 @@ public class ReportController : BaseController
             return this.BadRequest("Invalid topic ID.");
         }
 
-        var reports = await this.reportService.GetReportsForTopicAsync(topicId);
-        return this.Ok(reports);
+        try
+        {
+            var reports = await this.reportService.GetReportsForTopicAsync(topicId);
+            return this.Ok(reports);
+        }
+        catch (ForumException e)
+        {
+            return this.NotFound(e.Message);
+        }
     }
 }

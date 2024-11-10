@@ -69,12 +69,12 @@ public class ReportService : IReportService
 
     public async Task<ReportSummaryModel> GetByIdAsync(params object[] keys)
     {
-        var reportEntity = await this.unitOfWork.ReportRepository.GetByIdAsync(keys);
-
-        if (reportEntity == null)
+        if (!this.unitOfWork.ReportRepository.IsExist(keys))
         {
             throw new ForumException("There is no Report with the given keys.");
         }
+
+        var reportEntity = await this.unitOfWork.ReportRepository.GetByIdAsync(keys);
 
         var reportModel = this.mapper.MapWithExceptionHandling<ReportSummaryModel>(reportEntity);
 
@@ -135,12 +135,18 @@ public class ReportService : IReportService
         {
             throw new ForumException("Report with this id is not found");
         }
+
         await this.unitOfWork.ReportRepository.DeleteByIdAsync(modelId.KeyPart1, modelId.KeyPart2);
         await this.unitOfWork.SaveAsync();
     }
 
     public async Task<IEnumerable<ReportSummaryModel>> GetReportsForTopicAsync(int topicId)
     {
+        if (!this.unitOfWork.TopicRepository.IsExist(topicId))
+        {
+            throw new ForumException("Topic with this id does not exist");
+        }
+
         var reportEntities = await this.unitOfWork.ReportRepository.GetReportsForTopicAsync(topicId);
         var reportModels = reportEntities.Select(r => this.mapper.MapWithExceptionHandling<ReportSummaryModel>(r));
 

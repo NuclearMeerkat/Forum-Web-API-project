@@ -9,6 +9,9 @@ using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.WebApi.Controllers;
 
+/// <summary>
+/// Controller for managing user accounts and profiles.
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class UsersController : BaseController
@@ -27,8 +30,12 @@ public class UsersController : BaseController
         this.httpContextAccessor = httpContextAccessor;
     }
 
-    // GET: api/users
-    // Restricted to admins only
+    /// <summary>
+    /// Gets a list of all user profiles.
+    /// Restricted to administrators only.
+    /// </summary>
+    /// <param name="parameters">Query parameters for filtering, sorting and pagination.</param>
+    /// <returns>A list of user profiles.</returns>
     [HttpGet]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllUsersProfiles([FromQuery] UserQueryParametersModel parameters)
@@ -42,7 +49,13 @@ public class UsersController : BaseController
         });
     }
 
-    [HttpGet("details/{id:int}")]
+    /// <summary>
+    /// Gets detailed information about a specific user by their ID.
+    /// Requires authorization.
+    /// </summary>
+    /// <param name="id">The ID of the user.</param>
+    /// <returns>Detailed user information if found; otherwise, NotFound.</returns>
+    [HttpGet("{id:int}/details")]
     [Authorize]
     public async Task<IActionResult> GetUserDetailedInfoById(int id)
     {
@@ -59,8 +72,14 @@ public class UsersController : BaseController
         return this.Ok(user);
     }
 
-    // GET: api/users/{id}
-    [HttpGet("{id:int}")]
+
+    /// <summary>
+    /// Gets public profile information of a user by their ID.
+    /// Requires authorization.
+    /// </summary>
+    /// <param name="id">The ID of the user.</param>
+    /// <returns>Public profile information if found; otherwise, NotFound.</returns>
+    [HttpGet("{id:int}/profile")]
     [Authorize]
     public async Task<IActionResult> GetUserProfileById(int id)
     {
@@ -77,7 +96,11 @@ public class UsersController : BaseController
         return this.Ok(user);
     }
 
-    // POST: api/users/register
+    /// <summary>
+    /// Registers a new user with the provided registration details.
+    /// </summary>
+    /// <param name="registerDto">The registration details of the user.</param>
+    /// <returns>Created response with user ID, nickname, and email if successful; otherwise, BadRequest.</returns>
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] UserRegisterModel registerDto)
     {
@@ -100,7 +123,11 @@ public class UsersController : BaseController
         });
     }
 
-    // POST: api/users/login
+    /// <summary>
+    /// Authenticates a user and issues a token on successful login.
+    /// </summary>
+    /// <param name="loginDto">The login details of the user.</param>
+    /// <returns>Ok if login is successful and token is issued; otherwise, Unauthorized.</returns>
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginModel loginDto)
     {
@@ -131,7 +158,11 @@ public class UsersController : BaseController
         });
     }
 
-    // PUT: api/users/{id}
+    /// <summary>
+    /// Updates the profile of the currently logged-in user.
+    /// </summary>
+    /// <param name="updateDto">The updated profile details.</param>
+    /// <returns>NoContent if the update is successful; otherwise, BadRequest or NotFound.</returns>
     [HttpPatch("profile")]
     [Authorize]
     public async Task<IActionResult> UpdateMyProfile([FromBody] UserUpdateModel updateDto)
@@ -158,7 +189,12 @@ public class UsersController : BaseController
         });
     }
 
-    // DELETE: api/users/{id}
+    /// <summary>
+    /// Deletes the profile of the currently logged-in user.
+    /// Requires password confirmation.
+    /// </summary>
+    /// <param name="password">The user's password for confirmation.</param>
+    /// <returns>NoContent if successful; otherwise, BadRequest.</returns>
     [HttpDelete("profile")]
     [Authorize]
     // [Authorize(Roles = "Admin")]
@@ -176,8 +212,13 @@ public class UsersController : BaseController
         }
     }
 
-    // PUT: api/users/{id}
-    [HttpPatch("{id:int}")]
+    /// <summary>
+    /// Updates a user's profile by ID as an administrator.
+    /// </summary>
+    /// <param name="id">The ID of the user to update.</param>
+    /// <param name="updateDto">The updated profile details.</param>
+    /// <returns>NoContent if successful; otherwise, BadRequest or NotFound.</returns>
+    [HttpPatch("admin/{id:int}")]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AdminUpdateUser(int id, [FromBody] UserUpdateModel updateDto)
     {
@@ -197,8 +238,12 @@ public class UsersController : BaseController
         }
     }
 
-    // DELETE: api/users/{id}
-    [HttpDelete("{id:int}")]
+    /// <summary>
+    /// Deletes a user by ID as an administrator.
+    /// </summary>
+    /// <param name="id">The ID of the user to delete.</param>
+    /// <returns>NoContent if successful; otherwise, BadRequest.</returns>
+    [HttpDelete("admin/{id:int}")]
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AdminDelete(int id)
     {

@@ -31,6 +31,11 @@ public class MessageService : IMessageService
 
     public async Task<MessageBriefModel> GetByIdAsync(params object[] keys)
     {
+        if (!this.unitOfWork.MessageRepository.IsExist(keys))
+        {
+            throw new ForumException("This message does not exist");
+        }
+
         var messageEntity = await this.unitOfWork.MessageRepository.GetByIdAsync(keys);
         var messageModel = this.mapper.MapWithExceptionHandling<MessageBriefModel>(messageEntity);
 
@@ -39,6 +44,11 @@ public class MessageService : IMessageService
 
     public async Task<MessageModel> GetByIdWithDetailsAsync(int id)
     {
+        if (!this.unitOfWork.MessageRepository.IsExist(id))
+        {
+            throw new ForumException("The message does not exist");
+        }
+
         var messageEntity = await this.unitOfWork.MessageRepository.GetByIdWithDetailsAsync(id);
         var messageModel = this.mapper.MapWithExceptionHandling<MessageModel>(messageEntity);
 
@@ -71,6 +81,11 @@ public class MessageService : IMessageService
     {
         ForumException.ThrowIfNull(model);
 
+        if (!this.unitOfWork.MessageRepository.IsExist(model.Id))
+        {
+            throw new ForumException("Message with this id does not exist");
+        }
+
         Message existingMessage;
         try
         {
@@ -78,7 +93,7 @@ public class MessageService : IMessageService
         }
         catch (Exception e)
         {
-            throw new ForumException("Topic with this id is not found");
+            throw new InvalidOperationException(e.Message);
         }
 
         this.mapper.Map(model, existingMessage);
@@ -137,10 +152,39 @@ public class MessageService : IMessageService
 
     public async Task<IEnumerable<MessageBriefModel>> GetMessagesByTopicIdAsync(int topicId)
     {
+        if (!this.unitOfWork.TopicRepository.IsExist(topicId))
+        {
+            throw new ForumException("Topic with this id does not exist");
+        }
+
         var messages = await this.unitOfWork.MessageRepository.GetByTopicId(topicId);
 
         var messageModels = messages.Select(m => this.mapper.MapWithExceptionHandling<MessageBriefModel>(m));
 
         return messageModels;
+    }
+
+    public async Task<bool> CheckMessageOwner(int messageId, int userId)
+    {
+        Message message;
+        try
+        {
+            message = await this.unitOfWork.MessageRepository.GetByIdAsync(messageId);
+            if (message is null)
+            {
+                throw new InvalidOperationException();
+            }
+        }
+        catch (InvalidOperationException)
+        {
+            throw new ForumException("Message with this id is not found");
+        }
+
+        if (userId == message.UserId)
+        {
+            return true;
+        }
+
+        return false;
     }
 }

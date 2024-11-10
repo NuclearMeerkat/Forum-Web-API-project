@@ -12,6 +12,9 @@ using WebApp.Infrastructure.Models.TopicModels;
 
 namespace WebApp.WebApi.Controllers;
 
+/// <summary>
+/// Controller for managing forum topics, including creating, retrieving, updating, and rating topics.
+/// </summary>
 [Route("api/[controller]")]
 [ApiController]
 public class TopicsController : BaseController
@@ -33,7 +36,11 @@ public class TopicsController : BaseController
         this.httpContextAccessor = httpContextAccessor;
     }
 
-    // GET: api/topics
+    /// <summary>
+    /// Retrieves a list of topics based on specified query parameters.
+    /// </summary>
+    /// <param name="parameters">Query parameters for filtering, sorting and pagination.</param>
+    /// <returns>A list of topics matching the criteria.</returns>
     [HttpGet]
     public async Task<IActionResult> GetTopics([FromQuery] TopicQueryParametersModel parameters)
     {
@@ -46,24 +53,36 @@ public class TopicsController : BaseController
         });
     }
 
-    // GET: api/topics/{id}
-    [HttpGet("{id}")]
-    public async Task<IActionResult> GetTopicById(int id)
+    /// <summary>
+    /// Retrieves a single topic with its associated dialog by topic ID.
+    /// </summary>
+    /// <param name="topicId">The ID of the topic to retrieve.</param>
+    /// <returns>The topic with detailed information, if found.</returns>
+    [HttpGet("{topicId}")]
+    public async Task<IActionResult> GetTopicWithDialog(int topicId)
     {
-        TopicSummaryModel topic;
+        TopicDialogModel topic;
         try
         {
-            topic = await this.topicService.GetByIdAsync(id);
+            topic = await this.topicService.GetByIdWithDetailsAsync(topicId);
         }
-        catch (InvalidOperationException)
+        catch (ForumException e)
         {
-            return this.NotFound($"Topic with Id = {id} not found");
+            return this.NotFound(e.Message);
+        }
+        catch (InvalidOperationException e)
+        {
+            return this.BadRequest(e.Message);
         }
 
         return this.Ok(topic);
     }
 
-    // POST: api/topics
+    /// <summary>
+    /// Creates a new topic based on the provided model.
+    /// </summary>
+    /// <param name="creationModel">The model containing details for the new topic.</param>
+    /// <returns>The created topic, if successful.</returns>
     [Authorize]
     [HttpPost]
     public async Task<IActionResult> CreateTopic(
@@ -88,8 +107,13 @@ public class TopicsController : BaseController
         });
     }
 
+    /// <summary>
+    /// Creates a new topic on behalf of a user (Admin/Moderator only).
+    /// </summary>
+    /// <param name="creationModel">The model with details for the new topic.</param>
+    /// <returns>The created topic, if successful.</returns>
     // [Authorize(Roles = "Admin,Moderator")]
-    [HttpPost("Admin")]
+    [HttpPost("admin")]
     public async Task<IActionResult> CreateTopicForUser(
         [FromBody] AdminTopicCreateModel creationModel)
     {
@@ -109,9 +133,14 @@ public class TopicsController : BaseController
         });
     }
 
-    // PUT: api/topics/{id}
+    /// <summary>
+    /// Updates a topic by ID for an admin user.
+    /// </summary>
+    /// <param name="id">The ID of the topic to update.</param>
+    /// <param name="updateModel">The updated data for the topic.</param>
+    /// <returns>The updated topic if successful, otherwise an error message.</returns>
     // [Authorize(Roles = "Admin,Moderator")]
-    [HttpPatch("Admin/{id:int}")]
+    [HttpPatch("admin/{id:int}")]
     public async Task<IActionResult> AdminUpdateTopic(
         int id,
         [FromBody] TopicUpdateModel updateModel)
@@ -135,6 +164,12 @@ public class TopicsController : BaseController
         });
     }
 
+    /// <summary>
+    /// Updates a topic by ID for the current user.
+    /// </summary>
+    /// <param name="id">The ID of the topic to update.</param>
+    /// <param name="updateModel">The updated data for the topic.</param>
+    /// <returns>The updated topic if successful, otherwise an error message.</returns>
     [HttpPatch("{id:int}")]
     [Authorize]
     public async Task<IActionResult> UpdateTopic(
@@ -167,7 +202,11 @@ public class TopicsController : BaseController
         });
     }
 
-    // DELETE: api/topics/{id}
+    /// <summary>
+    /// Deletes a topic by ID (Admin/Moderator only).
+    /// </summary>
+    /// <param name="id">The ID of the topic to delete.</param>
+    /// <returns>No content if deletion is successful.</returns>
     // [Authorize(Roles = "Admin,Moderator")]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteTopic(int id)
@@ -186,27 +225,58 @@ public class TopicsController : BaseController
         return this.NoContent();
     }
 
+    /// <summary>
+    /// Rates a topic by providing a rating model. If rating was already rated so updating it.
+    /// </summary>
+    /// <param name="model">The rating model for a topic.</param>
+    /// <returns>Success status if rating is successfully added.</returns>
     [HttpPost("rate")]
+    [Authorize]
     public async Task<IActionResult> RateTopic([FromBody] RateTopicModel model)
     {
         var validator = this.serviceProvider.GetService<IValidator<RateTopicModel>>();
 
+        model.UserId = this.GetCurrentUserId(httpContextAccessor);
+
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {
-            await this.topicService.RateTopic(model.UserId, model.TopicId, model.Stars);
-            return this.Ok();
+            try
+            {
+                await this.topicService.RateTopic(model.UserId, model.TopicId, model.Stars);
+                return this.Ok();
+            }
+            catch (ForumException e)
+            {
+                return this.NotFound(e.Message);
+            }
         });
     }
 
-    [HttpDelete("rate")]
-    public async Task<IActionResult> DeleteRateTopic([FromBody] DeleteRateModel model)
+    /// <summary>
+    /// Removes a rating from a topic for the current user.
+    /// </summary>
+    /// <param name="topicId">The ID of the topic for which to remove the rating.</param>
+    /// <returns>Success status if rating is removed successfully.</returns>
+    [HttpDelete("{topicId:int}/rate")]
+    [Authorize]
+    public async Task<IActionResult> DeleteRateTopic(int topicId)
     {
+        DeleteRateModel model = new DeleteRateModel()
+        {
+            UserId = this.GetCurrentUserId(httpContextAccessor), TopicId = topicId,
+        };
+
         var validator = this.serviceProvider.GetService<IValidator<DeleteRateModel>>();
 
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {
             try
             {
+                if (!await this.topicService.CheckTopicOwner(model.TopicId, model.UserId))
+                {
+                    throw new ForumException("You cannot delete this rate");
+                }
+
                 await this.topicService.RemoveRate(model.UserId, model.TopicId);
                 return this.Ok();
             }

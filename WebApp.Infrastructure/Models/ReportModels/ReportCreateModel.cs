@@ -4,6 +4,7 @@ namespace WebApp.Infrastructure.Models.ReportModels;
 
 public class ReportCreateModel
 {
+    [JsonIgnore]
     public int UserId { get; set; }
 
     public int MessageId { get; set; }

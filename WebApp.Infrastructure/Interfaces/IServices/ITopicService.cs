@@ -10,4 +10,5 @@ public interface ITopicService : ICrud<TopicSummaryModel, AdminTopicCreateModel,
 
     public Task<bool> CheckTopicOwner(int topicId, int userId);
 
+    public Task<TopicDialogModel> GetByIdWithDetailsAsync(params object[] keys);
 }

@@ -154,7 +154,7 @@
       <workItem from="1730830442703" duration="10979000" />
       <workItem from="1730879777803" duration="4822000" />
       <workItem from="1730904658356" duration="9801000" />
-      <workItem from="1731003411031" duration="109180000" />
+      <workItem from="1731003411031" duration="123524000" />
     </task>
     <servers />
   </component>
@@ -205,6 +205,19 @@
             </endOffsets>
           </properties>
           <option name="timeStamp" value="47" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/WebApp.WebApi/Controllers/ReportController.cs</url>
+          <line>93</line>
+          <properties documentPath="C:\EPAM Course\Accessment\Tasks\FORUM\WebApp.WebApi\Controllers\ReportController.cs" containingFunctionPresentation="Lambda expression inside Method 'SubmitReport'">
+            <startOffsets>
+              <option value="3635" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3695" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="64" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

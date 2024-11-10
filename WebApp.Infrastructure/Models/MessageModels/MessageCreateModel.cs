@@ -4,6 +4,7 @@ namespace WebApp.Infrastructure.Models.MessageModels;
 
 public class MessageCreateModel
 {
+    [JsonIgnore]
     public int UserId { get; set; }
 
     [JsonIgnore]

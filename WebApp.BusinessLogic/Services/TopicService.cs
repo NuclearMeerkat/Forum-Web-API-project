@@ -91,7 +91,12 @@ public class TopicService : ITopicService
 
     public async Task<TopicSummaryModel> GetByIdAsync(params object[] keys)
     {
-        var topicEntity = await this.unitOfWork.TopicRepository.GetByIdAsync(keys);
+        if (!this.unitOfWork.TopicRepository.IsExist(keys))
+        {
+            throw new ForumException($"Topic with this id is not found");
+        }
+
+        var topicEntity = await this.unitOfWork.TopicRepository.GetWithDetailsAsync((int)keys[0]);
         var topicModel = this.mapper.MapWithExceptionHandling<TopicSummaryModel>(topicEntity);
 
         if (topicEntity.Messages.Count == 0 || topicEntity.Messages is null)
@@ -103,6 +108,19 @@ public class TopicService : ITopicService
             var topicMessages = topicEntity.Messages.Select(m => this.mapper.MapWithExceptionHandling<MessageModel>(m));
             topicModel.ActivityScore = CalculateActivity((ICollection<MessageModel>)topicMessages);
         }
+
+        return topicModel;
+    }
+
+    public async Task<TopicDialogModel> GetByIdWithDetailsAsync(params object[] keys)
+    {
+        if (!this.unitOfWork.TopicRepository.IsExist(keys))
+        {
+            throw new ForumException($"Topic with this id is not found");
+        }
+
+        var topicEntity = await this.unitOfWork.TopicRepository.GetWithDetailsAsync((int)keys[0]);
+        var topicModel = this.mapper.MapWithExceptionHandling<TopicDialogModel>(topicEntity);
 
         return topicModel;
     }
@@ -172,6 +190,16 @@ public class TopicService : ITopicService
 
     public async Task RateTopic(int userId, int topicId, int stars)
     {
+        if (!this.unitOfWork.TopicRepository.IsExist(topicId))
+        {
+            throw new ForumException("Topic with this id is not found");
+        }
+
+        if (!this.unitOfWork.UserRepository.IsExist(userId))
+        {
+            throw new ForumException("User with this id is not found");
+        }
+
         try
         {
             // Check if the user has already rated this topic
