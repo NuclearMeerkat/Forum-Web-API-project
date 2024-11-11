@@ -1,4 +1,4 @@
-﻿namespace WebApp.Infrastructure.Models.ReportModels;
+namespace WebApp.Infrastructure.Models.ReportModels;
 
 using System.Text.Json.Serialization;
 public class ReportCreateModel
@@ -9,7 +9,6 @@ public class ReportCreateModel
     public int MessageId { get; set; }
 
     public string Reason { get; set; }
-
 
     [JsonIgnore]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

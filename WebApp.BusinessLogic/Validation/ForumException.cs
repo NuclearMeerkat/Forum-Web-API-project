@@ -1,4 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using WebApp.Infrastructure.Enums;
 using WebApp.Infrastructure.Models.MessageModels;
@@ -203,7 +203,6 @@ namespace WebApp.BusinessLogic.Validation
                 Throw(paramName);
             }
         }
-
 
         public static void ThrowIfUserCreateModelIsNotCorrect([NotNull] UserRegisterModel? argument,
             [CallerArgumentExpression(nameof(argument))]

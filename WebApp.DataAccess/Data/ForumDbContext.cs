@@ -82,7 +82,6 @@ public class ForumDbContext : DbContext
             .Property(m => m.LikesCounter)
             .HasDefaultValue(0);
 
-
         modelBuilder.Entity<MessageLike>()
             .HasKey(l => new { l.UserId, l.MessageId });
         modelBuilder.Entity<MessageLike>()

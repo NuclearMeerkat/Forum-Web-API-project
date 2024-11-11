@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -87,7 +87,7 @@ public class ReportController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<ReportCreateModel>>();
 
-        model.UserId = GetCurrentUserId(httpContextAccessor);
+        model.UserId = this.GetCurrentUserId(this.httpContextAccessor);
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {
             try
@@ -126,7 +126,7 @@ public class ReportController : BaseController
             return this.BadRequest("Invalid status value provided.");
         }
 
-        int userId = GetCurrentUserId(httpContextAccessor);
+        int userId = this.GetCurrentUserId(this.httpContextAccessor);
 
         var reportUpdateModel =
             new ReportUpdateModel() { UserId = userId, MessageId = messageId, Status = reportStatus };

@@ -41,7 +41,7 @@ internal sealed class UserRepositoryTests
         using var context = new ForumDbContext(UnitTestDataHelper.GetUnitTestDbOptions());
 
         var userRepository = new UserRepository(context);
-        var user = new User { Id = 4, Nickname = "NewUser", Email = "newuser@example.com", Role = UserRole.User, ProfilePictureUrl = "URL", PasswordHash = "password"};
+        var user = new User { Id = 4, Nickname = "NewUser", Email = "newuser@example.com", Role = UserRole.User, ProfilePictureUrl = "URL", PasswordHash = "password" };
 
         await userRepository.AddAsync(user);
         await context.SaveChangesAsync();
