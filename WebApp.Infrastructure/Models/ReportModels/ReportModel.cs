@@ -1,8 +1,8 @@
-﻿using WebApp.Infrastructure.Enums;
+﻿namespace WebApp.Infrastructure.Models.ReportModels;
+
+using WebApp.Infrastructure.Enums;
 using WebApp.Infrastructure.Models.MessageModels;
 using WebApp.Infrastructure.Models.UserModels;
-
-namespace WebApp.Infrastructure.Models.ReportModels;
 
 public class ReportModel
 {

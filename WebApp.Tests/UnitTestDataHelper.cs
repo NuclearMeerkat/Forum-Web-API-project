@@ -22,9 +22,9 @@ internal class UnitTestDataHelper
     {
         // Seed Users
         context.Users.AddRange(
-            new User { Id = 1, Nickname = "JaneDoe", Email = "jane.doe@example.com", ProfilePictureUrl = "/images/jane.jpg", Role = UserRole.User, PasswordHash = "password1"},
-            new User { Id = 2, Nickname = "JohnSmith", Email = "john.smith@example.com", ProfilePictureUrl = "/images/john.jpg", Role = UserRole.Moderator, PasswordHash = "password2"},
-            new User { Id = 3, Nickname = "AliceBlue", Email = "alice.blue@example.com", ProfilePictureUrl = "/images/alice.jpg", Role = UserRole.Admin, PasswordHash = "password3"}
+            new User { Id = 1, Nickname = "JaneDoe", Email = "jane.doe@example.com", ProfilePictureUrl = "/images/jane.jpg", Role = UserRole.User, PasswordHash = "password1" },
+            new User { Id = 2, Nickname = "JohnSmith", Email = "john.smith@example.com", ProfilePictureUrl = "/images/john.jpg", Role = UserRole.Moderator, PasswordHash = "password2" },
+            new User { Id = 3, Nickname = "AliceBlue", Email = "alice.blue@example.com", ProfilePictureUrl = "/images/alice.jpg", Role = UserRole.Admin, PasswordHash = "password3" }
         );
 
         // Seed Topics

@@ -1,6 +1,6 @@
-using System.Text.Json.Serialization;
-
 namespace WebApp.Infrastructure.Models.MessageModels;
+
+using System.Text.Json.Serialization;
 
 public class MessageCreateModel
 {

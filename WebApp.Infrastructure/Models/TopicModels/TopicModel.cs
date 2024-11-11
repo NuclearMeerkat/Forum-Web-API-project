@@ -1,6 +1,6 @@
-﻿using WebApp.Infrastructure.Models.MessageModels;
+﻿namespace WebApp.Infrastructure.Models.TopicModels;
 
-namespace WebApp.Infrastructure.Models.TopicModels;
+using WebApp.Infrastructure.Models.MessageModels;
 
 public class TopicModel
 {

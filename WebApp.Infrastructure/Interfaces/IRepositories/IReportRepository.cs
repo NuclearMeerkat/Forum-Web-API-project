@@ -1,6 +1,6 @@
-﻿using WebApp.Infrastructure.Entities;
-
 namespace WebApp.Infrastructure.Interfaces.IRepositories;
+
+using WebApp.Infrastructure.Entities;
 
 public interface IReportRepository : IRepository<Report>
 {
@@ -9,5 +9,6 @@ public interface IReportRepository : IRepository<Report>
     public Task<IEnumerable<Report>> GetAllWithDetailsAsync();
 
     public Task<IEnumerable<Report>> GetReportsForTopicAsync(int topicId);
+
     Task<IEnumerable<Report>> GetRangeAsync(int skip, int take);
 }

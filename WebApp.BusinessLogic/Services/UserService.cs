@@ -1,17 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using AutoMapper;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Infrastructure;
 using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Enums;
 using WebApp.Infrastructure.Interfaces.Auth;
 using WebApp.Infrastructure.Interfaces.IRepositories;
 using WebApp.Infrastructure.Interfaces.IServices;
-using WebApp.Infrastructure.Models.TopicModels;
 using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.BusinessLogic.Services;
@@ -21,7 +14,7 @@ public class UserService : IUserService
     private readonly IUnitOfWork unitOfWork;
     private readonly IMapper mapper;
     private readonly IPasswordHasher passwordHasher;
-    private readonly IJwtProvider _jwtProvider;
+    private readonly IJwtProvider jwtProvider;
 
     public UserService(
         IUnitOfWork unitOfWork,
@@ -32,7 +25,7 @@ public class UserService : IUserService
         this.unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         this.passwordHasher = passwordHasher ?? throw new ArgumentNullException(nameof(passwordHasher));
-        this._jwtProvider = jwtProvider;
+        this.jwtProvider = jwtProvider;
     }
 
     public async Task<IEnumerable<UserPublicProfileModel>> GetAllAsync(UserQueryParametersModel? queryParameters)
@@ -151,7 +144,7 @@ public class UserService : IUserService
 
         var result = this.passwordHasher.Verify(model.Password, user.PasswordHash);
 
-        if (result == false)
+        if (!result)
         {
             throw new ForumException("Invalid password or email");
         }
@@ -160,7 +153,7 @@ public class UserService : IUserService
 
         this.unitOfWork.UserRepository.Update(user);
 
-        var token = this._jwtProvider.GenerateToken(user);
+        var token = this.jwtProvider.GenerateToken(user);
 
         return token;
     }

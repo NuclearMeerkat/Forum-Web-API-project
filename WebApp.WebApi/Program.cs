@@ -1,4 +1,3 @@
-using System.Text.Json.Serialization;
 using FluentValidation;
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.AspNetCore.Authentication;

@@ -1,6 +1,6 @@
-using WebApp.Infrastructure.Models.ReportModels;
-
 namespace WebApp.Infrastructure.Models.MessageModels;
+
+using WebApp.Infrastructure.Models.ReportModels;
 
 public class MessageModel
 {

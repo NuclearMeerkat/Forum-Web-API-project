@@ -1,6 +1,6 @@
-using WebApp.Infrastructure.Enums;
-
 namespace WebApp.Infrastructure.Entities;
+
+using WebApp.Infrastructure.Enums;
 
 public class User : BaseEntity
 {

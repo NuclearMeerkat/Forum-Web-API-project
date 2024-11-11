@@ -1,9 +1,9 @@
-﻿using WebApp.Infrastructure.Enums;
+﻿namespace WebApp.Infrastructure.Models.UserModels;
+
+using WebApp.Infrastructure.Enums;
 using WebApp.Infrastructure.Models.MessageModels;
 using WebApp.Infrastructure.Models.ReportModels;
 using WebApp.Infrastructure.Models.TopicModels;
-
-namespace WebApp.Infrastructure.Models.UserModels;
 
 public class UserModel
 {

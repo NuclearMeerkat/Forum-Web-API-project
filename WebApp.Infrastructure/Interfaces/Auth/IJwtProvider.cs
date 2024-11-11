@@ -1,6 +1,6 @@
-﻿using WebApp.Infrastructure.Entities;
+﻿namespace WebApp.Infrastructure.Interfaces.Auth;
 
-namespace WebApp.Infrastructure.Interfaces.Auth;
+using WebApp.Infrastructure.Entities;
 
 public interface IJwtProvider
 {

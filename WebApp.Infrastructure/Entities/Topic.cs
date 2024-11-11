@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace WebApp.Infrastructure.Entities;
+
+using System.ComponentModel.DataAnnotations.Schema;
 
 public class Topic : BaseEntity
 {
@@ -20,6 +20,7 @@ public class Topic : BaseEntity
 
     [NotMapped]
     public double ActivityScore { get; set; }
+
     public int UserId { get; set; }
 
     public User User { get; set; }

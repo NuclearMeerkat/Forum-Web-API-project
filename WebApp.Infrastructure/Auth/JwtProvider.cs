@@ -1,12 +1,12 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿namespace WebApp.Infrastructure.Auth;
+
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Interfaces.Auth;
-
-namespace WebApp.Infrastructure.Auth;
 
 public class JwtProvider : IJwtProvider
 {

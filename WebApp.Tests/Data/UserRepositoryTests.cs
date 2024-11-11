@@ -6,7 +6,7 @@ using WebApp.Infrastructure.Enums;
 using WebApp.Tests.Comparers;
 
 namespace WebApp.Tests.Data;
-internal class UserRepositoryTests
+internal sealed class UserRepositoryTests
 {
     [TestCase(1)]
     [TestCase(2)]

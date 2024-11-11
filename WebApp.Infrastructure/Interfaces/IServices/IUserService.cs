@@ -1,8 +1,8 @@
+namespace WebApp.Infrastructure.Interfaces.IServices;
+
 using WebApp.Infrastructure.Enums;
-using WebApp.Infrastructure.Models.TopicModels;
 using WebApp.Infrastructure.Models.UserModels;
 
-namespace WebApp.Infrastructure.Interfaces.IServices;
 public interface IUserService : ICrud<UserPublicProfileModel, UserRegisterModel, UserUpdateModel, UserQueryParametersModel, int>
 {
     public Task<string> LoginAsync(UserLoginModel model);

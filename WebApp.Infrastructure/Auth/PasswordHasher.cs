@@ -1,6 +1,6 @@
-using WebApp.Infrastructure.Interfaces.Auth;
-
 namespace WebApp.Infrastructure.Auth;
+
+using WebApp.Infrastructure.Interfaces.Auth;
 
 public class PasswordHasher : IPasswordHasher
 {

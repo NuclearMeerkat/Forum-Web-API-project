@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Enums;
@@ -39,7 +39,7 @@ public class UserRoleClaimsTransformation : IClaimsTransformation
         UserRole userRole;
         try
         {
-            userRole = await userService.GetUserRoleAsync(userId);
+            userRole = await this.userService.GetUserRoleAsync(userId);
             identity.AddClaim(new Claim("Role", userRole.ToString()));
         }
         catch (ForumException)

@@ -1,7 +1,6 @@
-﻿using System.Text.Json.Serialization;
+﻿namespace WebApp.Infrastructure.Models.ReportModels;
 
-namespace WebApp.Infrastructure.Models.ReportModels;
-
+using System.Text.Json.Serialization;
 public class ReportCreateModel
 {
     [JsonIgnore]

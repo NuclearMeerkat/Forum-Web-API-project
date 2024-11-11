@@ -1,6 +1,6 @@
-﻿using WebApp.Infrastructure.Entities;
+﻿namespace WebApp.Infrastructure.Interfaces.IRepositories;
 
-namespace WebApp.Infrastructure.Interfaces.IRepositories;
+using WebApp.Infrastructure.Entities;
 
 public interface ITopicRepository : IRepository<Topic>
 {

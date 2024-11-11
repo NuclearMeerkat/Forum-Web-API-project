@@ -1,6 +1,6 @@
-using WebApp.Infrastructure.Entities;
-
 namespace WebApp.Infrastructure.Interfaces.IRepositories;
+
+using WebApp.Infrastructure.Entities;
 
 public interface IRepository<TEntity>
     where TEntity : BaseEntity

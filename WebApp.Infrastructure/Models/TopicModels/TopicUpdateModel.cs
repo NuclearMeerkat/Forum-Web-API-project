@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
-
 namespace WebApp.Infrastructure.Models.TopicModels;
+
+using System.Text.Json.Serialization;
 
 public class TopicUpdateModel
 {
