@@ -123,7 +123,9 @@ public class ReportService : IReportService
             throw new ForumException("Report with this id is not found");
         }
 
+#pragma warning disable CS8629 // Nullable value type may be null.
         existingReport.Status = (ReportStatus)model.Status;
+#pragma warning restore CS8629 // Nullable value type may be null.
         this.unitOfWork.ReportRepository.Update(existingReport);
 
         await this.unitOfWork.SaveAsync();

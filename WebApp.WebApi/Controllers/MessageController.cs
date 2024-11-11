@@ -85,9 +85,11 @@ public class MessagesController : BaseController
     public async Task<IActionResult> CreateMessage(int topicId, [FromBody] MessageCreateModel creationModel)
     {
         creationModel.TopicId = topicId;
-        creationModel.UserId = this.GetCurrentUserId(this.httpContextAccessor);
+        creationModel.UserId = GetCurrentUserId(this.httpContextAccessor);
 
         var validator = this.serviceProvider.GetService<IValidator<MessageCreateModel>>();
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
         {
@@ -121,11 +123,13 @@ public class MessagesController : BaseController
 
         var validator = this.serviceProvider.GetService<IValidator<MessageUpdateModel>>();
 
+        ArgumentNullException.ThrowIfNull(validator);
+
         return await this.ValidateAndExecuteAsync(updateModel, validator, async () =>
         {
             try
             {
-                int userId = this.GetCurrentUserId(this.httpContextAccessor);
+                int userId = GetCurrentUserId(this.httpContextAccessor);
                 if (!await this.messageService.CheckMessageOwner(updateModel.Id, userId))
                 {
                     return this.Forbid("You cannot update this message");
@@ -181,7 +185,7 @@ public class MessagesController : BaseController
     {
         try
         {
-            int userId = this.GetCurrentUserId(this.httpContextAccessor);
+            int userId = GetCurrentUserId(this.httpContextAccessor);
             if (!await this.messageService.CheckMessageOwner(id, userId))
             {
                 return this.Forbid("You cannot update this message");
@@ -207,7 +211,7 @@ public class MessagesController : BaseController
     {
         try
         {
-            int userId = this.GetCurrentUserId(this.httpContextAccessor);
+            int userId = GetCurrentUserId(this.httpContextAccessor);
             if (!await this.messageService.CheckMessageOwner(messageId, userId))
             {
                 return this.Forbid("You cannot update this message");

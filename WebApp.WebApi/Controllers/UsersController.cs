@@ -41,6 +41,8 @@ public class UsersController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<UserQueryParametersModel>>();
 
+        ArgumentNullException.ThrowIfNull(validator);
+
         return await this.ValidateAndExecuteAsync(parameters, validator, async () =>
         {
             var users = await this.userService.GetAllAsync(parameters);
@@ -104,6 +106,8 @@ public class UsersController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<UserRegisterModel>>();
 
+        ArgumentNullException.ThrowIfNull(validator);
+
         return await this.ValidateAndExecuteAsync(registerDto, validator, async () =>
         {
             try
@@ -130,6 +134,8 @@ public class UsersController : BaseController
     public async Task<IActionResult> Login([FromBody] UserLoginModel loginDto)
     {
         var validator = this.serviceProvider.GetService<IValidator<UserLoginModel>>();
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(loginDto, validator, async () =>
         {
@@ -167,7 +173,9 @@ public class UsersController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<UserUpdateModel>>();
 
-        updateDto.Id = this.GetCurrentUserId(this.httpContextAccessor);
+        ArgumentNullException.ThrowIfNull(validator);
+
+        updateDto.Id = GetCurrentUserId(this.httpContextAccessor);
 
         return await this.ValidateAndExecuteAsync(updateDto, validator, async () =>
         {
@@ -197,7 +205,7 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> DeleteMyProfile(string password)
     {
-        int userId = this.GetCurrentUserId(this.httpContextAccessor);
+        int userId = GetCurrentUserId(this.httpContextAccessor);
         try
         {
             await this.userService.DeleteMyProfileAsync(password, userId);

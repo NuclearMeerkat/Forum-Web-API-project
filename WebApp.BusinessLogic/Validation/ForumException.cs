@@ -269,7 +269,9 @@ namespace WebApp.BusinessLogic.Validation
         }
 
         [DoesNotReturn]
+#pragma warning disable CS8604 // Possible null reference argument.
         internal static void Throw(string? paramName) =>
             throw new ForumException(paramName);
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 }

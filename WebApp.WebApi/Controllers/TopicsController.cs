@@ -42,6 +42,8 @@ public class TopicsController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<TopicQueryParametersModel>>();
 
+        ArgumentNullException.ThrowIfNull(validator);
+
         return await this.ValidateAndExecuteAsync(parameters, validator, async () =>
         {
             var topics = await this.topicService.GetAllAsync(parameters);
@@ -86,13 +88,17 @@ public class TopicsController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<TopicCreateModel>>();
 
-        creationModel.UserId = this.GetCurrentUserId(this.httpContextAccessor);
+        creationModel.UserId = GetCurrentUserId(this.httpContextAccessor);
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
         {
             try
             {
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
                 var topic = this.serviceProvider.GetService<IMapper>().Map<AdminTopicCreateModel>(creationModel);
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
                 int id = await this.topicService.AddAsync(topic);
                 creationModel.Id = id;
                 return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
@@ -115,6 +121,8 @@ public class TopicsController : BaseController
         [FromBody] AdminTopicCreateModel creationModel)
     {
         var validator = this.serviceProvider.GetService<IValidator<AdminTopicCreateModel>>();
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
         {
@@ -147,6 +155,8 @@ public class TopicsController : BaseController
 
         var validator = this.serviceProvider.GetService<IValidator<TopicUpdateModel>>();
 
+        ArgumentNullException.ThrowIfNull(validator);
+
         return await this.ValidateAndExecuteAsync(updateModel, validator, async () =>
         {
             try
@@ -178,7 +188,9 @@ public class TopicsController : BaseController
 
         var validator = this.serviceProvider.GetService<IValidator<TopicUpdateModel>>();
 
-        int userId = this.GetCurrentUserId(this.httpContextAccessor);
+        int userId = GetCurrentUserId(this.httpContextAccessor);
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(updateModel, validator, async () =>
         {
@@ -235,7 +247,9 @@ public class TopicsController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<RateTopicModel>>();
 
-        model.UserId = this.GetCurrentUserId(this.httpContextAccessor);
+        model.UserId = GetCurrentUserId(this.httpContextAccessor);
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {
@@ -262,11 +276,13 @@ public class TopicsController : BaseController
     {
         DeleteRateModel model = new DeleteRateModel()
         {
-            UserId = this.GetCurrentUserId(this.httpContextAccessor),
+            UserId = GetCurrentUserId(this.httpContextAccessor),
             TopicId = topicId,
         };
 
         var validator = this.serviceProvider.GetService<IValidator<DeleteRateModel>>();
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {

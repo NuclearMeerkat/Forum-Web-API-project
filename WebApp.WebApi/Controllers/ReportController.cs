@@ -42,6 +42,8 @@ public class ReportController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<ReportQueryParametersModel>>();
 
+        ArgumentNullException.ThrowIfNull(validator);
+
         return await this.ValidateAndExecuteAsync(parametersModel, validator, async () =>
         {
             var reports = await this.reportService.GetAllAsync(parametersModel);
@@ -89,7 +91,8 @@ public class ReportController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<ReportCreateModel>>();
 
-        model.UserId = this.GetCurrentUserId(this.httpContextAccessor);
+        model.UserId = GetCurrentUserId(this.httpContextAccessor);
+        ArgumentNullException.ThrowIfNull(validator);
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {
             try
@@ -128,12 +131,14 @@ public class ReportController : BaseController
             return this.BadRequest("Invalid status value provided.");
         }
 
-        int userId = this.GetCurrentUserId(this.httpContextAccessor);
+        int userId = GetCurrentUserId(this.httpContextAccessor);
 
         var reportUpdateModel =
             new ReportUpdateModel() { UserId = userId, MessageId = messageId, Status = reportStatus };
 
         var validator = this.serviceProvider.GetService<IValidator<ReportUpdateModel>>();
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(reportUpdateModel, validator, async () =>
         {
@@ -167,6 +172,8 @@ public class ReportController : BaseController
         var key = new CompositeKey() { KeyPart1 = userId, KeyPart2 = messageId };
 
         var validator = this.serviceProvider.GetService<IValidator<CompositeKey>>();
+
+        ArgumentNullException.ThrowIfNull(validator);
 
         return await this.ValidateAndExecuteAsync(key, validator, async () =>
         {
