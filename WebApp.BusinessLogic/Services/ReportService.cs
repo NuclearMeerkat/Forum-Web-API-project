@@ -22,7 +22,7 @@ public class ReportService : IReportService
     public async Task<IEnumerable<ReportSummaryModel>> GetAllAsync(
         ReportQueryParametersModel? queryParameters = default)
     {
-        if (queryParameters == null || queryParameters.RetrieveAll == true)
+        if (queryParameters == null || queryParameters.RetrieveAll)
         {
             var allReports = await this.unitOfWork.TopicRepository.GetAllAsync();
             return allReports.Select(m => this.mapper.Map<ReportSummaryModel>(m));
@@ -118,7 +118,7 @@ public class ReportService : IReportService
                 throw new NullReferenceException();
             }
         }
-        catch (Exception e)
+        catch (Exception)
         {
             throw new ForumException("Report with this id is not found");
         }

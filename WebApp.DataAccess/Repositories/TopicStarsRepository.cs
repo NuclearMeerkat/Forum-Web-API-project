@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using WebApp.DataAccess.Data;
 using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Interfaces.IRepositories;
-using WebApp.DataAccess.Data;
 
 namespace WebApp.DataAccess.Repositories;
 

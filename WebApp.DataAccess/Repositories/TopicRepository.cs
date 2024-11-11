@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using WebApp.Infrastructure.Entities;
-using WebApp.Infrastructure.Interfaces;
-using WebApp.Infrastructure.Interfaces.IRepositories;
-using WebApp.Infrastructure.Models;
 using WebApp.DataAccess.Data;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IRepositories;
 
 namespace WebApp.DataAccess.Repositories;
 
@@ -30,7 +28,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .ToListAsync();
@@ -53,7 +51,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .FirstAsync();
@@ -77,7 +75,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .FirstAsync();
@@ -100,7 +98,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .ToListAsync();
@@ -122,7 +120,7 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
                 User = t.User,
                 Messages = t.Messages,
                 Stars = t.Stars,
-                AverageStars = t.Stars.Count != 0 ? (double)t.Stars.Average(s => (double)s.StarCount) : 0,
+                AverageStars = t.Stars.Count != 0 ? t.Stars.Average(s => (double)s.StarCount) : 0,
                 EvaluationsNumber = t.Stars.Count,
             })
             .Skip(skip)

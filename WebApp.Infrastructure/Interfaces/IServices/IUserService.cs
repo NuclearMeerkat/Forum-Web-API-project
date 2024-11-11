@@ -1,4 +1,3 @@
-using WebApp.Infrastructure.Models;
 using WebApp.Infrastructure.Models.TopicModels;
 using WebApp.Infrastructure.Models.UserModels;
 

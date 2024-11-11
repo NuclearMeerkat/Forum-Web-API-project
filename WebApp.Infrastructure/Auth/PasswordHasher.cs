@@ -1,6 +1,6 @@
-﻿using WebApp.Infrastructure.Interfaces.Auth;
+using WebApp.Infrastructure.Interfaces.Auth;
 
-namespace WebApp.Infrastructure;
+namespace WebApp.Infrastructure.Auth;
 
 public class PasswordHasher : IPasswordHasher
 {
@@ -11,6 +11,6 @@ public class PasswordHasher : IPasswordHasher
 
     public bool Verify(string providedPassword, string hashedPassword)
     {
-         return BCrypt.Net.BCrypt.EnhancedVerify(providedPassword, hashedPassword);
+        return BCrypt.Net.BCrypt.EnhancedVerify(providedPassword, hashedPassword);
     }
 }

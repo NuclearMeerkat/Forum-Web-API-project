@@ -1,20 +1,19 @@
 using Microsoft.EntityFrameworkCore;
-using WebApp.Infrastructure.Entities;
-using WebApp.Infrastructure.Interfaces;
-using WebApp.Infrastructure.Interfaces.IRepositories;
 using WebApp.DataAccess.Data;
+using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Interfaces.IRepositories;
 
 namespace WebApp.DataAccess.Repositories
 {
     public abstract class GenericRepository<T> : IRepository<T>
         where T : BaseEntity
     {
-        public ForumDbContext context { get; }
-
         protected GenericRepository(ForumDbContext context)
         {
             this.context = context;
         }
+
+        public ForumDbContext context { get; }
 
         public async Task<object> AddAsync(T entity)
         {

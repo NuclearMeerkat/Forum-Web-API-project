@@ -20,7 +20,7 @@ public class TopicService : ITopicService
         return messages
             .OrderByDescending(m => m.CreatedAt)
             .Take(100) // Only the last 100 messages
-            .Select(m => Math.Exp(-decayConstant * (double)(DateTime.Now - m.CreatedAt).TotalDays))
+            .Select(m => Math.Exp(-decayConstant * (DateTime.Now - m.CreatedAt).TotalDays))
             .Sum();
     }
 
@@ -32,7 +32,7 @@ public class TopicService : ITopicService
 
     public async Task<IEnumerable<TopicSummaryModel>> GetAllAsync(TopicQueryParametersModel? queryParameters = null)
     {
-        if (queryParameters == null || queryParameters.RetrieveAll == true)
+        if (queryParameters == null || queryParameters.RetrieveAll)
         {
             var allTopics = await this.unitOfWork.TopicRepository.GetAllAsync();
             return allTopics.Select(m => this.mapper.Map<TopicSummaryModel>(m));
@@ -73,7 +73,7 @@ public class TopicService : ITopicService
 
         foreach (var topic in query)
         {
-            if (topic.Messages.Count == 0 || topic.Messages is null)
+            if (topic.Messages is null || topic.Messages.Count == 0)
             {
                 topics.First(t => t.Id == topic.Id).ActivityScore = 0;
             }
@@ -184,6 +184,11 @@ public class TopicService : ITopicService
 
     public async Task DeleteAsync(int modelId)
     {
+        if (!this.unitOfWork.TopicRepository.IsExist(modelId))
+        {
+            throw new ForumException("Topic with this id does not exist");
+        }
+
         await this.unitOfWork.TopicRepository.DeleteByIdAsync(modelId);
         await this.unitOfWork.SaveAsync();
     }
@@ -211,7 +216,9 @@ public class TopicService : ITopicService
         {
             await this.unitOfWork.TopicStarsRepository.AddAsync(new TopicStars
             {
-                UserId = userId, TopicId = topicId, StarCount = stars,
+                UserId = userId,
+                TopicId = topicId,
+                StarCount = stars,
             });
         }
 

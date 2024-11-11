@@ -1,10 +1,12 @@
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace WebApp.Infrastructure.Models.TopicModels;
 
 public class AdminTopicCreateModel
 {
+    [JsonIgnore]
+    public int Id { get; set; }
+
     public int UserId { get; set; }
 
     public string Title { get; set; }

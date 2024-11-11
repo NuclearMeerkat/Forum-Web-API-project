@@ -1,8 +1,8 @@
-﻿using System.Text;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using WebApp.Infrastructure;
+using WebApp.Infrastructure.Auth;
 
 namespace WebApp.WebApi.Extensions;
 

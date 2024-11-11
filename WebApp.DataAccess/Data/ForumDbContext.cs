@@ -7,8 +7,6 @@ namespace WebApp.DataAccess.Data;
 
 public class ForumDbContext : DbContext
 {
-    // Todo: connection string and config at all
-
     public ForumDbContext(DbContextOptions<ForumDbContext> options)
         : base(options)
     {
@@ -33,7 +31,7 @@ public class ForumDbContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
         ArgumentNullException.ThrowIfNull(optionsBuilder);
-        //optionsBuilder.UseSqlServer(
+        // optionsBuilder.UseSqlServer(
         //    "Server=(localdb)\\mssqllocaldb;Database=ForumDb;Trusted_Connection=True;");
         optionsBuilder.UseSqlServerTriggers();
     }

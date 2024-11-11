@@ -1,4 +1,4 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace WebApp.Infrastructure.Models.MessageModels;
 
@@ -15,5 +15,5 @@ public class MessageCreateModel
     [JsonIgnore]
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-    public int? ParentMessageId { get; set; }
+    public int? ParentMessageId { get; set; } = null;
 }

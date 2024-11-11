@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Interfaces.IServices;
-using WebApp.Infrastructure.Models;
 using WebApp.Infrastructure.Models.UserModels;
 
 namespace WebApp.WebApi.Controllers;
@@ -37,6 +36,7 @@ public class UsersController : BaseController
     /// <param name="parameters">Query parameters for filtering, sorting and pagination.</param>
     /// <returns>A list of user profiles.</returns>
     [HttpGet]
+
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> GetAllUsersProfiles([FromQuery] UserQueryParametersModel parameters)
     {
@@ -71,7 +71,6 @@ public class UsersController : BaseController
 
         return this.Ok(user);
     }
-
 
     /// <summary>
     /// Gets public profile information of a user by their ID.
@@ -147,11 +146,11 @@ public class UsersController : BaseController
 
                 return this.Ok();
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 return this.Unauthorized("Invalid username or password.");
             }
-            catch (ForumException e)
+            catch (ForumException)
             {
                 return this.Unauthorized("Invalid username or password");
             }
@@ -169,7 +168,7 @@ public class UsersController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<UserUpdateModel>>();
 
-        updateDto.Id = this.GetCurrentUserId(httpContextAccessor);
+        updateDto.Id = this.GetCurrentUserId(this.httpContextAccessor);
 
         return await this.ValidateAndExecuteAsync(updateDto, validator, async () =>
         {
@@ -197,10 +196,11 @@ public class UsersController : BaseController
     /// <returns>NoContent if successful; otherwise, BadRequest.</returns>
     [HttpDelete("profile")]
     [Authorize]
+
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteMyProfile(string password)
     {
-        int userId = this.GetCurrentUserId(httpContextAccessor);
+        int userId = this.GetCurrentUserId(this.httpContextAccessor);
         try
         {
             await this.userService.DeleteMyProfileAsync(password, userId);
@@ -219,6 +219,7 @@ public class UsersController : BaseController
     /// <param name="updateDto">The updated profile details.</param>
     /// <returns>NoContent if successful; otherwise, BadRequest or NotFound.</returns>
     [HttpPatch("admin/{id:int}")]
+
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AdminUpdateUser(int id, [FromBody] UserUpdateModel updateDto)
     {
@@ -244,6 +245,7 @@ public class UsersController : BaseController
     /// <param name="id">The ID of the user to delete.</param>
     /// <returns>NoContent if successful; otherwise, BadRequest.</returns>
     [HttpDelete("admin/{id:int}")]
+
     // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> AdminDelete(int id)
     {

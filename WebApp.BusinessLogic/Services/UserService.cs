@@ -10,7 +10,6 @@ using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Interfaces.Auth;
 using WebApp.Infrastructure.Interfaces.IRepositories;
 using WebApp.Infrastructure.Interfaces.IServices;
-using WebApp.Infrastructure.Models;
 using WebApp.Infrastructure.Models.TopicModels;
 using WebApp.Infrastructure.Models.UserModels;
 

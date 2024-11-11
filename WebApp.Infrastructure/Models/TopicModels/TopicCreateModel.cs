@@ -1,9 +1,11 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace WebApp.Infrastructure.Models.TopicModels;
 
 public class TopicCreateModel
 {
+    public int Id { get; set; }
+
     [JsonIgnore]
     public int UserId { get; set; }
 

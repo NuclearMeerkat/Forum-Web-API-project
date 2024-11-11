@@ -1,4 +1,4 @@
-﻿namespace WebApp.Infrastructure.Models;
+namespace WebApp.Infrastructure.Models.UserModels;
 
 public class UserQueryParametersModel
 {

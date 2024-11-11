@@ -1,14 +1,12 @@
-using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 using FluentValidation;
 using Laraue.EfCoreTriggers.SqlServer.Extensions;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebApp.BusinessLogic;
 using WebApp.BusinessLogic.Services;
 using WebApp.DataAccess.Data;
-using WebApp.Infrastructure;
 using WebApp.Infrastructure.Auth;
 using WebApp.Infrastructure.Interfaces.Auth;
 using WebApp.Infrastructure.Interfaces.IRepositories;
@@ -16,7 +14,7 @@ using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.WebApi.Extensions;
 using WebApp.WebApi.Validation;
 
-var builder = Microsoft.AspNetCore.Builder.WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 
 // Register DbContext with options
@@ -46,10 +44,6 @@ builder.Services.AddScoped<IUnitOfWork, UnitOFWork>();
 builder.Services.AddValidatorsFromAssemblyContaining<MessageCreateModelValidator>();
 
 builder.Services.AddControllers();
-    //.AddJsonOptions(options =>
-    //{
-    //    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-    //});
 
 builder.Services.AddApiAuthentication(builder.Services.BuildServiceProvider().GetRequiredService<IOptions<JwtOptions>>());
 

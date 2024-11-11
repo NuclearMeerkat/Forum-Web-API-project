@@ -1,6 +1,4 @@
 using AutoMapper;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using Microsoft.Extensions.Primitives;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Interfaces.IRepositories;
@@ -55,7 +53,6 @@ public class MessageService : IMessageService
         return messageModel;
     }
 
-
     public async Task<int> AddAsync(MessageCreateModel model)
     {
         ForumException.ThrowIfMessageCreateModelIsNotCorrect(model);
@@ -104,6 +101,11 @@ public class MessageService : IMessageService
 
     public async Task DeleteAsync(int modelId)
     {
+        if (!this.unitOfWork.MessageRepository.IsExist(modelId))
+        {
+            throw new ForumException("Message with this id does not exist");
+        }
+
         await this.unitOfWork.MessageRepository.DeleteByIdAsync(modelId);
         await this.unitOfWork.SaveAsync();
     }

@@ -1,12 +1,8 @@
 using AutoMapper;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Microsoft.EntityFrameworkCore;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.Infrastructure.Models.TopicModels;
 
@@ -90,7 +86,7 @@ public class TopicsController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<TopicCreateModel>>();
 
-        creationModel.UserId = this.GetCurrentUserId(httpContextAccessor);
+        creationModel.UserId = this.GetCurrentUserId(this.httpContextAccessor);
 
         return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
         {
@@ -98,6 +94,7 @@ public class TopicsController : BaseController
             {
                 var topic = this.serviceProvider.GetService<IMapper>().Map<AdminTopicCreateModel>(creationModel);
                 int id = await this.topicService.AddAsync(topic);
+                creationModel.Id = id;
                 return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
             }
             catch (ForumException e)
@@ -124,6 +121,7 @@ public class TopicsController : BaseController
             try
             {
                 int id = await this.topicService.AddAsync(creationModel);
+                creationModel.Id = id;
                 return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
             }
             catch (ForumException e)
@@ -211,18 +209,19 @@ public class TopicsController : BaseController
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> DeleteTopic(int id)
     {
-        TopicSummaryModel topic;
         try
         {
-            topic = await this.topicService.GetByIdAsync(id);
+            await this.topicService.DeleteAsync(id);
+            return this.NoContent();
         }
-        catch (InvalidOperationException)
+        catch (ForumException e)
         {
-            return this.NotFound($"Topic with Id = {id} not found");
+            return this.NotFound(e.Message);
         }
-
-        await this.topicService.DeleteAsync(id);
-        return this.NoContent();
+        catch (InvalidOperationException e)
+        {
+            return this.BadRequest(e.Message);
+        }
     }
 
     /// <summary>
@@ -236,7 +235,7 @@ public class TopicsController : BaseController
     {
         var validator = this.serviceProvider.GetService<IValidator<RateTopicModel>>();
 
-        model.UserId = this.GetCurrentUserId(httpContextAccessor);
+        model.UserId = this.GetCurrentUserId(this.httpContextAccessor);
 
         return await this.ValidateAndExecuteAsync(model, validator, async () =>
         {
@@ -263,7 +262,8 @@ public class TopicsController : BaseController
     {
         DeleteRateModel model = new DeleteRateModel()
         {
-            UserId = this.GetCurrentUserId(httpContextAccessor), TopicId = topicId,
+            UserId = this.GetCurrentUserId(this.httpContextAccessor),
+            TopicId = topicId,
         };
 
         var validator = this.serviceProvider.GetService<IValidator<DeleteRateModel>>();

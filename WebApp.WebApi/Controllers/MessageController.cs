@@ -1,8 +1,7 @@
-﻿using FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebApp.BusinessLogic.Validation;
-using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.Infrastructure.Models.MessageModels;
 
@@ -14,7 +13,6 @@ public class MessagesController : BaseController
 {
     private readonly IMessageService messageService;
     private readonly IServiceProvider serviceProvider;
-    private readonly ITopicService topicService;
     private readonly IHttpContextAccessor httpContextAccessor;
 
     public MessagesController(
@@ -29,7 +27,6 @@ public class MessagesController : BaseController
         ArgumentNullException.ThrowIfNull(httpContextAccessor);
         this.messageService = messageService;
         this.serviceProvider = serviceProvider;
-        this.topicService = topicService;
         this.httpContextAccessor = httpContextAccessor;
     }
 
@@ -60,10 +57,10 @@ public class MessagesController : BaseController
     [HttpGet("messages/{id}")]
     public async Task<IActionResult> GetMessageById(int id)
     {
-        MessageModel message;
+        MessageBriefModel message;
         try
         {
-            message = await this.messageService.GetByIdWithDetailsAsync(id);
+            message = await this.messageService.GetByIdAsync(id);
         }
         catch (ForumException e)
         {
@@ -88,7 +85,7 @@ public class MessagesController : BaseController
     public async Task<IActionResult> CreateMessage(int topicId, [FromBody] MessageCreateModel creationModel)
     {
         creationModel.TopicId = topicId;
-        creationModel.UserId = GetCurrentUserId(this.httpContextAccessor);
+        creationModel.UserId = this.GetCurrentUserId(this.httpContextAccessor);
 
         var validator = this.serviceProvider.GetService<IValidator<MessageCreateModel>>();
 
@@ -128,7 +125,7 @@ public class MessagesController : BaseController
         {
             try
             {
-                int userId = this.GetCurrentUserId(httpContextAccessor);
+                int userId = this.GetCurrentUserId(this.httpContextAccessor);
                 if (!await this.messageService.CheckMessageOwner(updateModel.Id, userId))
                 {
                     return this.Forbid("You cannot update this message");
@@ -154,22 +151,23 @@ public class MessagesController : BaseController
     /// </summary>
     /// <param name="id">The ID of the message to delete.</param>
     /// <returns>HTTP status indicating the result of the deletion.</returns>
-    //[Authorize(Roles = "Admin,Moderator")]
+    // [Authorize(Roles = "Admin,Moderator")]
     [HttpDelete("messages/Admin/{id:int}")]
     public async Task<IActionResult> AdminDeleteMessage(int id)
     {
-        MessageBriefModel message;
         try
         {
-            message = await this.messageService.GetByIdAsync(id);
+            await this.messageService.DeleteAsync(id);
+            return this.NoContent();
         }
-        catch (InvalidOperationException)
+        catch (ForumException e)
         {
-            return this.NotFound($"Message with Id = {id} not found");
+            return this.NotFound(e.Message);
         }
-
-        await this.messageService.DeleteAsync(id);
-        return this.NoContent();
+        catch (InvalidOperationException e)
+        {
+            return this.BadRequest(e.Message);
+        }
     }
 
     /// <summary>
@@ -181,24 +179,21 @@ public class MessagesController : BaseController
     [Authorize]
     public async Task<IActionResult> DeleteMyMessage(int id)
     {
-        MessageBriefModel message;
         try
         {
-            int userId = this.GetCurrentUserId(httpContextAccessor);
+            int userId = this.GetCurrentUserId(this.httpContextAccessor);
             if (!await this.messageService.CheckMessageOwner(id, userId))
             {
                 return this.Forbid("You cannot update this message");
             }
 
-            message = await this.messageService.GetByIdAsync(id);
+            await this.messageService.DeleteAsync(id);
+            return this.NoContent();
         }
         catch (InvalidOperationException)
         {
             return this.NotFound($"Message with Id = {id} not found");
         }
-
-        await this.messageService.DeleteAsync(id);
-        return this.NoContent();
     }
 
     /// <summary>
@@ -212,7 +207,7 @@ public class MessagesController : BaseController
     {
         try
         {
-            int userId = this.GetCurrentUserId(httpContextAccessor);
+            int userId = this.GetCurrentUserId(this.httpContextAccessor);
             if (!await this.messageService.CheckMessageOwner(messageId, userId))
             {
                 return this.Forbid("You cannot update this message");
