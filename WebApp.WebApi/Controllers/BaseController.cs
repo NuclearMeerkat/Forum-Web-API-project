@@ -6,6 +6,12 @@ namespace WebApp.WebApi.Controllers;
 
 public class BaseController : ControllerBase
 {
+    protected static int GetCurrentUserId(IHttpContextAccessor httpContextAccessor)
+    {
+        var userId = httpContextAccessor.HttpContext?.User.Claims.First().Value;
+        return int.TryParse(userId, out int id) ? id : 0;
+    }
+
     protected async Task<IActionResult> ValidateAndExecuteAsync<TModel>(
         TModel model,
         IValidator<TModel> validator,
@@ -24,11 +30,5 @@ public class BaseController : ControllerBase
         }
 
         return await action();
-    }
-
-    protected int GetCurrentUserId(IHttpContextAccessor httpContextAccessor)
-    {
-        var userId = httpContextAccessor.HttpContext?.User.Claims.First().Value;
-        return int.TryParse(userId, out int id) ? id : 0;
     }
 }

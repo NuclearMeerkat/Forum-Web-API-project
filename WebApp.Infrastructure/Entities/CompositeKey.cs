@@ -6,7 +6,7 @@ public class CompositeKey
 
     public int KeyPart2 { get; set; }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is CompositeKey otherKey)
         {

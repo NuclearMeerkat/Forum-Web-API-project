@@ -18,7 +18,9 @@ public class ReportController : BaseController
     private readonly IServiceProvider serviceProvider;
     private readonly IHttpContextAccessor httpContextAccessor;
 
-    public ReportController(IReportService reportService, IServiceProvider serviceProvider,
+    public ReportController(
+        IReportService reportService,
+        IServiceProvider serviceProvider,
         IHttpContextAccessor httpContextAccessor)
     {
         ArgumentNullException.ThrowIfNull(reportService);
@@ -92,7 +94,7 @@ public class ReportController : BaseController
         {
             try
             {
-                CompositeKey key = await this.reportService.AddAsync(model);
+                _ = await this.reportService.AddAsync(model);
                 return this.CreatedAtAction(nameof(this.GetReportById), model);
             }
             catch (ForumException e)

@@ -19,7 +19,9 @@ public class MessageService : IMessageService
         this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
     }
 
+#pragma warning disable CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
     public async Task<IEnumerable<MessageBriefModel>> GetAllAsync(TopicQueryParametersModel queryParameters)
+#pragma warning restore CS8767 // Nullability of reference types in type of parameter doesn't match implicitly implemented member (possibly because of nullability attributes).
     {
         var messageEntities = await this.unitOfWork.MessageRepository.GetAllWithDetailsAsync();
         var messageModels = messageEntities.Select(m => this.mapper.MapWithExceptionHandling<MessageBriefModel>(m));

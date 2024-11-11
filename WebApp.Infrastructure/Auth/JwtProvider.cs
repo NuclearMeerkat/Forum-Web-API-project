@@ -1,5 +1,6 @@
-﻿namespace WebApp.Infrastructure.Auth;
+namespace WebApp.Infrastructure.Auth;
 
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -19,10 +20,12 @@ public class JwtProvider : IJwtProvider
 
     public string GenerateToken(User user)
     {
-        Claim[] claims = [new("userId", user.Id.ToString())];
+        Claim[] claims =
+            [new("userId",
+            user.Id.ToString(CultureInfo.InvariantCulture))];
 
         var signingCredentials =
-            new Microsoft.IdentityModel.Tokens.SigningCredentials(
+            new SigningCredentials(
             new SymmetricSecurityKey(Encoding.UTF8.GetBytes(this.options.SecretKey)),
             SecurityAlgorithms.HmacSha256);
 

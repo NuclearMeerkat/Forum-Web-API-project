@@ -14,5 +14,4 @@ public interface IUserService : ICrud<UserPublicProfileModel, UserRegisterModel,
     public Task<UserModel> GetByIdWithDetailsAsync(int id);
 
     public Task<UserRole> GetUserRoleAsync(int userId);
-
 }

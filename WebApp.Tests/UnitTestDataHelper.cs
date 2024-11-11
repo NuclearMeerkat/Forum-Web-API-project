@@ -4,7 +4,7 @@ using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Enums;
 
 namespace WebApp.Tests;
-internal class UnitTestDataHelper
+public static class UnitTestDataHelper
 {
     public static DbContextOptions<ForumDbContext> GetUnitTestDbOptions()
     {

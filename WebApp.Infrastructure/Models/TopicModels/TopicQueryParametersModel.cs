@@ -12,5 +12,5 @@ public class TopicQueryParametersModel
 
     public bool Ascending { get; set; } = true;
 
-    public bool RetrieveAll { get; set; } = false;
+    public bool RetrieveAll { get; set; }
 }

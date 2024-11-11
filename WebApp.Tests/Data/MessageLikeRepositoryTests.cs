@@ -4,7 +4,7 @@ using WebApp.Infrastructure.Entities;
 using WebApp.Tests.Comparers;
 
 namespace WebApp.Tests.Data;
-internal class MessageLikeRepositoryTests
+internal sealed class MessageLikeRepositoryTests
 {
     [TestCase(1, 1)]
     [TestCase(2, 1)]

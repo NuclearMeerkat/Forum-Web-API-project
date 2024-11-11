@@ -9,12 +9,10 @@ namespace WebApp.WebApi.Autorization;
 public class UserRoleClaimsTransformation : IClaimsTransformation
 {
     private readonly IUserService userService;
-    private readonly IHttpContextAccessor httpContextAccessor;
 
-    public UserRoleClaimsTransformation(IUserService userService, IHttpContextAccessor httpContextAccessor)
+    public UserRoleClaimsTransformation(IUserService userService)
     {
         this.userService = userService;
-        this.httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<ClaimsPrincipal> TransformAsync(ClaimsPrincipal principal)

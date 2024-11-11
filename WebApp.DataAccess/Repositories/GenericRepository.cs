@@ -46,7 +46,9 @@ namespace WebApp.DataAccess.Repositories
 
         public virtual async Task<T> GetByIdAsync(params object[] keys)
         {
+#pragma warning disable CS8603 // Possible null reference return.
             return await this.context.Set<T>().FindAsync(keys);
+#pragma warning restore CS8603 // Possible null reference return.
         }
 
         public void Update(T entity)

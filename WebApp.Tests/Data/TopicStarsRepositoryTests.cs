@@ -5,7 +5,7 @@ using WebApp.Infrastructure.Entities;
 using WebApp.Tests.Comparers;
 
 namespace WebApp.Tests.Data;
-internal class TopicStarsRepositoryTests
+internal sealed class TopicStarsRepositoryTests
 {
     [TestCase(1, 1)]
     [TestCase(2, 1)]

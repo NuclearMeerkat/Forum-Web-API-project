@@ -28,7 +28,7 @@ public class UserService : IUserService
         this.jwtProvider = jwtProvider;
     }
 
-    public async Task<IEnumerable<UserPublicProfileModel>> GetAllAsync(UserQueryParametersModel? queryParameters)
+    public async Task<IEnumerable<UserPublicProfileModel>> GetAllAsync(UserQueryParametersModel? queryParameters = default)
     {
         if (queryParameters == null)
         {
@@ -60,7 +60,7 @@ public class UserService : IUserService
             _ => queryParameters.Ascending ? query.OrderBy(t => t.Nickname) : query.OrderByDescending(t => t.Nickname)
         };
 
-        var queryModels = query.ToList().Select(u => this.mapper.MapWithExceptionHandling<UserPublicProfileModel>(u));
+        var queryModels = query.Select(u => this.mapper.MapWithExceptionHandling<UserPublicProfileModel>(u));
 
         return queryModels;
     }
@@ -192,7 +192,7 @@ public class UserService : IUserService
 
         var result = this.passwordHasher.Verify(password, user.PasswordHash);
 
-        if (result == false)
+        if (!result)
         {
             throw new ForumException("Invalid password");
         }

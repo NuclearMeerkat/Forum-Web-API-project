@@ -1,4 +1,4 @@
-﻿namespace WebApp.Infrastructure.Models.ReportModels;
+namespace WebApp.Infrastructure.Models.ReportModels;
 
 public class ReportQueryParametersModel
 {
@@ -12,5 +12,5 @@ public class ReportQueryParametersModel
 
     public bool Ascending { get; set; } = true;
 
-    public bool RetrieveAll { get; set; } = false;
+    public bool RetrieveAll { get; set; }
 }

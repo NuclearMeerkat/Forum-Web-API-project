@@ -1,9 +1,9 @@
-﻿using AutoMapper;
+using AutoMapper;
 using WebApp.BusinessLogic;
 
 namespace WebApp.Tests;
 
-public class UnitTestBusinessHelper
+public static class UnitTestBusinessHelper
 {
     public static IMapper CreateMapperProfile()
     {

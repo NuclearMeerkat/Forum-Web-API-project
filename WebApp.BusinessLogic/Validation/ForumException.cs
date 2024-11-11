@@ -25,7 +25,8 @@ namespace WebApp.BusinessLogic.Validation
         }
 
 #nullable enable
-        public static void ThrowIfNull([NotNull] object? argument,
+        public static void ThrowIfNull(
+            [NotNull] object? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -35,7 +36,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfMessageCreateModelIsNotCorrect([NotNull] MessageCreateModel? argument,
+        public static void ThrowIfMessageCreateModelIsNotCorrect(
+            [NotNull] MessageCreateModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -53,7 +55,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfMessageBriefModelIsNotCorrect([NotNull] MessageBriefModel? argument,
+        public static void ThrowIfMessageBriefModelIsNotCorrect(
+            [NotNull] MessageBriefModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -70,7 +73,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfMessageModelIsNotCorrect([NotNull] MessageModel? argument,
+        public static void ThrowIfMessageModelIsNotCorrect(
+            [NotNull] MessageModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -89,7 +93,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfReportCreateModelIsNotCorrect([NotNull] ReportCreateModel? argument,
+        public static void ThrowIfReportCreateModelIsNotCorrect(
+            [NotNull] ReportCreateModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -109,7 +114,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfReportSummaryModelIsNotCorrect([NotNull] ReportSummaryModel? argument,
+        public static void ThrowIfReportSummaryModelIsNotCorrect(
+            [NotNull] ReportSummaryModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -127,7 +133,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfReportModelIsNotCorrect([NotNull] ReportModel? argument,
+        public static void ThrowIfReportModelIsNotCorrect(
+            [NotNull] ReportModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -146,7 +153,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfTopicCreateModelIsNotCorrect([NotNull] AdminTopicCreateModel? argument,
+        public static void ThrowIfTopicCreateModelIsNotCorrect(
+            [NotNull] AdminTopicCreateModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -164,7 +172,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfTopicModelIsNotCorrect([NotNull] TopicModel? argument,
+        public static void ThrowIfTopicModelIsNotCorrect(
+            [NotNull] TopicModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -185,7 +194,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfTopicSummaryModelIsNotCorrect([NotNull] TopicSummaryModel? argument,
+        public static void ThrowIfTopicSummaryModelIsNotCorrect(
+            [NotNull] TopicSummaryModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -204,7 +214,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfUserCreateModelIsNotCorrect([NotNull] UserRegisterModel? argument,
+        public static void ThrowIfUserCreateModelIsNotCorrect(
+            [NotNull] UserRegisterModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -222,7 +233,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfUserModelIsNotCorrect([NotNull] UserModel? argument,
+        public static void ThrowIfUserModelIsNotCorrect(
+            [NotNull] UserModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
@@ -240,7 +252,8 @@ namespace WebApp.BusinessLogic.Validation
             }
         }
 
-        public static void ThrowIfUserPublicProfileModelIsNotCorrect([NotNull] UserPublicProfileModel? argument,
+        public static void ThrowIfUserPublicProfileModelIsNotCorrect(
+            [NotNull] UserPublicProfileModel? argument,
             [CallerArgumentExpression(nameof(argument))]
             string? paramName = null)
         {
