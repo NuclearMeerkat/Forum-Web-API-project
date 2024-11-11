@@ -2,8 +2,18 @@ namespace WebApp.Infrastructure.Interfaces.IServices;
 
 using WebApp.Infrastructure.Models.TopicModels;
 
-public interface ITopicService : ICrud<TopicSummaryModel, AdminTopicCreateModel, TopicUpdateModel, TopicQueryParametersModel, int>
+public interface ITopicService
 {
+    Task<IEnumerable<TopicSummaryModel>> GetAllAsync(TopicQueryParametersModel? queryParameters = default);
+
+    Task<TopicSummaryModel> GetByIdAsync(params object[] keys);
+
+    Task<int> AddAsync(AdminTopicCreateModel model);
+
+    Task UpdateAsync(TopicUpdateModel model);
+
+    Task DeleteAsync(int modelId);
+
     public Task RateTopic(int userId, int topicId, int stars);
 
     public Task RemoveRate(int userId, int topicId);

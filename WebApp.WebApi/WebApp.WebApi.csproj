@@ -3,7 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>CA2227,IDE0058,CA1848,CA5394,IDE0130,IDE0300,SA1516,CS8618</NoWarn>
+    <NoWarn>S4457,CA2227,IDE0058,CA1848,CA5394,IDE0130,IDE0300,SA1516,CS8618</NoWarn>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AnalysisLevel>latest</AnalysisLevel>

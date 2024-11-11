@@ -3,8 +3,18 @@ namespace WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.Infrastructure.Models.MessageModels;
 using WebApp.Infrastructure.Models.TopicModels;
 
-public interface IMessageService : ICrud<MessageBriefModel, MessageCreateModel, MessageUpdateModel, TopicQueryParametersModel, int>
+public interface IMessageService
 {
+    Task<IEnumerable<MessageBriefModel>> GetAllAsync(TopicQueryParametersModel? queryParameters = default);
+
+    Task<MessageBriefModel> GetByIdAsync(params object[] keys);
+
+    Task<int> AddAsync(MessageCreateModel model);
+
+    Task UpdateAsync(MessageUpdateModel model);
+
+    Task DeleteAsync(int modelId);
+
     public Task LikeMessage(int userId, int messageId);
 
     public Task RemoveLike(int userId, int messageId);
