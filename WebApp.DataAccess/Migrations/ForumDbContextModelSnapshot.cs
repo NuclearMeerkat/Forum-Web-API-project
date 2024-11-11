@@ -64,7 +64,7 @@ namespace WebApp.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Messages");
+                    b.ToTable("Messages", (string)null);
                 });
 
             modelBuilder.Entity("WebApp.Infrastructure.Entities.MessageLike", b =>
@@ -79,7 +79,7 @@ namespace WebApp.DataAccess.Migrations
 
                     b.HasIndex("MessageId");
 
-                    b.ToTable("Likes", t =>
+                    b.ToTable("Likes", null, t =>
                         {
                             t.HasTrigger("LC_TRIGGER_AFTER_DELETE_MESSAGELIKE");
 
@@ -118,7 +118,7 @@ namespace WebApp.DataAccess.Migrations
 
                     b.HasIndex("MessageId");
 
-                    b.ToTable("Reports");
+                    b.ToTable("Reports", (string)null);
                 });
 
             modelBuilder.Entity("WebApp.Infrastructure.Entities.Topic", b =>
@@ -147,7 +147,7 @@ namespace WebApp.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Topics");
+                    b.ToTable("Topics", (string)null);
                 });
 
             modelBuilder.Entity("WebApp.Infrastructure.Entities.TopicStars", b =>
@@ -165,7 +165,7 @@ namespace WebApp.DataAccess.Migrations
 
                     b.HasIndex("TopicId");
 
-                    b.ToTable("TopicStars");
+                    b.ToTable("TopicStars", (string)null);
                 });
 
             modelBuilder.Entity("WebApp.Infrastructure.Entities.User", b =>
@@ -209,7 +209,7 @@ namespace WebApp.DataAccess.Migrations
                     b.HasIndex("Nickname")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("WebApp.Infrastructure.Entities.Message", b =>
