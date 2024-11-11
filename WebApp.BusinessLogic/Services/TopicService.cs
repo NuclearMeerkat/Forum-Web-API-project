@@ -106,7 +106,7 @@ public class TopicService : ITopicService
         else
         {
             var topicMessages = topicEntity.Messages.Select(m => this.mapper.MapWithExceptionHandling<MessageModel>(m));
-            topicModel.ActivityScore = CalculateActivity((ICollection<MessageModel>)topicMessages);
+            topicModel.ActivityScore = CalculateActivity(topicMessages.ToList());
         }
 
         return topicModel;

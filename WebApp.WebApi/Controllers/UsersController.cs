@@ -36,8 +36,7 @@ public class UsersController : BaseController
     /// <param name="parameters">Query parameters for filtering, sorting and pagination.</param>
     /// <returns>A list of user profiles.</returns>
     [HttpGet]
-
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> GetAllUsersProfiles([FromQuery] UserQueryParametersModel parameters)
     {
         var validator = this.serviceProvider.GetService<IValidator<UserQueryParametersModel>>();
@@ -196,8 +195,6 @@ public class UsersController : BaseController
     /// <returns>NoContent if successful; otherwise, BadRequest.</returns>
     [HttpDelete("profile")]
     [Authorize]
-
-    // [Authorize(Roles = "Admin")]
     public async Task<IActionResult> DeleteMyProfile(string password)
     {
         int userId = this.GetCurrentUserId(this.httpContextAccessor);
@@ -219,8 +216,7 @@ public class UsersController : BaseController
     /// <param name="updateDto">The updated profile details.</param>
     /// <returns>NoContent if successful; otherwise, BadRequest or NotFound.</returns>
     [HttpPatch("admin/{id:int}")]
-
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> AdminUpdateUser(int id, [FromBody] UserUpdateModel updateDto)
     {
         try
@@ -245,8 +241,7 @@ public class UsersController : BaseController
     /// <param name="id">The ID of the user to delete.</param>
     /// <returns>NoContent if successful; otherwise, BadRequest.</returns>
     [HttpDelete("admin/{id:int}")]
-
-    // [Authorize(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> AdminDelete(int id)
     {
         try

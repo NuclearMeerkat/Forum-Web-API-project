@@ -7,6 +7,7 @@ using AutoMapper;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure;
 using WebApp.Infrastructure.Entities;
+using WebApp.Infrastructure.Enums;
 using WebApp.Infrastructure.Interfaces.Auth;
 using WebApp.Infrastructure.Interfaces.IRepositories;
 using WebApp.Infrastructure.Interfaces.IServices;
@@ -219,5 +220,16 @@ public class UserService : IUserService
         var userProfile = this.mapper.MapWithExceptionHandling<UserPublicProfileModel>(user);
 
         return userProfile;
+    }
+
+    public async Task<UserRole> GetUserRoleAsync(int userId)
+    {
+        if (!this.unitOfWork.UserRepository.IsExist(userId))
+        {
+            throw new ForumException("User with this Id does not exist");
+        }
+
+        var user = await this.unitOfWork.UserRepository.GetByIdAsync(userId);
+        return user.Role;
     }
 }

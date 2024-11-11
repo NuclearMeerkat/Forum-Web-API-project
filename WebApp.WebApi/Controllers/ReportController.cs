@@ -35,7 +35,7 @@ public class ReportController : BaseController
     /// <param name="parametersModel">The query parameters for filtering and pagination of reports.</param>
     /// <returns>A list of reports that match the query parameters.</returns>
     [HttpGet("reports")]
-    //[Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Policy = "ModeratorAccess")]
     public async Task<IActionResult> GetAllReports([FromQuery] ReportQueryParametersModel parametersModel)
     {
         var validator = this.serviceProvider.GetService<IValidator<ReportQueryParametersModel>>();
@@ -54,7 +54,8 @@ public class ReportController : BaseController
     /// <param name="messageId">The ID of the message associated with the report.</param>
     /// <returns>The report if found, otherwise a NotFound or BadRequest result.</returns>
     [HttpGet("reports/{userId:int}/{messageId:int}")]
-    //[Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Policy = "ModeratorAccess")]
+
     public async Task<IActionResult> GetReportById(int userId, int messageId)
     {
         if (userId <= 0 || messageId <= 0)
@@ -112,7 +113,7 @@ public class ReportController : BaseController
     /// <param name="status">The new status for the report.</param>
     /// <returns>An Ok result with the updated report details, or a NotFound/BadRequest result if the update fails.</returns>
     [HttpPut("reports/{messageId:int}/status/{status:int}")]
-    //[Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Policy = "ModeratorAccess")]
     public async Task<IActionResult> UpdateReportStatus(int messageId, int status)
     {
         // Try to convert the int status parameter to the nullable enum type
@@ -158,7 +159,7 @@ public class ReportController : BaseController
     /// <param name="messageId">The ID of the message associated with the report.</param>
     /// <returns>NoContent if deletion is successful, or a NotFound/BadRequest result if deletion fails.</returns>
     [HttpDelete("reports/{userId:int}/{messageId:int}")]
-    //[Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteReport(int userId, int messageId)
     {
         var key = new CompositeKey() { KeyPart1 = userId, KeyPart2 = messageId };
@@ -190,7 +191,7 @@ public class ReportController : BaseController
     /// <param name="topicId">The ID of the topic for which reports are requested.</param>
     /// <returns>A list of reports associated with the specified topic, or a NotFound/BadRequest result if the topic is invalid.</returns>
     [HttpGet("topics/{topicId}/reports")]
-    //[Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> GetReportsForTopic(int topicId)
     {
         if (topicId <= 0)

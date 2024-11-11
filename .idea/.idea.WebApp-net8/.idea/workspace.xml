@@ -22,8 +22,6 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock:///Dummy.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/34e54cf52b4a4c2b82645ccc3a46837e5e000/23/a279aab8/AbstractInvocation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/34e54cf52b4a4c2b82645ccc3a46837e5e000/5e/25a86bb6/InterfaceMethodWithoutTargetInvocation.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/cca5cfb955e146648d91eb22ffe4627a84930/a0/f6ea3ed0/Enumerable.cs" root0="FORCE_HIGHLIGHTING" />
@@ -32,7 +30,9 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/20885d5d627d4da82a4a22d7c55abb3d50afdd1ab121738514d59792dc9993/Select.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/294078ecfce6fdb942ecfee089f09717de7a6fcfe5efd9fdb6f4f93c0fb4813/ActionMethodExecutor.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/2e49d132ea68ff47071c64476ae29138fa965dc555ef7c3f4991586431de241/Task.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/345b876796a6b1d8833bccaf6e5317fae0965079e5256835674f8cf9e8d93/AuthenticationService.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/358587b5faadb40b9e6aa73539fb8834dfc5ebbcd431abba488948be7df3/Type.Helpers.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3684e888fd93508450e2f4b0d7d38bee648cba98882592491596fc79375185f/SwaggerMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3791ade316feeb2be344648da3c7d31719ff492f7733b643bf8c24d7629883/RuntimeType.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/387238ef9c8f8c6b1dccf4dcba4eed0e459454919b2e4b9cad11a5071789df/Dictionary.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/394cf11a64687141fd58fb926ff8b3d5a299eba3bbadaf2de9b93928d523d4/Type.CoreCLR.cs" root0="FORCE_HIGHLIGHTING" />
@@ -41,6 +41,8 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/5a876eaa41b34484b8fcd5cb8827d6e27e1844a2709c7397f37df6ed403f/Enum.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6bd3b909e3250b8181899b1a1238cd417918c6c816fbeba173df45af2ec41e/MethodInfo.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6f90c6c13479b8c2a5be98f3d75dfc3bd885a055652d8a32904ca2448132949e/Future.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/781ebca67bd71532948352c2c24f8db410449e3c21f7191a17bf21348cd4fed4/SwaggerUIMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7d81b2d4f22bee75e5438c707251ae43cb0974c207db91ffc159118c84b4eb9/ServiceProvider.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7fcc41fe48c43f71d1476329de953fce8565fcc5dbf3c8c6fdb81c216b19c4/ArgumentNullException.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/882b394f9d4ec0ed6be0efb49c951087be9b8a9cff66e2c5c5bc57b4b6d57c2/RuntimeMethodInfo.CoreCLR.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8d42d5f1712377031e2892d1c29db5c23b8c7d49b9dc632fbf463bd930a8/RuntimeHelpers.CoreCLR.cs" root0="FORCE_HIGHLIGHTING" />
@@ -49,6 +51,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9a6b1457cbcf17db31a383ba49ef9bcc786cf3ef77146d997eee499b27a46d/Object.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9eda537f15ea23cdfae523c19e87eb303a3ded88937ae7e55919387a43f70/ExecutionContext.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a2d281277fb923f197e4ac84d7d684bab043cadf18ca9f38c6fdd0874daaf522/InvalidCastException.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a43d11142a1cf19748dd2983962b7d0f2e828ccba96b35bb8fcd67362e9d21/DeveloperExceptionPageMiddlewareImpl.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a5c512d98c362e5ae97d932048c2d19b2c32bd672646f5b59d68aa6fd91dd/TypeUtils.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/a6d6c98d85be468ec57ee7ac45cdebb2fb5e6581c59c7a4235a2b31d555d02c/InterceptionAspects.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/aeae22b1c972504e8888d248c7af57e956db03461ad886a20159e93a0d118f3/ParameterExpression.cs" root0="FORCE_HIGHLIGHTING" />
@@ -56,6 +59,8 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b2c3e28468b2a9ae5485968818c48fd40338a6b8ae1295f29a355225a8d238/First.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b7208b3f72528d22781d25fde9a55271bdf2b5aade4f03b1324579a25493cd8/List.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/b86cdfe19de105ff2eab7d5d4c613fd91b9adfe4f95bd82e2d6db593e6d3ca3/TaskContinuation.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bdd387e980511351603b7225f127692263c8de8b4f819c63cccbce7a2ce41830/HttpProtocol.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/bde5a0e5fb6491e71267549d64518746e9cfebd10d35f355da6815637e3c/AuthenticationMiddleware.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c796e07724a4f9be8a72c1d8bf9d1ff583a3cb938fba3d1a63c9de159a107980/RuntimeHandles.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/e7dbd6fe331ff9a3c4b24dd470ec1f19a71b7c5acf258b81ae7f761cd2b319b/Type.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/fb367341658aaedd7de424d4c9189db33c4387e268dcc4011918569442ab12/AsyncTaskMethodBuilderT.cs" root0="FORCE_HIGHLIGHTING" />
@@ -72,24 +77,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor": "Run",
-    ".NET Launch Settings Profile.WebApp.WebApi: https.executor": "Debug",
-    "68206211-03c9-41e2-983f-931701109353.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "XThreadsFramesViewSplitterKey": "0.27668846",
-    "fb58f394-6e49-4a99-832c-223da4a63250.executor": "Debug",
-    "git-widget-placeholder": "DEV",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "HotReloadSettingsPage",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.WebApp.WebApi: IIS Express.executor&quot;: &quot;Run&quot;,
+    &quot;.NET Launch Settings Profile.WebApp.WebApi: https.executor&quot;: &quot;Debug&quot;,
+    &quot;68206211-03c9-41e2-983f-931701109353.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;XThreadsFramesViewSplitterKey&quot;: &quot;0.27668846&quot;,
+    &quot;fb58f394-6e49-4a99-832c-223da4a63250.executor&quot;: &quot;Debug&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;DEV&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;HotReloadSettingsPage&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.WebApp.WebApi: https">
     <configuration name="WebApp.WebApi: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/WebApp.WebApi/WebApp.WebApi.csproj" />
@@ -155,6 +160,7 @@
       <workItem from="1730879777803" duration="4822000" />
       <workItem from="1730904658356" duration="9801000" />
       <workItem from="1731003411031" duration="123524000" />
+      <workItem from="1731289537203" duration="8277000" />
     </task>
     <servers />
   </component>
@@ -208,13 +214,13 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="DotNet Breakpoints">
           <url>file://$PROJECT_DIR$/WebApp.WebApi/Controllers/ReportController.cs</url>
-          <line>93</line>
+          <line>94</line>
           <properties documentPath="C:\EPAM Course\Accessment\Tasks\FORUM\WebApp.WebApi\Controllers\ReportController.cs" containingFunctionPresentation="Lambda expression inside Method 'SubmitReport'">
             <startOffsets>
-              <option value="3635" />
+              <option value="3634" />
             </startOffsets>
             <endOffsets>
-              <option value="3695" />
+              <option value="3694" />
             </endOffsets>
           </properties>
           <option name="timeStamp" value="64" />

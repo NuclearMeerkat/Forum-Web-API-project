@@ -109,7 +109,7 @@ public class TopicsController : BaseController
     /// </summary>
     /// <param name="creationModel">The model with details for the new topic.</param>
     /// <returns>The created topic, if successful.</returns>
-    // [Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Policy = "ModeratorAccess")]
     [HttpPost("admin")]
     public async Task<IActionResult> CreateTopicForUser(
         [FromBody] AdminTopicCreateModel creationModel)
@@ -137,8 +137,8 @@ public class TopicsController : BaseController
     /// <param name="id">The ID of the topic to update.</param>
     /// <param name="updateModel">The updated data for the topic.</param>
     /// <returns>The updated topic if successful, otherwise an error message.</returns>
-    // [Authorize(Roles = "Admin,Moderator")]
     [HttpPatch("admin/{id:int}")]
+    [Authorize(Policy = "ModeratorAccess")]
     public async Task<IActionResult> AdminUpdateTopic(
         int id,
         [FromBody] TopicUpdateModel updateModel)
@@ -205,8 +205,8 @@ public class TopicsController : BaseController
     /// </summary>
     /// <param name="id">The ID of the topic to delete.</param>
     /// <returns>No content if deletion is successful.</returns>
-    // [Authorize(Roles = "Admin,Moderator")]
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteTopic(int id)
     {
         try

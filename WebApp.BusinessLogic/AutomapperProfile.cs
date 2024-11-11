@@ -77,7 +77,8 @@ public class AutomapperProfile : Profile
             .ReverseMap();
 
         this.CreateMap<TopicUpdateModel, Topic>()
-            .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            .ForMember(dest => dest.Title, opt => opt.Condition(src => src.Title != null))
+            .ForMember(dest => dest.Description, opt => opt.Condition(src => src.Description != null));
 
         this.CreateMap<User, UserModel>()
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))

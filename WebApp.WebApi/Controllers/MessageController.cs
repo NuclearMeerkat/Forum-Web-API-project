@@ -151,7 +151,7 @@ public class MessagesController : BaseController
     /// </summary>
     /// <param name="id">The ID of the message to delete.</param>
     /// <returns>HTTP status indicating the result of the deletion.</returns>
-    // [Authorize(Roles = "Admin,Moderator")]
+    [Authorize(Policy = "ModeratorAccess")]
     [HttpDelete("messages/Admin/{id:int}")]
     public async Task<IActionResult> AdminDeleteMessage(int id)
     {
