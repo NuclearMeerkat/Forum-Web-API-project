@@ -56,4 +56,20 @@ public class MessageRepository : GenericRepository<Message>, IMessageRepository
             .Where(m => m.TopicId == topicId)
             .ToListAsync();
     }
+
+    public override async Task DeleteByIdAsync(params object[] keys)
+    {
+        var entity = await this.context.Set<Message>().FindAsync(keys);
+        if (entity != null)
+        {
+            var dependentReports = this.context.Reports.Where(ts => ts.UserId == (int)keys[0]);
+            var dependentLikes = this.context.Likes.Where(ts => ts.UserId == (int)keys[0]);
+
+            this.context.Reports.RemoveRange(dependentReports);
+            this.context.Likes.RemoveRange(dependentLikes);
+
+            _ = this.context.Set<Message>().Remove(entity);
+            _ = await this.context.SaveChangesAsync();
+        }
+    }
 }

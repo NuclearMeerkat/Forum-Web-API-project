@@ -127,4 +127,18 @@ public class TopicRepository : GenericRepository<Topic>, ITopicRepository
             .Take(take)
             .ToListAsync();
     }
+
+    public override async Task DeleteByIdAsync(params object[] keys)
+    {
+        var entity = await this.context.Set<User>().FindAsync(keys);
+        if (entity != null)
+        {
+            var dependentTopicStars = this.context.TopicStars.Where(ts => ts.UserId == (int)keys[0]);
+
+            this.context.TopicStars.RemoveRange(dependentTopicStars);
+
+            _ = this.context.Set<User>().Remove(entity);
+            _ = await this.context.SaveChangesAsync();
+        }
+    }
 }

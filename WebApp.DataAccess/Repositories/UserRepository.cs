@@ -27,6 +27,7 @@ public class UserRepository : GenericRepository<User>, IUserRepository
         return await this.context.Users
             .Include(u => u.Topics)
             .Include(u => u.Messages)
+                .ThenInclude(m => m.Topic)
             .Include(u => u.Reports)
             .FirstAsync(u => u.Id == id);
     }
@@ -38,5 +39,23 @@ public class UserRepository : GenericRepository<User>, IUserRepository
             .Include(u => u.Messages)
             .Include(u => u.Reports)
             .ToListAsync();
+    }
+
+    public override async Task DeleteByIdAsync(params object[] keys)
+    {
+        var entity = await this.context.Set<User>().FindAsync(keys);
+        if (entity != null)
+        {
+            var dependentTopicStars = this.context.TopicStars.Where(ts => ts.UserId == (int)keys[0]);
+            var dependentReports = this.context.Reports.Where(ts => ts.UserId == (int)keys[0]);
+            var dependentLikes = this.context.Likes.Where(ts => ts.UserId == (int)keys[0]);
+
+            this.context.TopicStars.RemoveRange(dependentTopicStars);
+            this.context.Reports.RemoveRange(dependentReports);
+            this.context.Likes.RemoveRange(dependentLikes);
+
+            _ = this.context.Set<User>().Remove(entity);
+            _ = await this.context.SaveChangesAsync();
+        }
     }
 }

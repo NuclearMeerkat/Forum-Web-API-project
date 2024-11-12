@@ -29,7 +29,7 @@ namespace WebApp.DataAccess.Repositories
             this.context.SaveChangesAsync();
         }
 
-        public async Task DeleteByIdAsync(params object[] keys)
+        public virtual async Task DeleteByIdAsync(params object[] keys)
         {
             var entity = await this.context.Set<T>().FindAsync(keys);
             if (entity != null)

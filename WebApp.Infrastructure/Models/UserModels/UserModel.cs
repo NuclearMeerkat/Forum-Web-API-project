@@ -1,4 +1,4 @@
-﻿namespace WebApp.Infrastructure.Models.UserModels;
+namespace WebApp.Infrastructure.Models.UserModels;
 
 using WebApp.Infrastructure.Enums;
 using WebApp.Infrastructure.Models.MessageModels;
@@ -21,11 +21,11 @@ public class UserModel
 
     public string? ProfilePictureUrl { get; set; }
 
-    public ICollection<TopicModel> ParticipatedTopics { get; set; } = new List<TopicModel>();
+    public ICollection<TopicSummaryModel> ParticipatedTopics { get; set; } = new List<TopicSummaryModel>();
 
-    public ICollection<TopicModel> OwnedTopics { get; set; } = new List<TopicModel>();
+    public ICollection<TopicSummaryModel> OwnedTopics { get; set; } = new List<TopicSummaryModel>();
 
-    public ICollection<MessageModel> Messages { get; set; } = new List<MessageModel>();
+    public ICollection<MessageBriefModel> Messages { get; set; } = new List<MessageBriefModel>();
 
-    public ICollection<ReportModel> Reports { get; set; } = new List<ReportModel>();
+    public ICollection<ReportSummaryModel> Reports { get; set; } = new List<ReportSummaryModel>();
 }

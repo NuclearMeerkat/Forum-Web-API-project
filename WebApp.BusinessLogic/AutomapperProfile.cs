@@ -84,7 +84,10 @@ public class AutomapperProfile : Profile
             .ForMember(dest => dest.Messages, opt => opt.MapFrom(src => src.Messages))
             .ForMember(dest => dest.Reports, opt => opt.MapFrom(src => src.Reports))
             .ForMember(dest => dest.OwnedTopics, opt => opt.MapFrom(src => src.Topics.Where(t => t.UserId == src.Id)))
-            .ForMember(dest => dest.ParticipatedTopics, opt => opt.MapFrom(src => src.Topics.Where(t => t.UserId != src.Id)))
+            .ForMember(dest => dest.ParticipatedTopics, opt => opt.MapFrom(src => src.Messages
+                .Where(t => t.Topic != null && t.UserId == src.Id && t.Topic.UserId != src.Id)
+                .Select(t => t.Topic)
+                .Distinct()))
             .ReverseMap();
 
         this.CreateMap<User, UserPublicProfileModel>()
