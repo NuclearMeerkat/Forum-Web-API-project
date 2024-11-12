@@ -22,7 +22,7 @@ namespace WebApp.Infrastructure.Entities
 
         public override object GetIdentifier()
         {
-            return new CompositeKey() { KeyPart1 = this.UserId, KeyPart2 = this.MessageId };
+            return new ReportCompositeKey() { UserId = this.UserId, MessageId = this.MessageId };
         }
     }
 }

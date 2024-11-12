@@ -14,6 +14,7 @@ using WebApp.Infrastructure.Interfaces.IRepositories;
 using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.WebApi.Autorization;
 using WebApp.WebApi.Extensions;
+using WebApp.WebApi.Utilities;
 using WebApp.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +34,10 @@ builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITopicService, TopicService>();
+
+// Register ModelValidator and RequestProcessor
+builder.Services.AddScoped<ModelValidator>();
+builder.Services.AddScoped<RequestProcessor>();
 
 builder.Services.AddHttpContextAccessor();
 

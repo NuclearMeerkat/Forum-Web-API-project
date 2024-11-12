@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Entities;
 using WebApp.Infrastructure.Enums;
@@ -81,7 +82,7 @@ public class ReportService : IReportService
         return reportModel;
     }
 
-    public async Task<CompositeKey> AddAsync(ReportCreateModel model)
+    public async Task<ReportCompositeKey> AddAsync(ReportCreateModel model)
     {
         ForumException.ThrowIfReportCreateModelIsNotCorrect(model);
 
@@ -97,9 +98,16 @@ public class ReportService : IReportService
 
         var report = this.mapper.MapWithExceptionHandling<Report>(model);
 
-        await this.unitOfWork.ReportRepository.AddAsync(report);
+        try
+        {
+            await this.unitOfWork.ReportRepository.AddAsync(report);
+        }
+        catch (DbUpdateException)
+        {
+            throw new DbUpdateException("An error occured while adding a report");
+        }
 
-        CompositeKey key = new CompositeKey() { KeyPart1 = model.UserId, KeyPart2 = model.MessageId };
+        ReportCompositeKey key = new ReportCompositeKey() { UserId = model.UserId, MessageId = model.MessageId };
         await this.unitOfWork.SaveAsync();
 
         return key;
@@ -130,14 +138,16 @@ public class ReportService : IReportService
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task DeleteAsync(CompositeKey modelId)
+    public async Task DeleteAsync(ReportCompositeKey modelId)
     {
-        if (!this.unitOfWork.ReportRepository.IsExist(modelId.KeyPart1, modelId.KeyPart2))
+        ArgumentNullException.ThrowIfNull(modelId);
+
+        if (!this.unitOfWork.ReportRepository.IsExist(modelId.UserId, modelId.MessageId))
         {
             throw new ForumException("Report with this id is not found");
         }
 
-        await this.unitOfWork.ReportRepository.DeleteByIdAsync(modelId.KeyPart1, modelId.KeyPart2);
+        await this.unitOfWork.ReportRepository.DeleteByIdAsync(modelId.UserId, modelId.MessageId);
         await this.unitOfWork.SaveAsync();
     }
 

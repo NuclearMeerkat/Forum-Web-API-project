@@ -10,15 +10,17 @@ public interface ITopicService
 
     Task<int> AddAsync(AdminTopicCreateModel model);
 
-    Task UpdateAsync(TopicUpdateModel model);
+    public Task UpdateAsync(TopicUpdateModel model, int? ownerUserId = null);
 
-    Task DeleteAsync(int modelId);
+    public Task DeleteAsync(int modelId, int? ownerUserId = null);
 
-    public Task RateTopic(int userId, int topicId, int stars);
+    public Task RateTopicAsync(int userId, int topicId, int stars);
 
-    public Task RemoveRate(int userId, int topicId);
+    public Task RemoveRateAsync(int userId, int topicId);
 
-    public Task<bool> CheckTopicOwner(int topicId, int userId);
+    public Task<bool> CheckTopicOwnerAsync(int topicId, int userId);
 
     public Task<TopicDialogModel> GetByIdWithDetailsAsync(params object[] keys);
+
+    public Task RemoveRateWithUserOwnerCheck(int ownerUserId, int topicId);
 }

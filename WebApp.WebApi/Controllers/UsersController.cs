@@ -1,10 +1,8 @@
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.Infrastructure.Models.UserModels;
+using WebApp.WebApi.Utilities;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -16,17 +14,19 @@ namespace WebApp.WebApi.Controllers;
 public class UsersController : BaseController
 {
     private readonly IUserService userService;
-    private readonly IServiceProvider serviceProvider;
     private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly RequestProcessor requestProcessor;
 
     public UsersController(
         IUserService userService,
-        IServiceProvider serviceProvider,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        RequestProcessor requestProcessor)
     {
+        ArgumentNullException.ThrowIfNull(userService);
+        ArgumentNullException.ThrowIfNull(httpContextAccessor);
         this.userService = userService;
-        this.serviceProvider = serviceProvider;
         this.httpContextAccessor = httpContextAccessor;
+        this.requestProcessor = requestProcessor;
     }
 
     /// <summary>
@@ -39,11 +39,7 @@ public class UsersController : BaseController
     [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> GetAllUsersProfiles([FromQuery] UserQueryParametersModel parameters)
     {
-        var validator = this.serviceProvider.GetService<IValidator<UserQueryParametersModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(parameters, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(parameters, async () =>
         {
             var users = await this.userService.GetAllAsync(parameters);
             return this.Ok(users);
@@ -60,17 +56,11 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> GetUserDetailedInfoById(int id)
     {
-        UserModel user;
-        try
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
-            user = await this.userService.GetByIdWithDetailsAsync(id);
-        }
-        catch (ForumException ex)
-        {
-            return this.NotFound(ex.Message);
-        }
-
-        return this.Ok(user);
+            var user = await this.userService.GetByIdWithDetailsAsync(id);
+            return this.Ok(user);
+        });
     }
 
     /// <summary>
@@ -83,17 +73,11 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> GetUserProfileById(int id)
     {
-        UserPublicProfileModel user;
-        try
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
-            user = await this.userService.GetByIdAsync(id);
-        }
-        catch (ForumException ex)
-        {
-            return this.NotFound(ex.Message);
-        }
-
-        return this.Ok(user);
+            var user = await this.userService.GetByIdAsync(id);
+            return this.Ok(user);
+        });
     }
 
     /// <summary>
@@ -104,24 +88,12 @@ public class UsersController : BaseController
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] UserRegisterModel registerDto)
     {
-        var validator = this.serviceProvider.GetService<IValidator<UserRegisterModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(registerDto, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(registerDto, async () =>
         {
-            try
-            {
-                ArgumentNullException.ThrowIfNull(registerDto);
-                int id = await this.userService.RegisterAsync(registerDto);
-                return this.CreatedAtAction(
-                    nameof(this.Register),
-                    new { id = id, nickname = registerDto.Nickname, email = registerDto.Email });
-            }
-            catch (ForumException e)
-            {
-                return this.BadRequest(e.Message);
-            }
+            int id = await this.userService.RegisterAsync(registerDto);
+            return this.CreatedAtAction(
+                nameof(this.Register),
+                new { id = id, nickname = registerDto.Nickname, email = registerDto.Email });
         });
     }
 
@@ -133,32 +105,17 @@ public class UsersController : BaseController
     [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] UserLoginModel loginDto)
     {
-        var validator = this.serviceProvider.GetService<IValidator<UserLoginModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(loginDto, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(loginDto, async () =>
         {
-            try
-            {
-                var token = await this.userService.LoginAsync(loginDto);
-                if (string.IsNullOrEmpty(token))
-                {
-                    return this.Unauthorized("Invalid username or password.");
-                }
-
-                this.httpContextAccessor.HttpContext?.Response.Cookies.Append("fancy-cookies", token);
-
-                return this.Ok();
-            }
-            catch (InvalidOperationException)
+            var token = await this.userService.LoginAsync(loginDto);
+            if (string.IsNullOrEmpty(token))
             {
                 return this.Unauthorized("Invalid username or password.");
             }
-            catch (ForumException)
-            {
-                return this.Unauthorized("Invalid username or password");
-            }
+
+            this.httpContextAccessor.HttpContext?.Response.Cookies.Append("fancy-cookies", token);
+
+            return this.Ok();
         });
     }
 
@@ -171,27 +128,11 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> UpdateMyProfile([FromBody] UserUpdateModel updateDto)
     {
-        var validator = this.serviceProvider.GetService<IValidator<UserUpdateModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
         updateDto.Id = GetCurrentUserId(this.httpContextAccessor);
-
-        return await this.ValidateAndExecuteAsync(updateDto, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(updateDto, async () =>
         {
-            try
-            {
-                await this.userService.UpdateAsync(updateDto);
-                return this.NoContent();
-            }
-            catch (ForumException e)
-            {
-                return this.BadRequest(e.Message);
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                return this.NotFound("User was not found");
-            }
+            await this.userService.UpdateAsync(updateDto);
+            return this.NoContent();
         });
     }
 
@@ -205,16 +146,12 @@ public class UsersController : BaseController
     [Authorize]
     public async Task<IActionResult> DeleteMyProfile(string password)
     {
-        int userId = GetCurrentUserId(this.httpContextAccessor);
-        try
+        return await this.requestProcessor.ProcessRequestAsync(1, async () =>
         {
+            int userId = GetCurrentUserId(this.httpContextAccessor);
             await this.userService.DeleteMyProfileAsync(password, userId);
             return this.NoContent();
-        }
-        catch (ForumException e)
-        {
-            return this.BadRequest(e.Message);
-        }
+        });
     }
 
     /// <summary>
@@ -227,20 +164,12 @@ public class UsersController : BaseController
     [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> AdminUpdateUser(int id, [FromBody] UserUpdateModel updateDto)
     {
-        try
+        updateDto.Id = id;
+        return await this.requestProcessor.ProcessRequestAsync(updateDto, async () =>
         {
-            updateDto.Id = id;
             await this.userService.UpdateAsync(updateDto);
             return this.NoContent();
-        }
-        catch (ForumException e)
-        {
-            return this.BadRequest(e.Message);
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            return this.NotFound("User was not found");
-        }
+        });
     }
 
     /// <summary>
@@ -252,14 +181,10 @@ public class UsersController : BaseController
     [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> AdminDelete(int id)
     {
-        try
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
             await this.userService.DeleteAsync(id);
             return this.NoContent();
-        }
-        catch (ForumException e)
-        {
-            return this.BadRequest(e.Message);
-        }
+        });
     }
 }

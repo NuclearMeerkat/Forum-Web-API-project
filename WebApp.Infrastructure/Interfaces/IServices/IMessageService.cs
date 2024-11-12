@@ -13,7 +13,7 @@ public interface IMessageService
 
     Task UpdateAsync(MessageUpdateModel model);
 
-    Task DeleteAsync(int modelId);
+    Task DeleteAsync(int modelId, int? ownerUserId = null);
 
     public Task LikeMessage(int userId, int messageId);
 
@@ -25,5 +25,5 @@ public interface IMessageService
 
     public Task<MessageModel> GetByIdWithDetailsAsync(int id);
 
-    public Task<bool> CheckMessageOwner(int messageId, int userId);
+    public Task<bool> CheckMessageOwnerAsync(int messageId, int userId);
 }

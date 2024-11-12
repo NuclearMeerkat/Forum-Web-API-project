@@ -1,12 +1,9 @@
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Entities;
-using WebApp.Infrastructure.Enums;
 using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.Infrastructure.Models.ReportModels;
+using WebApp.WebApi.Utilities;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -15,20 +12,20 @@ namespace WebApp.WebApi.Controllers;
 public class ReportController : BaseController
 {
     private readonly IReportService reportService;
-    private readonly IServiceProvider serviceProvider;
     private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly RequestProcessor requestProcessor;
 
     public ReportController(
         IReportService reportService,
-        IServiceProvider serviceProvider,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        RequestProcessor requestProcessor)
     {
         ArgumentNullException.ThrowIfNull(reportService);
-        ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(httpContextAccessor);
+        ArgumentNullException.ThrowIfNull(requestProcessor);
         this.reportService = reportService;
-        this.serviceProvider = serviceProvider;
         this.httpContextAccessor = httpContextAccessor;
+        this.requestProcessor = requestProcessor;
     }
 
     /// <summary>
@@ -40,11 +37,7 @@ public class ReportController : BaseController
     [Authorize(Policy = "ModeratorAccess")]
     public async Task<IActionResult> GetAllReports([FromQuery] ReportQueryParametersModel parametersModel)
     {
-        var validator = this.serviceProvider.GetService<IValidator<ReportQueryParametersModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(parametersModel, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(parametersModel, async () =>
         {
             var reports = await this.reportService.GetAllAsync(parametersModel);
             return this.Ok(reports);
@@ -59,25 +52,14 @@ public class ReportController : BaseController
     /// <returns>The report if found, otherwise a NotFound or BadRequest result.</returns>
     [HttpGet("reports/{userId:int}/{messageId:int}")]
     [Authorize(Policy = "ModeratorAccess")]
-
     public async Task<IActionResult> GetReportById(int userId, int messageId)
     {
-        if (userId <= 0 || messageId <= 0)
+        ReportCompositeKey key = new ReportCompositeKey() { UserId = userId, MessageId = messageId };
+        return await this.requestProcessor.ProcessRequestAsync(key, async () =>
         {
-            return this.BadRequest("Invalid report ID.");
-        }
-
-        ReportSummaryModel report;
-        try
-        {
-            report = await this.reportService.GetByIdAsync(userId, messageId);
-        }
-        catch (ForumException ex)
-        {
-            return this.NotFound(ex.Message);
-        }
-
-        return this.Ok(report);
+            var report = await this.reportService.GetByIdAsync(key.UserId, key.MessageId);
+            return this.Ok(report);
+        });
     }
 
     /// <summary>
@@ -89,73 +71,34 @@ public class ReportController : BaseController
     [Authorize]
     public async Task<IActionResult> SubmitReport([FromBody] ReportCreateModel model)
     {
-        var validator = this.serviceProvider.GetService<IValidator<ReportCreateModel>>();
-
         model.UserId = GetCurrentUserId(this.httpContextAccessor);
-        ArgumentNullException.ThrowIfNull(validator);
-        return await this.ValidateAndExecuteAsync(model, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(model, async () =>
         {
-            try
-            {
-                _ = await this.reportService.AddAsync(model);
-                return this.CreatedAtAction(nameof(this.GetReportById), model);
-            }
-            catch (ForumException e)
-            {
-                return this.NotFound(e.Message);
-            }
-            catch (DbUpdateException)
-            {
-                return this.Conflict("Report with this userid and messageid already exists.");
-            }
+            _ = await this.reportService.AddAsync(model);
+            return this.CreatedAtAction(nameof(this.SubmitReport), model);
         });
     }
 
     /// <summary>
     /// Updates the status of a specific report by message ID.
     /// </summary>
-    /// <param name="messageId">The ID of the message associated with the report.</param>
-    /// <param name="status">The new status for the report.</param>
     /// <returns>An Ok result with the updated report details, or a NotFound/BadRequest result if the update fails.</returns>
-    [HttpPut("reports/{messageId:int}/status/{status:int}")]
+    [HttpPatch("reports/status/")]
     [Authorize(Policy = "ModeratorAccess")]
-    public async Task<IActionResult> UpdateReportStatus(int messageId, int status)
+    public async Task<IActionResult> UpdateReportStatus(ReportStatusUpdateModel model)
     {
-        // Try to convert the int status parameter to the nullable enum type
-        ReportStatus? reportStatus = Enum.IsDefined(typeof(ReportStatus), status)
-            ? (ReportStatus?)status
-            : null;
-
-        if (reportStatus == null)
+        return await this.requestProcessor.ProcessRequestAsync(model, async () =>
         {
-            return this.BadRequest("Invalid status value provided.");
-        }
-
-        int userId = GetCurrentUserId(this.httpContextAccessor);
-
-        var reportUpdateModel =
-            new ReportUpdateModel() { UserId = userId, MessageId = messageId, Status = reportStatus };
-
-        var validator = this.serviceProvider.GetService<IValidator<ReportUpdateModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(reportUpdateModel, validator, async () =>
-        {
-            try
+            int userId = GetCurrentUserId(this.httpContextAccessor);
+            var reportUpdateModel = new ReportUpdateModel()
             {
-                await this.reportService.UpdateAsync(reportUpdateModel);
-                var updatedMessage = await this.reportService.GetByIdAsync(userId, messageId);
-                return this.Ok(updatedMessage);
-            }
-            catch (ForumException)
-            {
-                return this.NotFound($"Report with this Id was not found.");
-            }
-            catch (InvalidOperationException ex)
-            {
-                return this.BadRequest(ex.Message);
-            }
+                UserId = userId,
+                MessageId = model.MessageId,
+                Status = model.Status,
+            };
+            await this.reportService.UpdateAsync(reportUpdateModel);
+            var updatedMessage = await this.reportService.GetByIdAsync(userId, model.MessageId);
+            return this.Ok(updatedMessage);
         });
     }
 
@@ -169,28 +112,11 @@ public class ReportController : BaseController
     [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> DeleteReport(int userId, int messageId)
     {
-        var key = new CompositeKey() { KeyPart1 = userId, KeyPart2 = messageId };
-
-        var validator = this.serviceProvider.GetService<IValidator<CompositeKey>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(key, validator, async () =>
+        ReportCompositeKey key = new ReportCompositeKey() { UserId = userId, MessageId = messageId };
+        return await this.requestProcessor.ProcessRequestAsync(key, async () =>
         {
-            if (key.KeyPart1 <= 0 || key.KeyPart2 <= 0)
-            {
-                return this.BadRequest("Invalid report ID.");
-            }
-
-            try
-            {
-                await this.reportService.DeleteAsync(key);
-                return this.NoContent();
-            }
-            catch (ForumException ex)
-            {
-                return this.NotFound(ex.Message);
-            }
+            await this.reportService.DeleteAsync(key);
+            return this.NoContent();
         });
     }
 
@@ -203,19 +129,10 @@ public class ReportController : BaseController
     [Authorize(Policy = "AdminOnly")]
     public async Task<IActionResult> GetReportsForTopic(int topicId)
     {
-        if (topicId <= 0)
-        {
-            return this.BadRequest("Invalid topic ID.");
-        }
-
-        try
+        return await this.requestProcessor.ProcessRequestAsync(topicId, async () =>
         {
             var reports = await this.reportService.GetReportsForTopicAsync(topicId);
             return this.Ok(reports);
-        }
-        catch (ForumException e)
-        {
-            return this.NotFound(e.Message);
-        }
+        });
     }
 }

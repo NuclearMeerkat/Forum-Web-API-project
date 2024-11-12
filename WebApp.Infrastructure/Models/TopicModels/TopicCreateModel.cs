@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 
 public class TopicCreateModel
 {
+    [JsonIgnore]
     public int Id { get; set; }
 
     [JsonIgnore]

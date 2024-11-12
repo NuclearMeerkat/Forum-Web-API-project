@@ -10,5 +10,8 @@ public class MessageUpdateModel
     [JsonIgnore]
     public bool IsEdited { get; set; } = true;
 
+    [JsonIgnore]
+    public int UserId { get; set; }
+
     public string Content { get; set; }
 }

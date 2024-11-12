@@ -1,10 +1,8 @@
-using AutoMapper;
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.Infrastructure.Models.TopicModels;
+using WebApp.WebApi.Utilities;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -16,20 +14,20 @@ namespace WebApp.WebApi.Controllers;
 public class TopicsController : BaseController
 {
     private readonly ITopicService topicService;
-    private readonly IServiceProvider serviceProvider;
     private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly RequestProcessor requestProcessor;
 
     public TopicsController(
         ITopicService topicService,
-        IServiceProvider serviceProvider,
-        IHttpContextAccessor httpContextAccessor)
+        IHttpContextAccessor httpContextAccessor,
+        RequestProcessor requestProcessor)
     {
         ArgumentNullException.ThrowIfNull(topicService);
-        ArgumentNullException.ThrowIfNull(serviceProvider);
         ArgumentNullException.ThrowIfNull(httpContextAccessor);
+        ArgumentNullException.ThrowIfNull(requestProcessor);
         this.topicService = topicService;
-        this.serviceProvider = serviceProvider;
         this.httpContextAccessor = httpContextAccessor;
+        this.requestProcessor = requestProcessor;
     }
 
     /// <summary>
@@ -40,11 +38,7 @@ public class TopicsController : BaseController
     [HttpGet]
     public async Task<IActionResult> GetTopics([FromQuery] TopicQueryParametersModel parameters)
     {
-        var validator = this.serviceProvider.GetService<IValidator<TopicQueryParametersModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(parameters, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(parameters, async () =>
         {
             var topics = await this.topicService.GetAllAsync(parameters);
             return this.Ok(topics);
@@ -59,21 +53,11 @@ public class TopicsController : BaseController
     [HttpGet("{topicId}")]
     public async Task<IActionResult> GetTopicWithDialog(int topicId)
     {
-        TopicDialogModel topic;
-        try
+        return await this.requestProcessor.ProcessRequestAsync(topicId, async () =>
         {
-            topic = await this.topicService.GetByIdWithDetailsAsync(topicId);
-        }
-        catch (ForumException e)
-        {
-            return this.NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return this.BadRequest(e.Message);
-        }
-
-        return this.Ok(topic);
+            var topic = await this.topicService.GetByIdWithDetailsAsync(topicId);
+            return this.Ok(topic);
+        });
     }
 
     /// <summary>
@@ -86,27 +70,20 @@ public class TopicsController : BaseController
     public async Task<IActionResult> CreateTopic(
         [FromBody] TopicCreateModel creationModel)
     {
-        var validator = this.serviceProvider.GetService<IValidator<TopicCreateModel>>();
-
         creationModel.UserId = GetCurrentUserId(this.httpContextAccessor);
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(creationModel, async () =>
         {
-            try
+            var topic = new AdminTopicCreateModel()
             {
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
-                var topic = this.serviceProvider.GetService<IMapper>().Map<AdminTopicCreateModel>(creationModel);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
-                int id = await this.topicService.AddAsync(topic);
-                creationModel.Id = id;
-                return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
-            }
-            catch (ForumException e)
-            {
-                return this.BadRequest(e.Message);
-            }
+                Id = creationModel.Id,
+                CreatedAt = creationModel.CreatedAt,
+                Description = creationModel.Description,
+                Title = creationModel.Title,
+                UserId = creationModel.UserId,
+            };
+            int id = await this.topicService.AddAsync(topic);
+            creationModel.Id = id;
+            return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
         });
     }
 
@@ -120,22 +97,11 @@ public class TopicsController : BaseController
     public async Task<IActionResult> CreateTopicForUser(
         [FromBody] AdminTopicCreateModel creationModel)
     {
-        var validator = this.serviceProvider.GetService<IValidator<AdminTopicCreateModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(creationModel, async () =>
         {
-            try
-            {
-                int id = await this.topicService.AddAsync(creationModel);
-                creationModel.Id = id;
-                return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
-            }
-            catch (ForumException e)
-            {
-                return this.BadRequest(e.Message);
-            }
+            int id = await this.topicService.AddAsync(creationModel);
+            creationModel.Id = id;
+            return this.CreatedAtAction(nameof(this.CreateTopic), creationModel);
         });
     }
 
@@ -152,23 +118,11 @@ public class TopicsController : BaseController
         [FromBody] TopicUpdateModel updateModel)
     {
         updateModel.Id = id;
-
-        var validator = this.serviceProvider.GetService<IValidator<TopicUpdateModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(updateModel, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(updateModel, async () =>
         {
-            try
-            {
-                await this.topicService.UpdateAsync(updateModel);
-                var updatedTopic = await this.topicService.GetByIdAsync(updateModel.Id);
-                return this.Ok(updatedTopic);
-            }
-            catch (ForumException e)
-            {
-                return this.NotFound(e.Message);
-            }
+            await this.topicService.UpdateAsync(updateModel);
+            var updatedTopic = await this.topicService.GetByIdAsync(updateModel.Id);
+            return this.Ok(updatedTopic);
         });
     }
 
@@ -185,30 +139,12 @@ public class TopicsController : BaseController
         [FromBody] TopicUpdateModel updateModel)
     {
         updateModel.Id = id;
-
-        var validator = this.serviceProvider.GetService<IValidator<TopicUpdateModel>>();
-
-        int userId = GetCurrentUserId(this.httpContextAccessor);
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(updateModel, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(updateModel, async () =>
         {
-            try
-            {
-                if (!await this.topicService.CheckTopicOwner(updateModel.Id, userId))
-                {
-                    return this.Forbid("You cannot update this topic");
-                }
-
-                await this.topicService.UpdateAsync(updateModel);
-                var updatedTopic = await this.topicService.GetByIdAsync(updateModel.Id);
-                return this.Ok(updatedTopic);
-            }
-            catch (ForumException e)
-            {
-                return this.NotFound(e.Message);
-            }
+            int userId = GetCurrentUserId(this.httpContextAccessor);
+            await this.topicService.UpdateAsync(updateModel, userId);
+            var updatedTopic = await this.topicService.GetByIdAsync(updateModel.Id);
+            return this.Ok(updatedTopic);
         });
     }
 
@@ -217,23 +153,32 @@ public class TopicsController : BaseController
     /// </summary>
     /// <param name="id">The ID of the topic to delete.</param>
     /// <returns>No content if deletion is successful.</returns>
-    [HttpDelete("{id:int}")]
+    [HttpDelete("admin/{id:int}")]
     [Authorize(Policy = "AdminOnly")]
-    public async Task<IActionResult> DeleteTopic(int id)
+    public async Task<IActionResult> AdminDeleteTopic(int id)
     {
-        try
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
             await this.topicService.DeleteAsync(id);
             return this.NoContent();
-        }
-        catch (ForumException e)
+        });
+    }
+
+    /// <summary>
+    /// Deletes a user topic by ID.
+    /// </summary>
+    /// <param name="id">The ID of your topic to delete.</param>
+    /// <returns>No content if deletion is successful.</returns>
+    [HttpDelete("{id:int}")]
+    [Authorize]
+    public async Task<IActionResult> DeleteTopic(int id)
+    {
+        int userId = GetCurrentUserId(this.httpContextAccessor);
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
-            return this.NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return this.BadRequest(e.Message);
-        }
+            await this.topicService.DeleteAsync(id, userId);
+            return this.NoContent();
+        });
     }
 
     /// <summary>
@@ -245,23 +190,32 @@ public class TopicsController : BaseController
     [Authorize]
     public async Task<IActionResult> RateTopic([FromBody] RateTopicModel model)
     {
-        var validator = this.serviceProvider.GetService<IValidator<RateTopicModel>>();
-
-        model.UserId = GetCurrentUserId(this.httpContextAccessor);
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(model, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(model, async () =>
         {
-            try
-            {
-                await this.topicService.RateTopic(model.UserId, model.TopicId, model.Stars);
-                return this.Ok();
-            }
-            catch (ForumException e)
-            {
-                return this.NotFound(e.Message);
-            }
+            model.UserId = GetCurrentUserId(this.httpContextAccessor);
+            await this.topicService.RateTopicAsync(model.UserId, model.TopicId, model.Stars);
+            return this.Ok();
+        });
+    }
+
+    /// <summary>
+    /// Removes a rating from a topic (Only for Admin/Moderator).
+    /// </summary>
+    /// <param name="topicId">The ID of the topic for which to remove the rating.</param>
+    /// <returns>Success status if rating is removed successfully.</returns>
+    [HttpDelete("admin/{topicId:int}/rate")]
+    [Authorize(Policy = "ModeratorAccess")]
+    public async Task<IActionResult> AdminDeleteRateTopic(int topicId)
+    {
+        DeleteRateModel model = new DeleteRateModel()
+        {
+            UserId = GetCurrentUserId(this.httpContextAccessor),
+            TopicId = topicId,
+        };
+        return await this.requestProcessor.ProcessRequestAsync(model, async () =>
+        {
+            await this.topicService.RemoveRateAsync(model.UserId, model.TopicId);
+            return this.Ok();
         });
     }
 
@@ -279,27 +233,10 @@ public class TopicsController : BaseController
             UserId = GetCurrentUserId(this.httpContextAccessor),
             TopicId = topicId,
         };
-
-        var validator = this.serviceProvider.GetService<IValidator<DeleteRateModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(model, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(model, async () =>
         {
-            try
-            {
-                if (!await this.topicService.CheckTopicOwner(model.TopicId, model.UserId))
-                {
-                    throw new ForumException("You cannot delete this rate");
-                }
-
-                await this.topicService.RemoveRate(model.UserId, model.TopicId);
-                return this.Ok();
-            }
-            catch (InvalidOperationException ex)
-            {
-                return this.NotFound(ex.Message);
-            }
+            await this.topicService.RemoveRateWithUserOwnerCheck(model.UserId, model.TopicId);
+            return this.Ok();
         });
     }
 }

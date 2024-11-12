@@ -3,13 +3,12 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <NoWarn>S4457,CA2227,IDE0058,CA1848,CA5394,IDE0130,IDE0300,SA1516,CS8618</NoWarn>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <AnalysisMode>AllEnabledByDefault</AnalysisMode>
     <AnalysisLevel>latest</AnalysisLevel>
     <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
     <GenerateDocumentationFile>false</GenerateDocumentationFile>
-    <NoWarn>CA2227,CA1848,CA5394,IDE0130,IDE0300,SA1516,IDE0058</NoWarn>
+    <NoWarn>S4457,CA2227,IDE0058,CA1848,CA5394,IDE0130,IDE0300,SA1516,CS8618</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\stylecop.json" Link="Properties\stylecop.json" />

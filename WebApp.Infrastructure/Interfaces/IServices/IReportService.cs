@@ -9,11 +9,11 @@ public interface IReportService
 
     Task<ReportSummaryModel> GetByIdAsync(params object[] keys);
 
-    Task<CompositeKey> AddAsync(ReportCreateModel model);
+    Task<ReportCompositeKey> AddAsync(ReportCreateModel model);
 
     Task UpdateAsync(ReportUpdateModel model);
 
-    Task DeleteAsync(CompositeKey modelId);
+    Task DeleteAsync(ReportCompositeKey modelId);
 
     public Task<IEnumerable<ReportSummaryModel>> GetReportsForTopicAsync(int topicId);
 }

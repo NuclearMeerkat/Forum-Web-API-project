@@ -142,8 +142,15 @@ public class TopicService : ITopicService
         return topicId;
     }
 
-    public async Task UpdateAsync(TopicUpdateModel model)
+    public async Task UpdateAsync(TopicUpdateModel model, int? ownerUserId = null)
     {
+        ArgumentNullException.ThrowIfNull(model);
+
+        if (ownerUserId is not null && !await this.CheckTopicOwnerAsync(model.Id, (int)ownerUserId))
+        {
+            throw new UnauthorizedAccessException("This topic does not belong to this user");
+        }
+
         ForumException.ThrowIfNull(model);
         var existingTopic = await this.unitOfWork.TopicRepository.GetByIdAsync(model.Id);
         if (existingTopic == null)
@@ -158,7 +165,7 @@ public class TopicService : ITopicService
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task<bool> CheckTopicOwner(int topicId, int userId)
+    public async Task<bool> CheckTopicOwnerAsync(int topicId, int userId)
     {
         Topic topic;
         try
@@ -182,8 +189,13 @@ public class TopicService : ITopicService
         return false;
     }
 
-    public async Task DeleteAsync(int modelId)
+    public async Task DeleteAsync(int modelId, int? ownerUserId = null)
     {
+        if (ownerUserId is not null && !await this.CheckTopicOwnerAsync(modelId, (int)ownerUserId))
+        {
+            throw new UnauthorizedAccessException("This topic does not belong to this user");
+        }
+
         if (!this.unitOfWork.TopicRepository.IsExist(modelId))
         {
             throw new ForumException("Topic with this id does not exist");
@@ -193,7 +205,7 @@ public class TopicService : ITopicService
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task RateTopic(int userId, int topicId, int stars)
+    public async Task RateTopicAsync(int userId, int topicId, int stars)
     {
         if (!this.unitOfWork.TopicRepository.IsExist(topicId))
         {
@@ -225,7 +237,7 @@ public class TopicService : ITopicService
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task RemoveRate(int userId, int topicId)
+    public async Task RemoveRateAsync(int userId, int topicId)
     {
         if (!this.unitOfWork.TopicStarsRepository.IsExist(userId, topicId))
         {
@@ -233,6 +245,22 @@ public class TopicService : ITopicService
         }
 
         await this.unitOfWork.TopicStarsRepository.DeleteByIdAsync(userId, topicId);
+        await this.unitOfWork.SaveAsync();
+    }
+
+    public async Task RemoveRateWithUserOwnerCheck(int ownerUserId, int topicId)
+    {
+        if (!this.unitOfWork.TopicStarsRepository.IsExist(ownerUserId, topicId))
+        {
+            throw new InvalidOperationException("Stars with such id for this topic does not exist");
+        }
+
+        if (!await this.CheckTopicOwnerAsync(topicId, ownerUserId))
+        {
+            throw new UnauthorizedAccessException("This topic does not belong to this user");
+        }
+
+        await this.unitOfWork.TopicStarsRepository.DeleteByIdAsync(ownerUserId, topicId);
         await this.unitOfWork.SaveAsync();
     }
 }

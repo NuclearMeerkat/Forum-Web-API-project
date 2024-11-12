@@ -89,6 +89,14 @@ public class MessageService : IMessageService
         try
         {
             existingMessage = await this.unitOfWork.MessageRepository.GetByIdAsync(model.Id);
+            if (existingMessage.UserId != model.UserId)
+            {
+                throw new UnauthorizedAccessException("This message does not belong to this user");
+            }
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            throw new UnauthorizedAccessException(ex.Message);
         }
         catch (Exception e)
         {
@@ -101,8 +109,13 @@ public class MessageService : IMessageService
         await this.unitOfWork.SaveAsync();
     }
 
-    public async Task DeleteAsync(int modelId)
+    public async Task DeleteAsync(int modelId, int? ownerUserId = null)
     {
+        if (ownerUserId is not null && !await this.CheckMessageOwnerAsync(modelId, (int)ownerUserId))
+        {
+            throw new UnauthorizedAccessException("This message does not belong to this user");
+        }
+
         if (!this.unitOfWork.MessageRepository.IsExist(modelId))
         {
             throw new ForumException("Message with this id does not exist");
@@ -168,7 +181,7 @@ public class MessageService : IMessageService
         return messageModels;
     }
 
-    public async Task<bool> CheckMessageOwner(int messageId, int userId)
+    public async Task<bool> CheckMessageOwnerAsync(int messageId, int userId)
     {
         Message message;
         try

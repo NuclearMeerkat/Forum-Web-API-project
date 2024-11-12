@@ -1,9 +1,8 @@
-using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using WebApp.BusinessLogic.Validation;
 using WebApp.Infrastructure.Interfaces.IServices;
 using WebApp.Infrastructure.Models.MessageModels;
+using WebApp.WebApi.Utilities;
 
 namespace WebApp.WebApi.Controllers;
 
@@ -12,22 +11,22 @@ namespace WebApp.WebApi.Controllers;
 public class MessagesController : BaseController
 {
     private readonly IMessageService messageService;
-    private readonly IServiceProvider serviceProvider;
     private readonly IHttpContextAccessor httpContextAccessor;
+    private readonly RequestProcessor requestProcessor;
 
     public MessagesController(
+        RequestProcessor requestProcessor,
         IMessageService messageService,
         IServiceProvider serviceProvider,
-        ITopicService topicService,
         IHttpContextAccessor httpContextAccessor)
     {
         ArgumentNullException.ThrowIfNull(messageService);
         ArgumentNullException.ThrowIfNull(serviceProvider);
-        ArgumentNullException.ThrowIfNull(topicService);
         ArgumentNullException.ThrowIfNull(httpContextAccessor);
+        ArgumentNullException.ThrowIfNull(requestProcessor);
         this.messageService = messageService;
-        this.serviceProvider = serviceProvider;
         this.httpContextAccessor = httpContextAccessor;
+        this.requestProcessor = requestProcessor;
     }
 
     /// <summary>
@@ -38,15 +37,11 @@ public class MessagesController : BaseController
     [HttpGet("topics/{topicId}/messages")]
     public async Task<IActionResult> GetMessagesForTopic(int topicId)
     {
-        try
+        return await this.requestProcessor.ProcessRequestAsync(topicId, async () =>
         {
-            var messages = await this.messageService.GetMessagesByTopicIdAsync(topicId);
-            return this.Ok(messages);
-        }
-        catch (ForumException e)
-        {
-            return this.NotFound(e.Message);
-        }
+            var message = await this.messageService.GetMessagesByTopicIdAsync(topicId);
+            return this.Ok(message);
+        });
     }
 
     /// <summary>
@@ -57,21 +52,11 @@ public class MessagesController : BaseController
     [HttpGet("messages/{id}")]
     public async Task<IActionResult> GetMessageById(int id)
     {
-        MessageBriefModel message;
-        try
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
-            message = await this.messageService.GetByIdAsync(id);
-        }
-        catch (ForumException e)
-        {
-            return this.NotFound(e.Message);
-        }
-        catch (InvalidOperationException)
-        {
-            return this.BadRequest($"Message with Id = {id} not found");
-        }
-
-        return this.Ok(message);
+            var message = await this.messageService.GetByIdAsync(id);
+            return this.Ok(message);
+        });
     }
 
     /// <summary>
@@ -82,30 +67,16 @@ public class MessagesController : BaseController
     /// <returns>The created message with its details.</returns>
     [Authorize]
     [HttpPost("topics/{topicId}/messages")]
-    public async Task<IActionResult> CreateMessage(int topicId, [FromBody] MessageCreateModel creationModel)
+    public async Task<IActionResult> SendMessage(int topicId, [FromBody] MessageCreateModel creationModel)
     {
+        ArgumentNullException.ThrowIfNull(creationModel);
         creationModel.TopicId = topicId;
         creationModel.UserId = GetCurrentUserId(this.httpContextAccessor);
 
-        var validator = this.serviceProvider.GetService<IValidator<MessageCreateModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(creationModel, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(creationModel, async () =>
         {
-            try
-            {
-                int messageId = await this.messageService.AddAsync(creationModel);
-                return this.CreatedAtAction(nameof(this.GetMessageById), new { id = messageId }, creationModel);
-            }
-            catch (ForumException e)
-            {
-                return this.NotFound(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                return this.BadRequest(e.Message);
-            }
+            int messageId = await this.messageService.AddAsync(creationModel);
+            return this.CreatedAtAction(nameof(this.GetMessageById), new { id = messageId }, creationModel);
         });
     }
 
@@ -120,33 +91,12 @@ public class MessagesController : BaseController
     public async Task<IActionResult> UpdateMessage(int id, [FromBody] MessageUpdateModel updateModel)
     {
         updateModel.Id = id;
+        updateModel.UserId = GetCurrentUserId(this.httpContextAccessor);
 
-        var validator = this.serviceProvider.GetService<IValidator<MessageUpdateModel>>();
-
-        ArgumentNullException.ThrowIfNull(validator);
-
-        return await this.ValidateAndExecuteAsync(updateModel, validator, async () =>
+        return await this.requestProcessor.ProcessRequestAsync(updateModel, async () =>
         {
-            try
-            {
-                int userId = GetCurrentUserId(this.httpContextAccessor);
-                if (!await this.messageService.CheckMessageOwner(updateModel.Id, userId))
-                {
-                    return this.Forbid("You cannot update this message");
-                }
-
-                await this.messageService.UpdateAsync(updateModel);
-                var updatedMessage = await this.messageService.GetByIdAsync(updateModel.Id);
-                return this.Ok(updatedMessage);
-            }
-            catch (ForumException e)
-            {
-                return this.NotFound(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                return this.BadRequest(e.Message);
-            }
+            await this.messageService.UpdateAsync(updateModel);
+            return this.NoContent();
         });
     }
 
@@ -159,19 +109,11 @@ public class MessagesController : BaseController
     [HttpDelete("messages/Admin/{id:int}")]
     public async Task<IActionResult> AdminDeleteMessage(int id)
     {
-        try
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
             await this.messageService.DeleteAsync(id);
             return this.NoContent();
-        }
-        catch (ForumException e)
-        {
-            return this.NotFound(e.Message);
-        }
-        catch (InvalidOperationException e)
-        {
-            return this.BadRequest(e.Message);
-        }
+        });
     }
 
     /// <summary>
@@ -183,21 +125,12 @@ public class MessagesController : BaseController
     [Authorize]
     public async Task<IActionResult> DeleteMyMessage(int id)
     {
-        try
+        return await this.requestProcessor.ProcessRequestAsync(id, async () =>
         {
             int userId = GetCurrentUserId(this.httpContextAccessor);
-            if (!await this.messageService.CheckMessageOwner(id, userId))
-            {
-                return this.Forbid("You cannot update this message");
-            }
-
-            await this.messageService.DeleteAsync(id);
+            await this.messageService.DeleteAsync(id, userId);
             return this.NoContent();
-        }
-        catch (InvalidOperationException)
-        {
-            return this.NotFound($"Message with Id = {id} not found");
-        }
+        });
     }
 
     /// <summary>
@@ -209,22 +142,12 @@ public class MessagesController : BaseController
     [HttpPost("messages/{messageId}/toggleLike")]
     public async Task<IActionResult> ToggleLike(int messageId)
     {
-        try
+        return await this.requestProcessor.ProcessRequestAsync(messageId, async () =>
         {
             int userId = GetCurrentUserId(this.httpContextAccessor);
-            if (!await this.messageService.CheckMessageOwner(messageId, userId))
-            {
-                return this.Forbid("You cannot update this message");
-            }
-
             await this.messageService.ToggleLike(userId, messageId);
-        }
-        catch (ForumException e)
-        {
-            return this.BadRequest(e.Message);
-        }
-
-        return this.Ok();
+            return this.NoContent();
+        });
     }
 
     /// <summary>
@@ -235,22 +158,11 @@ public class MessagesController : BaseController
     [HttpGet("messages/{messageId}/likes")]
     public async Task<IActionResult> GetLikeCount(int messageId)
     {
-        int likeCount;
-        try
+        return await this.requestProcessor.ProcessRequestAsync(messageId, async () =>
         {
             var messageModel = await this.messageService.GetByIdAsync(messageId);
-
-            likeCount = messageModel.LikesCounter;
-        }
-        catch (ForumException e)
-        {
-            return this.NotFound(e.Message);
-        }
-        catch (InvalidOperationException ex)
-        {
-            return this.BadRequest(ex.Message);
-        }
-
-        return this.Ok(likeCount);
+            int likeCount = messageModel.LikesCounter;
+            return this.Ok(likeCount);
+        });
     }
 }

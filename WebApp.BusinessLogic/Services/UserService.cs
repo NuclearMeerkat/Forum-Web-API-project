@@ -28,7 +28,8 @@ public class UserService : IUserService
         this.jwtProvider = jwtProvider;
     }
 
-    public async Task<IEnumerable<UserPublicProfileModel>> GetAllAsync(UserQueryParametersModel? queryParameters = default)
+    public async Task<IEnumerable<UserPublicProfileModel>> GetAllAsync(
+        UserQueryParametersModel? queryParameters = default)
     {
         if (queryParameters == null)
         {
@@ -135,18 +136,26 @@ public class UserService : IUserService
 
     public async Task<string> LoginAsync(UserLoginModel model)
     {
-        var user = await this.unitOfWork.UserRepository.GetByEmailAsync(model.Email);
+        User user;
+        try
+        {
+            user = await this.unitOfWork.UserRepository.GetByEmailAsync(model.Email);
+        }
+        catch (Exception)
+        {
+            throw new UnauthorizedAccessException("Invalid password or email");
+        }
 
         if (user is null)
         {
-            throw new ForumException("Invalid password or email");
+            throw new UnauthorizedAccessException("Invalid password or email");
         }
 
         var result = this.passwordHasher.Verify(model.Password, user.PasswordHash);
 
         if (!result)
         {
-            throw new ForumException("Invalid password or email");
+            throw new UnauthorizedAccessException("Invalid password or email");
         }
 
         user.LastLogin = DateTime.UtcNow;
@@ -163,6 +172,11 @@ public class UserService : IUserService
         ForumException.ThrowIfNull(model);
 
         var existingUser = await this.unitOfWork.UserRepository.GetByIdAsync(model.Id);
+
+        if (existingUser.Id != model.Id)
+        {
+            throw new UnauthorizedAccessException("User with this id can not update this profile");
+        }
 
         var user = this.mapper.Map(model, existingUser);
         this.unitOfWork.UserRepository.Update(user);
